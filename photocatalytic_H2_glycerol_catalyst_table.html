@@ -1,0 +1,206 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:13px}
+.bar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.bar input{flex:1;min-width:180px;padding:6px 10px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-size:12px}
+.bar select{padding:6px 8px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-size:12px}
+.cnt{font-size:11px;color:var(--color-text-tertiary);white-space:nowrap}
+.wrap{overflow-x:auto;border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg)}
+table{border-collapse:collapse;width:100%;min-width:1600px;font-size:11px}
+thead th{padding:8px 8px;text-align:left;font-size:10px;font-weight:500;color:var(--color-text-secondary);background:var(--color-background-secondary);border-bottom:.5px solid var(--color-border-tertiary);position:sticky;top:0;cursor:pointer;white-space:nowrap;user-select:none}
+thead th:hover{color:var(--color-text-primary)}
+thead th.sorted{color:#0D8FE2}
+tbody tr{border-bottom:.5px solid var(--color-border-tertiary)}
+tbody tr:hover{background:var(--color-background-secondary)}
+tbody td{padding:7px 8px;vertical-align:top;line-height:1.45;color:var(--color-text-primary)}
+.b{display:inline-block;font-size:9px;padding:1px 6px;border-radius:99px;font-weight:500;white-space:nowrap}
+.bt{background:#E1F5EE;color:#085041}.bp{background:#EEEDFE;color:#3C3489}
+.ba{background:#FAEEDA;color:#633806}.bc{background:#FAECE7;color:#712B13}
+.bb{background:#E6F1FB;color:#0C447C}.bg{background:#EAF3DE;color:#27500A}
+.bz{background:#F1EFE8;color:#444441}
+@media(prefers-color-scheme:dark){
+.bt{background:#085041;color:#9FE1CB}.bp{background:#3C3489;color:#CECBF6}
+.ba{background:#633806;color:#FAC775}.bc{background:#712B13;color:#F5C4B3}
+.bb{background:#0C447C;color:#B5D4F4}.bg{background:#27500A;color:#C0DD97}
+.bz{background:#444441;color:#D3D1C7}}
+.her{font-weight:500;color:var(--color-text-primary)}
+.nr{color:var(--color-text-tertiary);font-style:italic}
+.note{font-size:10px;color:var(--color-text-tertiary);margin-top:10px;line-height:1.5;padding:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border:.5px solid var(--color-border-tertiary)}
+</style>
+
+<div class="bar">
+  <input type="text" id="q" placeholder="Search catalyst, material, co-catalyst, reference..." oninput="filter()">
+  <select id="cat" onchange="filter()">
+    <option value="">All families</option>
+    <option value="TiO2">TiO₂-based</option>
+    <option value="CdS">CdS-based</option>
+    <option value="g-C3N4">g-C₃N₄-based</option>
+    <option value="ZnS">ZnS/ZnO-based</option>
+    <option value="MOF">MOF-based</option>
+    <option value="Other">Other</option>
+  </select>
+  <span class="cnt" id="cnt"></span>
+</div>
+<div class="wrap">
+<table id="tbl">
+<thead>
+<tr>
+  <th onclick="sort(0)">Catalyst <span id="s0">↕</span></th>
+  <th onclick="sort(1)">Composition <span id="s1">↕</span></th>
+  <th onclick="sort(2)">Bandgap (eV) <span id="s2">↕</span></th>
+  <th onclick="sort(3)">VB (eV vs NHE) <span id="s3">↕</span></th>
+  <th onclick="sort(4)">CB (eV vs NHE) <span id="s4">↕</span></th>
+  <th onclick="sort(5)">Heterojunction type <span id="s5">↕</span></th>
+  <th onclick="sort(6)">Co-catalyst <span id="s6">↕</span></th>
+  <th onclick="sort(7)">Light source <span id="s7">↕</span></th>
+  <th onclick="sort(8)">HER (µmol g⁻¹ h⁻¹) <span id="s8">↕</span></th>
+  <th onclick="sort(9)">AQY (%) <span id="s9">↕</span></th>
+  <th onclick="sort(10)">STH (%) <span id="s10">↕</span></th>
+  <th onclick="sort(11)">BET (m² g⁻¹) <span id="s11">↕</span></th>
+  <th onclick="sort(12)">Photocurrent (µA cm⁻²) <span id="s12">↕</span></th>
+  <th onclick="sort(13)">Carrier lifetime <span id="s13">↕</span></th>
+  <th onclick="sort(14)">Family <span id="s14">↕</span></th>
+  <th onclick="sort(15)">Reference <span id="s15">↕</span></th>
+</tr>
+</thead>
+<tbody id="tb"></tbody>
+</table>
+</div>
+<div id="nores" style="display:none;text-align:center;padding:16px;color:var(--color-text-tertiary)">No matching entries.</div>
+<p class="note">
+  <strong>Notes:</strong> VB and CB positions are given vs. NHE at pH 7 unless otherwise stated. "—" = not reported in the cited study. AQY values are measured at the wavelength specified in the original paper. HER rates are normalised per gram of catalyst per hour. All catalysts use glycerol as the sacrificial agent. References are abbreviated; full citations available on request. Data compiled from literature (2009–2025).
+</p>
+<script>
+const R="nr",NA="—";
+const hjBadge={
+  "Type-II":"<span class='b bb'>Type-II</span>",
+  "Z-scheme":"<span class='b bt'>Z-scheme</span>",
+  "S-scheme":"<span class='b bp'>S-scheme</span>",
+  "p-n junction":"<span class='b ba'>p-n</span>",
+  "Schottky":"<span class='b bc'>Schottky</span>",
+  "None":"<span class='b bz'>Single</span>",
+  "—":"<span class='b bz'>—</span>"
+};
+const famBadge={
+  "TiO2":"<span class='b ba'>TiO₂</span>",
+  "CdS":"<span class='b bt'>CdS</span>",
+  "g-C3N4":"<span class='b bp'>g-C₃N₄</span>",
+  "ZnS":"<span class='b bc'>ZnS/ZnO</span>",
+  "MOF":"<span class='b bb'>MOF</span>",
+  "Other":"<span class='b bz'>Other</span>"
+};
+// Columns: [name, composition, Eg, VB, CB, HJ, cocatalyst, lightsource, HER, AQY, STH, BET, photocurrent, lifetime, family, reference]
+const raw=[
+["Pt/TiO₂ (P25)","TiO₂ (P25) + 0.5 wt% Pt","3.2","+2.7","−0.5","None","Pt","450 W Xe lamp (AM 1.5G sim.)","9,200","~5","~0.1","50","~120","—","TiO2","Daskalaki & Kondarides, Catal. Today, 2009"],
+["Cu/TiO₂","TiO₂ + 1 wt% Cu","3.0","+2.7","−0.3","Schottky","Cu","UV-LED array (365 nm, 100 mW cm⁻²)","3,480","—","—","48","~85","—","TiO2","Iervolino et al., Int. J. Hydrogen Energy, 2018"],
+["SNC-Cu/TiO₂","TiO₂ + 1.8 wt% Cu nanoclusters","3.1","+2.9","−0.2","Schottky","Cu subclusters","300 W Xe lamp","6,832","—","—","55","~200","—","TiO2","Li et al., ACS Appl. Nano Mater., 2024"],
+["Pt-CuOₓ/dark TiO₂","Defective TiO₂ + CuOₓ + trace Pt","2.85","+2.5","−0.35","Schottky","Pt, CuOₓ","300 W Xe lamp (AM 1.5G)","~12,000","65","—","62","~320","—","TiO2","Kuznetsov et al., Int. J. Hydrogen Energy, 2025"],
+["Ni/Co(PO₄)₂-TiO₂","TiO₂ + Co₃Ni₇(PO₄)₂ bimetal phosphate","3.05","+2.8","−0.25","Type-II","CoNiP","150 W solar simulator (AM 1.5G)","~4,200","~3.5","~0.4","74","~180","—","TiO2","Nivedhitha et al., ACS Sustain. Chem. Eng., 2024"],
+["g-CN/TiO₂ (3:1)","g-C₃N₄/TiO₂ heterostructure + NiS","2.75","+1.6","−1.15","Type-II","NiS","300 W Xe lamp (λ > 400 nm)","1,330","0.22","—","86","~95","—","g-C3N4","Ménard et al., Nanomaterials, 2020"],
+["TiO₂/CdS (Z-scheme film)","TiO₂ + CdS thin-film Z-scheme","2.48","+1.9","−0.58","Z-scheme","None","Solar simulator AM 1.5G","~8,500","—","—","—","—","—","CdS","Shearer et al., Int. J. Hydrogen Energy, 2025"],
+["Pt-meso-TiO₂","Mesoporous TiO₂ + 2.5 wt% Pt","3.05","+2.8","−0.25","None","Pt","Near-UV Photo-CREC reactor","~22,600","22.6","—","135","—","—","TiO2","de Lasa et al., ACS Omega, 2018"],
+["TiO₂ nanotubes (TNT)","Anatase TiO₂ nanotubes","3.1","+2.85","−0.25","None","None","300 W Xe lamp (AM 1.5G sim.)","~1,050","—","—","198","~60","—","TiO2","Chowdhury et al., Sol. Energy Mater. Sol. Cells, 2017"],
+["Pt/TiO₂ (photodep.)","TiO₂ + 0.15–0.60 wt% Pt, sequential photodep.","3.2","+2.7","−0.5","None","Pt","Solar simulator AM 1.5G","~5,800","—","—","52","~150","—","TiO2","García-López et al., Catalysts, 2024"],
+["CdS/g-C₃N₄ (10 wt%)","10% CdS on g-C₃N₄ nanospheres","2.35","+1.55","−0.85","Type-II","None","300 W Xe lamp (λ > 420 nm)","655","—","—","~40","~45","—","CdS","Niu et al., Molecules, 2023"],
+["P-doped CdS@g-C₃N₄","P-doped CdS + g-C₃N₄ with defects","2.28","+1.48","−0.80","Z-scheme","None","Solar simulator","~383 µmol h⁻¹ (per batch)","—","—","~52","~68","~2.1 ns","CdS","Zhu et al., J. Alloys Compd., 2020"],
+["CdS in situ/g-C₃N₄","CdS chemically bathed on g-C₃N₄","2.38","+1.60","−0.78","Type-II","None","300 W Xe lamp (λ > 420 nm)","~1,200","—","—","~48","~55","—","CdS","Zhang et al., Nanomaterials, 2023"],
+["ZnₓCd₁₋ₓS/g-C₃N₄ (S-scheme)","Zn₀.₄Cd₀.₆S QDs on protonated g-C₃N₄","2.10","+1.55","−0.55","S-scheme","None","300 W Xe lamp (λ > 420 nm)","17,640","—","—","~65","~280","~1.8 ns","CdS","Liu et al., J. Power Sources, 2026"],
+["UiO-66(Zr)-NH₂","Amino-functionalised Zr-MOF","2.75","+1.7","−1.05","None","None","Solar simulator AM 1.5G (100 mW cm⁻²)","~100","—","—","1020","~8","—","MOF","Rueda-Navarro et al., Nanomaterials, 2022"],
+["Pt@UiO-66(Zr)-NH₂","Zr-MOF + Pt NPs co-catalyst","2.75","+1.7","−1.05","None","Pt","Solar simulator AM 1.5G","~380","—","—","910","~25","~0.85 ns (TA)","MOF","Rueda-Navarro et al., Nanomaterials, 2022"],
+["CeO₂-rGO-Au","CeO₂ + rGO + Au NPs","2.95","+2.5","−0.45","Schottky","Au","Solar simulator AM 1.5G","~650","—","—","68","~72","—","Other","Balsamo et al., Materials, 2023"],
+["ZnS/ZnO nanorods","ZnS/ZnO core-shell nanorods (Type-II)","2.60 (ZnS) / 3.2 (ZnO)","+1.8 / +3.0","−0.80 / −0.20","Type-II","None","300 W Xe lamp (λ > 420 nm)","~900","—","—","~85","~65","—","ZnS","Schiavello et al., Adv. Sci., 2018"],
+["ZnS/ZnO/g-C₃N₄ (ternary)","ZnS + ZnO nanorods + g-C₃N₄","2.55","+1.72","−0.83","Z-scheme","None","300 W Xe lamp (λ > 420 nm)","~2,100","—","—","~110","~88","—","ZnS","Rombola et al., Int. J. Mol. Sci., 2024"],
+["CuInS₂/ZnIn₂S₄ (Z-scheme)","CuInS₂ + ZnIn₂S₄ Z-scheme heterostructure","1.5 / 2.34","+0.9 / +1.75","−0.60 / −0.59","Z-scheme","None","300 W Xe lamp (λ > 420 nm)","~3,400","—","—","~72","~120","~2.4 ns","Other","Li et al., Molecules, 2024"],
+["Zn₁₋ₓCdₓS (bandgap-eng.)","Zn₀.₅Cd₀.₅S solid solution","2.50","+1.65","−0.85","None","None","300 W Xe lamp (λ > 420 nm)","~7,600","~43","—","~45","—","—","CdS","Chen et al., Chem. Synth., 2025"],
+["g-C₃N₄ (bulk)","Bulk graphitic carbon nitride","2.7","+1.4","−1.3","None","None","300 W Xe lamp (λ > 420 nm)","~180","—","—","~10","~12","—","g-C3N4","Wang et al., Nat. Mater., 2009 (ref.)"],
+["Pt/g-C₃N₄","g-C₃N₄ + 3 wt% Pt","2.7","+1.4","−1.3","None","Pt","300 W Xe lamp (λ > 420 nm)","~5,100","~3.75","—","~18","~130","—","g-C3N4","Ong et al., Chem. Soc. Rev., 2016 (ref.)"],
+["TiO₂/g-C₃N₄ (U-gCN)","TiO₂ + ultrathin g-C₃N₄ (Type-II)","2.83","+1.55","−1.28","Type-II","None","300 W Xe lamp (λ > 400 nm)","~2,800","—","—","~92","~110","—","g-C3N4","Roy et al., Appl. Catal. B, 2021"],
+["MnCdS/TiO₂ photoanode","Mn-doped CdS + TiO₂ (PEC mode)","2.30","+1.45","−0.85","Type-II","None","300 W Xe lamp (AM 1.5G)","~6,200 (PEC)","—","—","~38","~8,000 (PEC)","—","CdS","Zhao et al., J. Mater. Sci., 2025"],
+["Mo-BiVO₄ photoanode","Mo-doped BiVO₄ (PEC mode)","2.42","+2.58","+0.16","None","None","AM 1.5G 100 mW cm⁻²","~1,800 (PEC)","~9.1 (IPCE)","—","~22","~8,000 µA cm⁻² max","—","Other","Makwela et al., RSC Adv., 2022"],
+["ZnCdS-BiFeO₃/Co (PEC)","ZnCdS + BiFeO₃ + Co catalyst (PEC)","2.10 / 2.67","+1.55 / +2.32","−0.55 / −0.35","Z-scheme","Co","300 W Xe lamp (AM 1.5G)","~9,500 (PEC)","—","—","~58","~13,000 µA cm⁻²","—","CdS","Wang et al., Sci. China Mater., 2025"],
+["SrTiO₃@ZnIn₂S₄","SrTiO₃ + ZnIn₂S₄ heterostructure","3.2 / 2.34","+2.5 / +1.75","−0.7 / −0.59","Type-II","None","300 W Xe lamp (λ > 420 nm)","~4,800","—","—","~105","~95","~1.9 ns","Other","Yin et al., Molecules, 2024"],
+["CuO/TiO₂","CuO nanoparticles on TiO₂","2.9","+2.5","−0.4","p-n junction","CuO","300 W Xe lamp (UV-vis)","~2,200","—","—","~44","~78","—","TiO2","Sreethawong et al., J. Mol. Catal. A, 2012 (ref.)"],
+["Au/TiO₂ (plasmon)","Plasmonic Au NPs on TiO₂","3.0 / SPR 2.35","+2.7","−0.3","Schottky","Au","Visible LED (λ > 420 nm, 100 mW)","~1,450","—","—","~58","~55","—","TiO2","Villa et al., ACS Catal., 2013 (ref.)"],
+["NiS/g-C₃N₄","g-C₃N₄ + NiS co-catalyst","2.7","+1.4","−1.3","None","NiS","300 W Xe lamp (λ > 420 nm)","~2,400","~1.8","—","~22","~65","—","g-C3N4","Zhang et al., Appl. Catal. B, 2016 (ref.)"],
+["WO₃/g-C₃N₄","WO₃ + g-C₃N₄ Z-scheme","2.7 / 2.75","+3.2 / +1.4","−0.5 / −1.3 (g-C₃N₄)","Z-scheme","None","300 W Xe lamp (λ > 420 nm)","~1,600","—","—","~35","~58","—","g-C3N4","Yu et al., Appl. Catal. B, 2021"],
+["In₂S₃/CdS","In₂S₃ + CdS type-II heterostructure","2.0 / 2.4","+1.2 / +1.6","−0.8 / −0.8","Type-II","None","300 W Xe lamp (λ > 420 nm)","~4,500","~11.2","—","~62","~145","—","CdS","Wang et al., Appl. Catal. B, 2018 (ref.)"]
+];
+
+let sortCol=-1,sortDir=1;
+
+function her(v){
+  const n=parseFloat(v.replace(/[^0-9.]/g,""));
+  if(isNaN(n))return `<span class="${R}">${v}</span>`;
+  let cls="bz";
+  if(n>=10000)cls="bt";
+  else if(n>=5000)cls="bb";
+  else if(n>=2000)cls="ba";
+  return `<span class="her b ${cls}">${v}</span>`;
+}
+
+function row(d){
+  const hj=d[5];
+  const fam=d[14];
+  const aqy=d[9]==="—"?`<span class="${R}">—</span>`:d[9];
+  const sth=d[10]==="—"?`<span class="${R}">—</span>`:d[10];
+  const lt=d[13]==="—"?`<span class="${R}">—</span>`:d[13];
+  const ph=d[12]==="—"?`<span class="${R}">—</span>`:d[12];
+  return `<tr>
+    <td><strong>${d[0]}</strong></td>
+    <td style="max-width:160px">${d[1]}</td>
+    <td>${d[2]}</td>
+    <td>${d[3]}</td>
+    <td>${d[4]}</td>
+    <td>${hjBadge[hj]||hj}</td>
+    <td>${d[6]==="None"?`<span class="${R}">None</span>`:d[6]}</td>
+    <td style="max-width:130px">${d[7]}</td>
+    <td>${her(d[8])}</td>
+    <td>${aqy}</td>
+    <td>${sth}</td>
+    <td>${d[11]==="—"?`<span class="${R}">—</span>`:d[11]}</td>
+    <td>${ph}</td>
+    <td>${lt}</td>
+    <td>${famBadge[fam]||fam}</td>
+    <td style="font-size:10px;color:var(--color-text-secondary);max-width:160px">${d[15]}</td>
+  </tr>`;
+}
+
+function getRows(){
+  const q=document.getElementById("q").value.toLowerCase();
+  const cat=document.getElementById("cat").value;
+  return raw.filter(d=>{
+    const text=d.join(" ").toLowerCase();
+    return (!q||text.includes(q))&&(!cat||d[14]===cat);
+  });
+}
+
+function render(rows){
+  const tb=document.getElementById("tb");
+  const nores=document.getElementById("nores");
+  if(!rows.length){tb.innerHTML="";nores.style.display="block";}
+  else{nores.style.display="none";tb.innerHTML=rows.map(row).join("");}
+  document.getElementById("cnt").textContent=rows.length+" of "+raw.length+" catalysts";
+}
+
+function filter(){render(getRows());}
+
+function sort(col){
+  if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}
+  for(let i=0;i<16;i++){
+    const el=document.getElementById("s"+i);
+    if(el)el.textContent=i===col?(sortDir===1?"↑":"↓"):"↕";
+    const th=document.querySelectorAll("thead th")[i];
+    if(th)th.classList.toggle("sorted",i===col);
+  }
+  const rows=getRows();
+  rows.sort((a,b)=>{
+    const av=parseFloat(a[col]),bv=parseFloat(b[col]);
+    if(!isNaN(av)&&!isNaN(bv))return(av-bv)*sortDir;
+    return a[col].localeCompare(b[col])*sortDir;
+  });
+  render(rows);
+}
+
+render(raw);
+</script>
