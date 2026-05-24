@@ -164,7 +164,9 @@ def evaluate_models_loo(df):
         "Co_catalyst_type", "Co_catalyst_loading_wt_pct", "Sacrificial_agent_type",
         "Sacrificial_agent_vol_pct", "Light_source_power_density", "Reaction_pH", "Reactor_type", "composition"
     ]
-    targets = ["HER", "AQY_420", "STH"]
+    targets = ["HER", "AQY_420"]
+    print("Note: STH is not modelled by GPR. Physics-based Theoretical_Max_STH")
+    print("      (AM1.5G integration) is used in composite scoring instead.")
     
     X = df[features]
     y = df[targets]
@@ -289,17 +291,19 @@ def generate_candidates_multi():
     candidates = []
     
     hosts_config = {
-        "TiO2": {"eg_min": 1.8, "eg_max": 3.2, "cb_min": -0.6, "cb_max": -0.2, "bet_mean": 60.0, "bet_std": 10.0, "life_mean": 20.0, "life_std": 2.0, "comp": "TiO2"},
-        "C3N4": {"eg_min": 1.8, "eg_max": 2.7, "cb_min": -1.2, "cb_max": -0.8, "bet_mean": 45.0, "bet_std": 10.0, "life_mean": 3.0, "life_std": 0.5, "comp": "C3N4"},
-        "ZrO2": {"eg_min": 1.8, "eg_max": 2.8, "cb_min": -1.2, "cb_max": -0.8, "bet_mean": 950.0, "bet_std": 50.0, "life_mean": 5.0, "life_std": 0.5, "comp": "ZrO2"},
-        "CeO2": {"eg_min": 1.8, "eg_max": 2.9, "cb_min": -0.9, "cb_max": -0.5, "bet_mean": 80.0, "bet_std": 10.0, "life_mean": 5.0, "life_std": 0.5, "comp": "CeO2"},
-        "ZnS": {"eg_min": 2.0, "eg_max": 3.6, "cb_min": -1.2, "cb_max": -0.8, "bet_mean": 90.0, "bet_std": 10.0, "life_mean": 5.0, "life_std": 0.5, "comp": "ZnS"},
-        "ZnIn2S4": {"eg_min": 1.8, "eg_max": 2.4, "cb_min": -1.1, "cb_max": -0.7, "bet_mean": 75.0, "bet_std": 10.0, "life_mean": 5.0, "life_std": 0.5, "comp": "ZnIn2S4"},
-        "BiVO4": {"eg_min": 1.8, "eg_max": 2.5, "cb_min": -0.3, "cb_max": 0.1, "bet_mean": 15.0, "bet_std": 3.0, "life_mean": 4.0, "life_std": 0.5, "comp": "BiVO4"},
-        "BiFeO3": {"eg_min": 1.8, "eg_max": 2.2, "cb_min": -0.4, "cb_max": 0.0, "bet_mean": 10.0, "bet_std": 2.0, "life_mean": 5.0, "life_std": 0.5, "comp": "BiFeO3"},
-        "SrTiO3": {"eg_min": 1.8, "eg_max": 3.2, "cb_min": -1.1, "cb_max": -0.7, "bet_mean": 40.0, "bet_std": 8.0, "life_mean": 5.0, "life_std": 0.5, "comp": "SrTiO3"},
-        "CdS": {"eg_min": 1.8, "eg_max": 2.5, "cb_min": -0.9, "cb_max": -0.5, "bet_mean": 50.0, "bet_std": 10.0, "life_mean": 1.5, "life_std": 0.2, "comp": "CdS"},
-        "WO3": {"eg_min": 2.0, "eg_max": 2.8, "cb_min": 0.1, "cb_max": 0.5, "bet_mean": 35.0, "bet_std": 5.0, "life_mean": 5.0, "life_std": 0.5, "comp": "WO3"}
+        "TiO2":    {"eg_min":3.0,  "eg_max":3.3,  "cb_min":-0.50,"cb_max":-0.25,"bet_mean":60.0, "bet_std":15.0,"life_mean":20.0,"life_std":3.0, "comp":"TiO2"},
+        "C3N4":    {"eg_min":2.60, "eg_max":2.80, "cb_min":-1.30,"cb_max":-0.90,"bet_mean":35.0, "bet_std":12.0,"life_mean":3.0, "life_std":0.5, "comp":"C3N4"},
+        "MOF":     {"eg_min":2.60, "eg_max":2.90, "cb_min":-1.20,"cb_max":-0.90,"bet_mean":950.0,"bet_std":60.0,"life_mean":1.0, "life_std":0.3, "comp":"MOF"},
+        "CeO2":    {"eg_min":2.80, "eg_max":3.10, "cb_min":-0.90,"cb_max":-0.50,"bet_mean":80.0, "bet_std":15.0,"life_mean":5.0, "life_std":1.0, "comp":"CeO2"},
+        "ZnS":     {"eg_min":3.50, "eg_max":3.70, "cb_min":-1.80,"cb_max":-1.50,"bet_mean":90.0, "bet_std":15.0,"life_mean":5.0, "life_std":1.0, "comp":"ZnS"},
+        "ZnIn2S4": {"eg_min":2.20, "eg_max":2.50, "cb_min":-1.10,"cb_max":-0.70,"bet_mean":75.0, "bet_std":15.0,"life_mean":5.0, "life_std":1.0, "comp":"ZnIn2S4"},
+        "BiVO4":   {"eg_min":2.30, "eg_max":2.55, "cb_min":-0.10,"cb_max":+0.20,"bet_mean":15.0, "bet_std":4.0, "life_mean":4.0, "life_std":0.5, "comp":"BiVO4"},
+        "BiFeO3":  {"eg_min":2.10, "eg_max":2.30, "cb_min":-0.50,"cb_max":-0.10,"bet_mean":10.0, "bet_std":3.0, "life_mean":5.0, "life_std":1.0, "comp":"BiFeO3"},
+        "SrTiO3":  {"eg_min":3.10, "eg_max":3.40, "cb_min":-1.10,"cb_max":-0.70,"bet_mean":40.0, "bet_std":8.0, "life_mean":5.0, "life_std":1.0, "comp":"SrTiO3"},
+        "CdS":     {"eg_min":2.30, "eg_max":2.55, "cb_min":-0.90,"cb_max":-0.50,"bet_mean":50.0, "bet_std":12.0,"life_mean":1.5, "life_std":0.3, "comp":"CdS"},
+        "WO3":     {"eg_min":2.60, "eg_max":2.80, "cb_min":+0.10,"cb_max":+0.50,"bet_mean":35.0, "bet_std":8.0, "life_mean":5.0, "life_std":1.0, "comp":"WO3"},
+        "In2S3":   {"eg_min":1.90, "eg_max":2.15, "cb_min":-0.90,"cb_max":-0.60,"bet_mean":60.0, "bet_std":12.0,"life_mean":5.0, "life_std":1.0, "comp":"In2S3"},
+        "SnS2":    {"eg_min":2.10, "eg_max":2.35, "cb_min":-0.60,"cb_max":-0.30,"bet_mean":65.0, "bet_std":12.0,"life_mean":5.0, "life_std":1.0, "comp":"SnS2"},
     }
     
     co_catalysts = ["Pt", "NiS", "Ni", "Cu", "Au", "CuO", "None"]
@@ -352,8 +356,7 @@ def generate_candidates_multi():
                 })
                 
     return pd.DataFrame(candidates)
-        
-    return pd.DataFrame(candidates)
+
 
 def run_multi_objective_screening(df_train, df_cand):
     features = [
@@ -365,7 +368,7 @@ def run_multi_objective_screening(df_train, df_cand):
     preprocessor = get_preprocessor()
     
     models = {}
-    targets = ["HER", "AQY_420", "STH"]
+    targets = ["HER", "AQY_420"]
     for t in targets:
         kernel = ConstantKernel(1.0, (1e-5, 1e5)) * RBF(length_scale=1.0, length_scale_bounds=(1e-2, 1e2)) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-5, 1e5))
         gp = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=5, normalize_y=True, random_state=42)
@@ -388,8 +391,8 @@ def run_multi_objective_screening(df_train, df_cand):
     df_cand["Std_HER"] = std_devs["HER"]
     df_cand["Pred_AQY"] = preds["AQY_420"]
     df_cand["Std_AQY"] = std_devs["AQY_420"]
-    df_cand["Pred_STH_raw"] = preds["STH"]
-    df_cand["Std_STH"] = std_devs["STH"]
+    df_cand["Pred_STH_raw"] = 0.0
+    df_cand["Std_STH"] = 0.0
     
     # Bandgap Penalty & Solar Clamping
     penalized_sths = []
@@ -407,6 +410,10 @@ def run_multi_objective_screening(df_train, df_cand):
     # HARD PRE-FILTER: Remove any candidate where glycerol_filter_pass = False BEFORE scoring
     df_cand = df_cand[df_cand["Glycerol_Filter_Pass"] == True].copy()
     
+    # Remove statistically meaningless candidates (sigma > prediction)
+    df_cand = df_cand[df_cand["Std_HER"] < df_cand["Pred_HER"]].copy()
+    print(f"After uncertainty validity filter: {len(df_cand)} candidates remain.")
+    
     if len(df_cand) == 0:
         print("Warning: No candidates passed the glycerol thermodynamic filter!")
         return pd.DataFrame()
@@ -414,7 +421,7 @@ def run_multi_objective_screening(df_train, df_cand):
     # UCB composite scoring
     her_norm = df_cand["Pred_HER"] / (df_cand["Pred_HER"].max() + 1e-5)
     aqy_norm = df_cand["Pred_AQY"] / (df_cand["Pred_AQY"].max() + 1e-5)
-    sth_norm = df_cand["Pred_STH"] / (df_cand["Pred_STH"].max() + 1e-5)
+    sth_norm = df_cand["Theoretical_Max_STH"] / (df_cand["Theoretical_Max_STH"].max() + 1e-5)
     
     total_std = (df_cand["Std_HER"] / (df_cand["Std_HER"].max() + 1e-5) + 
                  df_cand["Std_AQY"] / (df_cand["Std_AQY"].max() + 1e-5) + 
@@ -452,9 +459,9 @@ if __name__ == "__main__":
     df_candidates = generate_candidates_multi()
     print(f"Initial virtual library size: {len(df_candidates)} candidates.")
     
-    # Constrain the virtual screening library to only candidates with bandgap between 1.6 and 2.4 eV BEFORE prediction (Step 3)
-    df_candidates = df_candidates[(df_candidates["Bandgap_eV"] >= 1.6) & (df_candidates["Bandgap_eV"] <= 2.4)].copy()
-    print(f"Constrained virtual library size (Eg: 1.6 - 2.4 eV): {len(df_candidates)} candidates.")
+    # Constrain the virtual screening library to only candidates with bandgap between 1.8 and 2.4 eV BEFORE prediction (Step 3)
+    df_candidates = df_candidates[(df_candidates["Bandgap_eV"] >= 1.8) & (df_candidates["Bandgap_eV"] <= 2.4)].copy()
+    print(f"Constrained virtual library size (Eg: 1.8 - 2.4 eV): {len(df_candidates)} candidates.")
     
     top_10 = run_multi_objective_screening(df_train, df_candidates)
     

@@ -112,19 +112,18 @@ To predict multiple outputs simultaneously, we evaluate three multi-objective mo
 Under Leave-One-Out (LOO) cross-validation on the augmented dataset ($N=83$ samples, expanding the $N=33$ baseline with 50 synthetic noise-augmented points), the models achieved the following performance metrics:
 
 #### **Option A: GradientBoosting (MultiOutput)**
-- **HER**: $R^2 = 0.843$, $\text{MAE} = 1375.13\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 2103.48$
-- **AQY_420**: $R^2 = 0.970$, $\text{MAE} = 1.37\%$, $\text{RMSE} = 2.19\%$
-- **STH**: $R^2 = -0.176$, $\text{MAE} = 0.011\%$, $\text{RMSE} = 0.050\%$
+- **HER**: $R^2 = 0.849$, $\text{MAE} = 1339.93\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 2066.36$
+- **AQY_420**: $R^2 = 0.971$, $\text{MAE} = 1.35\%$, $\text{RMSE} = 2.15\%$
 
 #### **Option B: Gaussian Process Regressor** (Chosen for Uncertainty Quantification & Screening)
 - **HER**: $R^2 = 0.616$, $\text{MAE} = 2215.78\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 3292.42$
-- **AQY_420**: $R^2 = 0.697$, $\text{MAE} = 1.77\%$, $\text{RMSE} = 6.99\%$
-- **STH**: $R^2 = -0.062$, $\text{MAE} = 0.015\%$, $\text{RMSE} = 0.047$
+- **AQY_420**: $R^2 = 0.697$, $\text{MAE} = 1.77\%$, $\text{RMSE} = 6.99$
 
 #### **Option C: Multi-Head MLP Neural Network**
-- **HER**: $R^2 = -0.808$, $\text{MAE} = 4777.16\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 7142.90$
-- **AQY_420**: $R^2 = -0.100$, $\text{MAE} = 5.28\%$, $\text{RMSE} = 13.32\%$
-- **STH**: $R^2 = -147.226$, $\text{MAE} = 0.492\%$, $\text{RMSE} = 0.560\%$
+- **HER**: $R^2 = -0.810$, $\text{MAE} = 4780.27\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 7145.78$
+- **AQY_420**: $R^2 = -0.102$, $\text{MAE} = 4.94\%$, $\text{RMSE} = 13.33$
+
+*Note: STH is not modeled by GPR in LOO CV; physics-based Theoretical_Max_STH (AM1.5G integration) is used in composite scoring instead.*
 
 ```python
 from sklearn.gaussian_process import GaussianProcessRegressor
@@ -226,21 +225,42 @@ def apply_glycerol_oxidation_filter(df_candidates):
 
 ---
 
-### Step 6: Corrected Virtual Screening Output Format
-The generated top 10 candidates outputted by the corrected pipeline are displayed in the table below. By applying the hard pre-filter (`Glycerol_Filter_Pass = True`) before composite scoring, restricting the virtual library to $1.6 - 2.4\text{ eV}$ prior to prediction, and crossing the 12 real synthesizable hosts with realistic co-catalysts and loadings, all top-10 candidates now successfully pass the strict selectivity constraint ($+0.4 < VB < +1.23\text{ V vs NHE}$), with wide-bandgap ($E_g > 3.0\text{ eV}$) and fictional `"-Opt"` compounds completely eliminated:
+### Step 5b: Leave-One-Out Cross-Validation Results (N = 83, augmented)
 
-| Rank | Formula | Host | Co-catalyst | Loading (wt%) | BET (m²/g) | Bandgap (eV) | CB (V vs NHE) | VB (V vs NHE) | Predicted HER (μmol/g/h) | HER $\sigma$ | Predicted AQY (%) | AQY $\sigma$ | Predicted STH (%) | STH $\sigma$ | Max STH (%) | Glycerol Filter Pass | Composite Score |
-| :--- | :------ | :--- | :---------- | :------------ | :--------- | :----------- | :------------ | :------------ | :----------------------- | :----------- | :---------------- | :----------- | :---------------- | :----------- | :---------- | :------------------- | :-------------- |
-| 1 | Ni(2.30wt%)/TiO2 | TiO2 | Ni | 2.30 | 64.4 | 1.73 | -0.51 | 1.22 | 10495.5 | 7007.3 | 19.54 | 9.78 | 0.0072 | 0.047 | 23.24 | True | 3.10 |
-| 2 | Ni(2.97wt%)/ZrO2 | ZrO2 | Ni | 2.97 | 979.4 | 1.95 | -0.87 | 1.07 | 6866.0 | 7858.9 | 18.75 | 14.22 | 0.0072 | 0.047 | 16.69 | True | 2.79 |
-| 3 | Ni(2.81wt%)/ZrO2 | ZrO2 | Ni | 2.81 | 982.7 | 2.03 | -1.08 | 0.95 | 6664.6 | 7590.0 | 18.89 | 12.98 | 0.0072 | 0.047 | 14.64 | True | 2.76 |
-| 4 | NiS(2.80wt%)/ZrO2 | ZrO2 | NiS | 2.80 | 937.5 | 2.15 | -1.07 | 1.08 | 6680.8 | 7356.9 | 18.73 | 11.45 | 0.0072 | 0.047 | 12.05 | True | 2.76 |
-| 5 | Ni(2.98wt%)/ZrO2 | ZrO2 | Ni | 2.98 | 1044.3 | 1.95 | -0.81 | 1.14 | 6444.5 | 7940.9 | 18.16 | 14.86 | 0.0072 | 0.047 | 16.69 | True | 2.74 |
-| 6 | NiS(2.61wt%)/ZrO2 | ZrO2 | NiS | 2.61 | 1028.2 | 2.20 | -0.97 | 1.22 | 6052.3 | 7254.1 | 18.82 | 11.19 | 0.0072 | 0.047 | 11.19 | True | 2.73 |
-| 7 | NiS(2.68wt%)/ZrO2 | ZrO2 | NiS | 2.68 | 986.4 | 2.13 | -1.09 | 1.05 | 6355.5 | 7375.5 | 18.22 | 11.56 | 0.0072 | 0.047 | 12.34 | True | 2.71 |
-| 8 | Ni(1.11wt%)/CdS | CdS | Ni | 1.11 | 69.7 | 1.81 | -0.58 | 1.23 | 10129.1 | 4819.7 | 12.66 | 6.50 | 0.0072 | 0.047 | 20.72 | True | 2.68 |
-| 9 | Pt(2.95wt%)/ZrO2 | ZrO2 | Pt | 2.95 | 959.0 | 2.07 | -1.11 | 0.96 | 7299.5 | 7512.2 | 16.18 | 11.66 | 0.0072 | 0.047 | 13.63 | True | 2.67 |
-| 10 | Ni(1.22wt%)/CdS | CdS | Ni | 1.22 | 51.0 | 1.79 | -0.68 | 1.10 | 10145.2 | 5009.4 | 12.54 | 6.69 | 0.0072 | 0.047 | 21.32 | True | 2.66 |
+**Note:** STH is **not** modelled by GPR — all STH values in the composite score use the physics-based `Theoretical_Max_STH` (AM1.5G spectrum integration) instead.
+
+| Model | Target | R² | MAE | RMSE |
+| :---- | :----- | :-- | :-- | :--- |
+| GradientBoosting (MultiOutput) | HER | 0.849 | 1339.9 | 2066.4 |
+| GradientBoosting (MultiOutput) | AQY | 0.971 | 1.348 | 2.147 |
+| Gaussian Process Regressor | HER | 0.616 | 2215.8 | 3292.4 |
+| Gaussian Process Regressor | AQY | 0.697 | 1.768 | 6.994 |
+| Multi-Head MLP Neural Network | HER | −0.810 | 4780.3 | 7145.8 |
+| Multi-Head MLP Neural Network | AQY | −0.102 | 4.940 | 13.326 |
+
+**Screening funnel:**
+- Initial virtual library: **7,000** candidates (13 hosts × 7 co-catalysts × ~500 variants + ZnCdS)
+- After bandgap filter ($1.8 - 2.4\text{ eV}$): **2,551** candidates
+- After glycerol thermodynamic filter: subset of 2,551
+- After uncertainty validity filter ($\sigma_\text{HER} < \text{Pred HER}$): **230** candidates
+
+---
+
+### Step 6: Corrected Virtual Screening Output Format
+The generated top 10 candidates outputted by the corrected pipeline are displayed in the table below. By applying the hard pre-filter (`Glycerol_Filter_Pass = True`) before composite scoring, restricting the virtual library to $1.8 - 2.4\text{ eV}$ prior to prediction, crossing 13 real synthesizable hosts (+ ZnCdS) with realistic co-catalysts and loadings, and filtering out candidates where $\sigma_\text{HER} \geq \text{Pred HER}$, all top-10 candidates now successfully pass the strict selectivity constraint ($+0.4 < VB < +1.23\text{ V vs NHE}$). Wide-bandgap hosts (TiO₂, ZnS, SrTiO₃, WO₃, CeO₂, MOF) are correctly eliminated by the bandgap pre-filter. **In₂S₃** dominates the top-10 due to its optimal narrow bandgap (1.9–2.15 eV), favorable band-edge alignment, and strong predicted HER performance:
+
+| Rank | Formula | Host | Co-cat | Loading (wt%) | BET (m²/g) | Bandgap (eV) | CB (V vs NHE) | VB (V vs NHE) | Pred HER (μmol/g/h) | HER σ | Pred AQY (%) | AQY σ | Theo. Max STH (%) | Glycerol Pass | Score |
+| :--- | :------ | :--- | :----- | :------------ | :--------- | :----------- | :------------ | :------------ | :------------------- | :---- | :----------- | :---- | :----------------- | :------------ | :---- |
+| 1 | Ni(2.59wt%)/In2S3 | In2S3 | Ni | 2.59 | 34.1 | 1.87 | −0.75 | +1.12 | 8810.0 | 6064.6 | 13.28 | 8.99 | 18.93 | True | 2.855 |
+| 2 | Ni(2.21wt%)/In2S3 | In2S3 | Ni | 2.21 | 54.6 | 1.84 | −0.78 | +1.05 | 9432.4 | 5798.6 | 11.97 | 8.67 | 19.83 | True | 2.855 |
+| 3 | Ni(2.69wt%)/In2S3 | In2S3 | Ni | 2.69 | 73.0 | 1.82 | −0.66 | +1.16 | 9001.9 | 6342.8 | 11.55 | 9.46 | 20.42 | True | 2.842 |
+| 4 | Ni(2.85wt%)/In2S3 | In2S3 | Ni | 2.85 | 68.7 | 1.88 | −0.83 | +1.05 | 8635.2 | 6259.3 | 13.55 | 9.27 | 18.63 | True | 2.838 |
+| 5 | NiS(2.82wt%)/In2S3 | In2S3 | NiS | 2.82 | 86.4 | 1.82 | −0.60 | +1.22 | 8758.8 | 6636.1 | 11.68 | 9.29 | 20.42 | True | 2.838 |
+| 6 | Ni(1.91wt%)/In2S3 | In2S3 | Ni | 1.91 | 86.1 | 1.89 | −0.74 | +1.15 | 9465.2 | 5281.5 | 12.70 | 8.04 | 18.18 | True | 2.827 |
+| 7 | NiS(2.81wt%)/In2S3 | In2S3 | NiS | 2.81 | 67.4 | 1.85 | −0.67 | +1.17 | 8599.3 | 6527.4 | 12.15 | 9.05 | 19.53 | True | 2.803 |
+| 8 | Ni(2.60wt%)/In2S3 | In2S3 | Ni | 2.60 | 37.0 | 1.96 | −0.81 | +1.15 | 8442.9 | 5740.1 | 14.87 | 8.52 | 16.39 | True | 2.800 |
+| 9 | Ni(1.48wt%)/In2S3 | In2S3 | Ni | 1.48 | 50.0 | 1.88 | −0.84 | +1.04 | 9721.3 | 4836.3 | 11.78 | 7.66 | 18.48 | True | 2.782 |
+| 10 | Ni(2.77wt%)/In2S3 | In2S3 | Ni | 2.77 | 39.2 | 1.89 | −0.71 | +1.18 | 8459.6 | 6138.9 | 12.85 | 9.09 | 18.33 | True | 2.775 |
 
 ---
 
