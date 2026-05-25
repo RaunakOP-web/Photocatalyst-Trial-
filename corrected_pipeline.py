@@ -2,7 +2,6 @@ import re
 import numpy as np
 import pandas as pd
 import sys
-import math
 from sklearn.model_selection import LeaveOneOut
 from sklearn.metrics import r2_score, mean_absolute_error, root_mean_squared_error
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -12,8 +11,8 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, Matern, ConstantKernel, WhiteKernel
-from sklearn.neural_network import MLPRegressor
 from sklearn.base import clone
+from sklearn.neural_network import MLPRegressor
 
 # Ensure UTF-8 output encoding for Windows compatibility
 sys.stdout.reconfigure(encoding='utf-8')
@@ -222,7 +221,7 @@ def evaluate_models_loo(df):
                 if model == "GPR_SPECIAL":
                     kernel = ConstantKernel(1.0, (1e-5, 1e5)) * RBF(length_scale=1.0, length_scale_bounds=(1e-2, 1e2)) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-5, 1e5))
                     gp = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=2, normalize_y=True, random_state=42)
-                    pipe = Pipeline([("prep", preprocessor), ("gp", clone(gp))])
+                    pipe = Pipeline([("prep", preprocessor), ("gp", gp)])
                     pipe.fit(X_train, y_train)
                     y_pred = pipe.predict(X_test)
                 elif isinstance(model, MultiOutputRegressor):
@@ -284,39 +283,33 @@ def calculate_max_sth(bandgap_eV):
 
 def estimate_aqy_proxy(bandgap_eV, cb_eV, vb_eV, bet_m2g, co_catalyst_type):
     """
-    Returns a proxy score normalized 0-110.
-    Based on five established structure-property relationships:
+    Physics-based AQY proxy score (0-100 scale, not a % prediction).
+    Based on four established structure-property relationships:
       1. Bandgap driving force: optimal range 1.8-2.4 eV
       2. CB overpotential for H+ reduction (more negative = better)
       3. VB selectivity window for glycerol (0.4-1.23 V = best)
       4. BET surface area (more sites = higher AQY)
-      5. Co-catalyst kinetic bonus (literature-calibrated)
+    Returns a proxy score normalized 0-100.
     """
-    # 1. Bandgap score: peaks at 2.0 eV
+    # 1. Bandgap score: peaks at 2.0 eV (optimal visible-light absorption)
     bg_score = max(0.0, 1.0 - abs(bandgap_eV - 2.0) / 0.8) * 30.0
 
-    # 2. CB overpotential: more negative = better
+    # 2. CB overpotential: more negative than -0.5 V = full score
     cb_score = min(30.0, max(0.0, (-cb_eV - 0.0) / 1.5 * 30.0))
 
     # 3. VB selectivity: peaks at centre of glycerol window (+0.82 V)
     vb_score = max(0.0, 1.0 - abs(vb_eV - 0.82) / 0.83) * 20.0
 
-    # 4. BET surface area: log-scaled, reference = 10 m2/g
+    # 4. BET surface area: log-scaled, reference = 50 m2/g
+    import math
     bet_score = min(20.0, max(0.0,
-        math.log10(max(bet_m2g, 1.0) / 10.0) / 2.0 * 20.0))
+                   math.log10(max(bet_m2g, 1.0) / 10.0) / 2.0 * 20.0))
 
-    # 5. Co-catalyst kinetic bonus (literature-calibrated HER kinetics)
     cocat_bonus_table = {
-        "Pt":   10.0,
-        "NiS":   8.0,
-        "Ni":    7.0,
-        "Cu":    5.0,
-        "CuO":   4.0,
-        "Au":    6.0,
-        "None":  0.0,
+        "Pt": 10.0, "NiS": 8.0, "Ni": 7.0,
+        "Cu": 5.0, "CuO": 4.0, "Au": 6.0, "None": 0.0,
     }
     cocat_score = cocat_bonus_table.get(co_catalyst_type, 3.0)
-
     return bg_score + cb_score + vb_score + bet_score + cocat_score
 
 def apply_bandgap_penalty(bandgap_eV, predicted_sth):
@@ -449,7 +442,7 @@ def run_multi_objective_screening(df_train, df_cand):
     
     # Back-transform from log10 space to µmol/g/h
     df_cand["Pred_HER"] = 10 ** mean_scaled
-    # Back-transform GPR standard deviation to raw scale (using Pred_HER * std_scaled * LN10)
+    # Back-transform GPR standard deviation to raw scale (using Pred_HER * std_scaled)
     LN10 = np.log(10)
     df_cand["Std_HER"] = df_cand["Pred_HER"] * std_scaled * LN10
     
@@ -459,7 +452,7 @@ def run_multi_objective_screening(df_train, df_cand):
             r["Bandgap_eV"], r["CB_eV_vs_NHE"], r["VB_eV_vs_NHE"],
             r["BET_m2_g"], r["Co_catalyst_type"]), axis=1)
     df_cand["Std_AQY"] = 0.0   # No uncertainty for deterministic proxy
-    print("AQY replaced by physics proxy (0-110 score). Not a measured %.")
+    print("AQY replaced by physics proxy (0-100 score). Not a measured %.")
     
     df_cand["Pred_STH_raw"] = df_cand["Bandgap_eV"].apply(calculate_max_sth)
     df_cand["Std_STH"] = 0.0
@@ -479,38 +472,31 @@ def run_multi_objective_screening(df_train, df_cand):
     
     # HARD PRE-FILTER: Remove any candidate where glycerol_filter_pass = False BEFORE scoring
     df_cand = df_cand[df_cand["Glycerol_Filter_Pass"] == True].copy()
-    print(f"After glycerol thermodynamic filter: {len(df_cand)} candidates remain.")
-    
+    print(f"After glycerol thermodynamic filter: {len(df_cand)} candidates remain.")    # Remove statistically meaningless candidates (sigma > prediction)
     before_unc = len(df_cand)
     df_filtered = df_cand[df_cand["Std_HER"] < df_cand["Pred_HER"]].copy()
     print(f"After uncertainty validity filter (sigma < Pred_HER): {len(df_filtered)} candidates remain.")
     if len(df_filtered) == 0:
-        print(f"WARNING: All {before_unc} candidates have sigma >= Pred_HER on the raw scale.")
-        print("This means GPR noise floor sigma_log10 > 1/ln(10) ~ 0.434 for all candidates.")
-        print("Falling back to top-10 from glycerol-filtered pool ranked by Pred_HER only.")
-        df_fallback = df_cand.copy()
-        df_fallback["Composite_Score"] = df_fallback["Pred_HER"] / df_fallback["Pred_HER"].max()
-        df_fallback["Cost_Multiplier"] = df_fallback["Co_catalyst_type"].map(
+        print(f"WARNING: All {before_unc} candidates have sigma >= Pred_HER (GPR noise floor too high).")
+        print("Falling back to glycerol-filtered pool ranked by Pred_HER * cost only.")
+        df_cand["Cost_Multiplier"] = df_cand["Co_catalyst_type"].map(
             {"Ni":1.0,"NiS":1.0,"Cu":0.98,"CuO":0.98,"Au":0.70,"Pt":0.75,"None":0.85}
         ).fillna(0.90)
-        df_fallback["Composite_Score"] *= df_fallback["Cost_Multiplier"]
-        df_fallback = df_fallback.sort_values("Composite_Score", ascending=False).reset_index(drop=True)
+        df_cand["Composite_Score"] = (df_cand["Pred_HER"] / df_cand["Pred_HER"].max()) * df_cand["Cost_Multiplier"]
+        df_cand["Pred_AQY"] = df_cand.apply(lambda r: estimate_aqy_proxy(
+            r["Bandgap_eV"],r["CB_eV_vs_NHE"],r["VB_eV_vs_NHE"],r["BET_m2_g"],r["Co_catalyst_type"]),axis=1)
+        df_cand["Theoretical_Max_STH"] = df_cand["Bandgap_eV"].apply(calculate_max_sth)
+        df_cand["Std_AQY"] = 0.0
+        df_cand = df_cand.sort_values("Composite_Score",ascending=False).reset_index(drop=True)
         selected, host_counts = [], {}
-        for _, row in df_fallback.iterrows():
+        for _, row in df_cand.iterrows():
             h = row["Host"]
-            if host_counts.get(h, 0) < 3:
+            if host_counts.get(h,0) < 3:
                 selected.append(row)
-                host_counts[h] = host_counts.get(h, 0) + 1
-            if len(selected) >= 10:
-                break
+                host_counts[h] = host_counts.get(h,0) + 1
+            if len(selected) >= 10: break
         top_10 = pd.DataFrame(selected).reset_index(drop=True)
         top_10["Rank"] = top_10.index + 1
-        top_10["Pred_AQY"] = top_10.apply(
-            lambda r: estimate_aqy_proxy(r["Bandgap_eV"],r["CB_eV_vs_NHE"],
-                r["VB_eV_vs_NHE"],r["BET_m2_g"],r["Co_catalyst_type"]), axis=1)
-        top_10["Theoretical_Max_STH"] = top_10["Bandgap_eV"].apply(calculate_max_sth)
-        top_10["Std_AQY"] = 0.0
-        top_10["VB_Overpotential_V"] = (top_10["VB_eV_vs_NHE"] - 0.40).clip(lower=0.0)
         return top_10
     df_cand = df_filtered
         
@@ -548,17 +534,15 @@ def run_multi_objective_screening(df_train, df_cand):
     
     df_ranked = df_cand.sort_values(by="Composite_Score", ascending=False).reset_index(drop=True)
     df_ranked["Rank"] = df_ranked.index + 1
-    # Diversity-aware selection: at most 3 candidates per host
     MAX_PER_HOST = 3
     selected_indices = []
     host_counts = {}
     for idx, row in df_ranked.iterrows():
         host = row["Host"]
-        if host_counts.get(host, 0) < MAX_PER_HOST:
+        if host_counts.get(host,0) < MAX_PER_HOST:
             selected_indices.append(idx)
-            host_counts[host] = host_counts.get(host, 0) + 1
-        if len(selected_indices) >= 10:
-            break
+            host_counts[host] = host_counts.get(host,0) + 1
+        if len(selected_indices) >= 10: break
     top_10 = df_ranked.loc[selected_indices].copy().reset_index(drop=True)
     top_10["Rank"] = top_10.index + 1
     return top_10
@@ -596,7 +580,7 @@ if __name__ == "__main__":
     print(f"\nSuccessfully saved virtual screening results to {top_10_csv}")
     
     # Display the final structured report table
-    print("\nNOTE: Pred_AQY is a physics proxy score (0-110), NOT a measured %.")
+    print("\nNOTE: Pred_AQY is a physics proxy score (0-100), NOT a measured %.")
     print("      Do not report this as a predicted AQY value in publications.")
     print("\n=== TOP 10 RECOMMENDED MULTI-OBJECTIVE PHOTOCATALYSTS (FILTERED) ===")
     if len(top_10) > 0:
