@@ -224,11 +224,11 @@ def apply_glycerol_oxidation_filter(df_candidates):
 
 ### Step 5b: Leave-One-Out Cross-Validation Results (N = 124, augmented)
 
-**Note:** HER metrics are calculated on the $\log_{10}$ scale. STH is calculated using the physics-based `Theoretical_Max_STH` (AM1.5G spectrum integration). AQY GPR model has been removed and replaced by a physics-based proxy score (0-110).
+**Note:** HER metrics are calculated on the $\log_{10}$ scale. STH scoring is now live (physics-based `Theoretical_Max_STH` via AM1.5G spectrum integration). AQY GPR model has been removed and replaced by a physics-based proxy score (0-110) which includes a co-catalyst kinetic bonus.
 
 | Model | Target | R² | MAE | RMSE |
 | :---- | :----- | :-- | :-- | :--- |
-| GradientBoosting | HER (log10) | 0.394 | 0.351 | 0.466 |
+| GradientBoosting | HER (log10) | 0.391 | 0.351 | 0.467 |
 | Gaussian Process Regressor | HER (log10) | 0.224 | 0.419 | 0.528 |
 | Multi-Head MLP Neural Network | HER (log10) | -0.861 | 0.652 | 0.817 |
 
@@ -245,12 +245,12 @@ The generated top candidates outputted by the corrected pipeline are displayed i
 
 | Rank | Formula | Host | Co-cat | Loading (wt%) | BET (m²/g) | Bandgap (eV) | CB (V vs NHE) | VB (V vs NHE) | Pred HER (μmol/g/h) | HER σ | AQY Proxy Score (0-110) | Theo. Max STH (%) | Cost Multiplier | Score |
 | :--- | :------ | :--- | :----- | :------------ | :--------- | :----------- | :------------ | :------------ | :------------------ | :---- | :---------------------- | :---------------- | :-------------- | :---- |
-| 1 | Ni(2.85wt%)/In2S3 | In2S3 | Ni | 2.85 | 68.73 | 1.88 | -0.83 | +1.05 | 6813.4 | 9476.8 | 71.95 | 18.63 | 1.0 | 2.903 |
-| 2 | Ni(2.21wt%)/In2S3 | In2S3 | Ni | 2.21 | 54.58 | 1.84 | -0.78 | +1.05 | 6404.0 | 8741.9 | 68.35 | 19.83 | 1.0 | 2.853 |
-| 3 | Ni(2.07wt%)/In2S3 | In2S3 | Ni | 2.07 | 45.22 | 1.89 | -0.84 | +1.05 | 6705.3 | 8933.9 | 70.51 | 18.33 | 1.0 | 2.851 |
-| 4 | NiS(2.61wt%)/ZnIn2S4 | ZnIn2S4 | NiS | 2.61 | 57.66 | 2.10 | -0.97 | +1.13 | 5952.9 | 7777.9 | 73.87 | 13.20 | 1.0 | 2.544 |
-| 5 | Ni(2.18wt%)/ZnIn2S4 | ZnIn2S4 | Ni | 2.18 | 80.73 | 2.12 | -0.91 | +1.22 | 6300.4 | 8067.6 | 70.08 | 12.62 | 1.0 | 2.528 |
-| 6 | NiS(2.94wt%)/ZnIn2S4 | ZnIn2S4 | NiS | 2.94 | 82.10 | 2.12 | -1.00 | +1.12 | 5855.6 | 7742.0 | 75.31 | 12.62 | 1.0 | 2.520 |
+| 1 | Ni(2.77wt%)/In2S3 | In2S3 | Ni | 2.77 | 49.23 | 2.02 | -0.81 | +1.21 | 7366.3 | 9800.9 | 69.93 | 14.93 | 1.0 | 1.000 |
+| 2 | Ni(2.90wt%)/In2S3 | In2S3 | Ni | 2.90 | 61.02 | 1.98 | -0.81 | +1.18 | 7311.7 | 9890.3 | 71.71 | 15.80 | 1.0 | 0.993 |
+| 3 | Ni(2.60wt%)/In2S3 | In2S3 | Ni | 2.60 | 37.05 | 1.96 | -0.81 | +1.15 | 7215.8 | 9700.0 | 69.52 | 16.39 | 1.0 | 0.980 |
+| 4 | Ni(2.89wt%)/ZnIn2S4 | ZnIn2S4 | Ni | 2.89 | 82.65 | 2.16 | -0.94 | +1.22 | 6477.6 | 8514.7 | 69.62 | 11.91 | 1.0 | 0.879 |
+| 5 | Ni(2.18wt%)/ZnIn2S4 | ZnIn2S4 | Ni | 2.18 | 80.73 | 2.12 | -0.91 | +1.22 | 6300.4 | 8067.6 | 70.08 | 12.62 | 1.0 | 0.855 |
+| 6 | NiS(2.61wt%)/ZnIn2S4 | ZnIn2S4 | NiS | 2.61 | 57.66 | 2.10 | -0.97 | +1.13 | 5952.9 | 7777.9 | 73.87 | 13.20 | 1.0 | 0.808 |
 
 ---
 
@@ -260,7 +260,7 @@ For the top recommended host families:
 
 ### In₂S₃ + Ni co-catalyst:
 - **Host:** Dissolve $\text{In(NO}_3)_3 \cdot x\text{H}_2\text{O}$ and thioacetamide in water, hydrothermal 160°C / 12 h, wash with ethanol/water, dry 80°C.
-- **Co-catalyst:** Impregnate with $\text{Ni(NO}_3)_2 \cdot 6\text{H}_2\text{O}$ solution at target wt% (e.g. 2.85 wt%), stir 2h, dry 60°C, anneal 300°C / 2h under Ar.
+- **Co-catalyst:** Impregnate with $\text{Ni(NO}_3)_2 \cdot 6\text{H}_2\text{O}$ solution at target wt% (e.g. 2.77 wt%), stir 2h, dry 60°C, anneal 300°C / 2h under Ar.
 
 ### CdS + Ni co-catalyst:
 - **Host:** Dissolve $\text{CdCl}_2$ and $\text{Na}_2\text{S} \cdot 9\text{H}_2\text{O}$ in water (molar ratio 1:1), hydrothermal 180°C / 24h, wash, dry 80°C.
