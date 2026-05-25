@@ -37,6 +37,18 @@ def load_and_augment_dataset():
         print("Error: catalyst_dataset_clean.csv not found. Run data_clean.py first.")
         sys.exit(1)
         
+    # Outlier 1: "Ni-hybrid CdS QDs" (HER >= 50,000)
+    high_her_mask = base_df["HER_clean"] >= 50000
+    if high_her_mask.any():
+        print("Warning: Filtering out molecular QD system outliers (HER >= 50,000 µmol/g/h) to prevent regression distortion.")
+    base_df = base_df[base_df["HER_clean"].fillna(0) < 50000]
+
+    # Outlier 2: "Cu/TiO2 (Thermal, 70C)" (contains "Thermal")
+    thermal_mask = base_df["Catalyst"].str.contains("Thermal", na=False)
+    if thermal_mask.any():
+        print("Confirming exclusion of photo-thermal system entries from training: " + ", ".join(base_df[thermal_mask]["Catalyst"].tolist()))
+    base_df = base_df[~thermal_mask]
+        
     df_aug = pd.DataFrame()
     df_aug["Catalyst"] = base_df["Catalyst"]
     df_aug["composition"] = base_df["composition"]
@@ -171,8 +183,6 @@ def evaluate_models_loo(df):
     X = df[features]
     y = df[targets]
     
-    loo = LeaveOneOut()
-    
     models = {
         "Option A: GradientBoosting (MultiOutput)": MultiOutputRegressor(GradientBoostingRegressor(n_estimators=50, random_state=42)),
         "Option B: Gaussian Process Regressor": "GPR_SPECIAL",
@@ -183,44 +193,56 @@ def evaluate_models_loo(df):
     
     for name, model in models.items():
         print(f"\n--- Cross-Validating {name} via Leave-One-Out CV ---")
-        y_true_all = []
-        y_pred_all = []
+        results[name] = {}
         
-        for train_idx, test_idx in loo.split(X):
-            X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
-            y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+        for target_col in targets:
+            df_target = df[df[target_col].notna()].reset_index(drop=True)
+            X = df_target[features]
+            y = df_target[target_col]
             
-            preprocessor = get_preprocessor()
+            if len(df_target) == 0:
+                print(f"  Target [{target_col}]: No valid data points found.")
+                continue
+                
+            loo = LeaveOneOut()
+            y_true_all = []
+            y_pred_all = []
             
-            if model == "GPR_SPECIAL":
-                preds = []
-                for target_col in targets:
+            for train_idx, test_idx in loo.split(X):
+                X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+                y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+                
+                preprocessor = get_preprocessor()
+                
+                if model == "GPR_SPECIAL":
                     kernel = ConstantKernel(1.0, (1e-5, 1e5)) * RBF(length_scale=1.0, length_scale_bounds=(1e-2, 1e2)) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-5, 1e5))
                     gp = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=2, normalize_y=True, random_state=42)
                     pipe = Pipeline([("prep", preprocessor), ("gp", gp)])
-                    pipe.fit(X_train, y_train[target_col])
-                    preds.append(pipe.predict(X_test))
-                y_pred = np.column_stack(preds)
-            else:
-                pipe = Pipeline([("prep", preprocessor), ("reg", model)])
-                pipe.fit(X_train, y_train)
-                y_pred = pipe.predict(X_test)
+                    pipe.fit(X_train, y_train)
+                    y_pred = pipe.predict(X_test)
+                elif isinstance(model, MultiOutputRegressor):
+                    single_reg = model.estimator
+                    pipe = Pipeline([("prep", preprocessor), ("reg", single_reg)])
+                    pipe.fit(X_train, y_train)
+                    y_pred = pipe.predict(X_test)
+                else:
+                    pipe = Pipeline([("prep", preprocessor), ("reg", model)])
+                    pipe.fit(X_train, y_train)
+                    y_pred = pipe.predict(X_test)
                 
-            y_true_all.append(y_test.values[0])
-            y_pred_all.append(y_pred[0])
+                y_true_all.append(y_test.values[0])
+                pred_val = y_pred[0] if hasattr(y_pred, "__len__") else y_pred
+                y_pred_all.append(pred_val)
+                
+            y_true_all = np.array(y_true_all)
+            y_pred_all = np.array(y_pred_all)
             
-        y_true_all = np.array(y_true_all)
-        y_pred_all = np.array(y_pred_all)
-        
-        results[name] = {}
-        for i, target_col in enumerate(targets):
-            y_t = y_true_all[:, i]
-            y_p = y_pred_all[:, i]
-            r2 = r2_score(y_t, y_p)
-            mae = mean_absolute_error(y_t, y_p)
-            rmse = root_mean_squared_error(y_t, y_p)
+            r2 = r2_score(y_true_all, y_pred_all)
+            mae = mean_absolute_error(y_true_all, y_pred_all)
+            rmse = root_mean_squared_error(y_true_all, y_pred_all)
+            
             results[name][target_col] = {"R2": r2, "MAE": mae, "RMSE": rmse}
-            print(f"  Target [{target_col}]: R² = {r2:.3f}, MAE = {mae:.3f}, RMSE = {rmse:.3f}")
+            print(f"  Target [{target_col}]: R² = {r2:.3f}, MAE = {mae:.3f}, RMSE = {rmse:.3f} (N_points = {len(df_target)})")
             
     return results
 
@@ -365,18 +387,18 @@ def run_multi_objective_screening(df_train, df_cand):
         "Sacrificial_agent_vol_pct", "Light_source_power_density", "Reaction_pH", "Reactor_type", "composition"
     ]
     
-    preprocessor = get_preprocessor()
-    
     models = {}
     targets = ["HER", "AQY_420"]
     for t in targets:
+        preprocessor = get_preprocessor()
         kernel = ConstantKernel(1.0, (1e-5, 1e5)) * RBF(length_scale=1.0, length_scale_bounds=(1e-2, 1e2)) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-5, 1e5))
         gp = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=5, normalize_y=True, random_state=42)
         pipe = Pipeline([
             ("prep", preprocessor),
             ("gp", gp)
         ])
-        pipe.fit(df_train[features], df_train[t])
+        df_train_t = df_train[df_train[t].notna()]
+        pipe.fit(df_train_t[features], df_train_t[t])
         models[t] = pipe
         
     preds = {}
@@ -409,10 +431,11 @@ def run_multi_objective_screening(df_train, df_cand):
     
     # HARD PRE-FILTER: Remove any candidate where glycerol_filter_pass = False BEFORE scoring
     df_cand = df_cand[df_cand["Glycerol_Filter_Pass"] == True].copy()
+    print(f"After glycerol thermodynamic filter: {len(df_cand)} candidates remain.")
     
     # Remove statistically meaningless candidates (sigma > prediction)
     df_cand = df_cand[df_cand["Std_HER"] < df_cand["Pred_HER"]].copy()
-    print(f"After uncertainty validity filter: {len(df_cand)} candidates remain.")
+    print(f"After uncertainty validity filter (sigma < Pred_HER): {len(df_cand)} candidates remain.")
     
     if len(df_cand) == 0:
         print("Warning: No candidates passed the glycerol thermodynamic filter!")

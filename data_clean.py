@@ -41,7 +41,65 @@ formula_map = {
     "Plasmonic Au NPs on TiO₂": "TiO2",
     "g-C₃N₄ + NiS co-catalyst": "C3N4",
     "WO₃ + g-C₃N₄ Z-scheme": "C3N4",
-    "In₂S₃ + CdS type-II heterostructure": "CdS"
+    "In₂S₃ + CdS type-II heterostructure": "CdS",
+    # Source A Additions
+    "TiO2 P25 + 0.3 wt% Pt":                                       "TiO2",
+    "ZnO + 1.08 mol% Cu":                                           "ZnO",
+    "TiO2 + 2.5 wt% Cu":                                           "TiO2",
+    "TiO2 + 0.68 wt% CuO":                                         "TiO2",
+    "CdS Quantum Dots with CdOx passivating shell":                 "CdS",
+    "g-C3N4 + 2.0 wt% Ni2P":                                       "C3N4",
+    "TiO2 + 0.08 mol% bimetallic Cu-Pt":                           "TiO2",
+    "Zn_0.5Cd_0.5S solid solution with twinning superlattice (WZ/ZB)": "Zn0.5Cd0.5S",
+    "TiO2 + HKUST-1 (Cu-MOF) composite":                           "MOF",
+    "ZnS with sphalerite-wurtzite phase junction + sulfur vacancies": "ZnS",
+    "g-C3N4 nanosheets + 20% Zirconium doping":                    "C3N4",
+    "TiO2 + 0.7 wt% Cu (photo-thermal system at 70°C)":           "TiO2",
+    "MPA-stabilized CdS QDs with in-situ Ni2+ hybrid":             "CdS",
+    "TiO2 + 0.23 mol% Ni(OH)2 clusters":                          "TiO2",
+    "TiO2 (P25) plates + 0.3 wt% Pt (immobilized)":              "TiO2",
+    "TiO2 + Cu2O (+1 valence state Cu exclusively)":               "TiO2",
+    "UiO-66(Zr) + NH2-MIL-101(Fe) + CuInS2 ternary composite":   "MOF",
+    "UiO-66(Zr)-NH2 + 1.0 wt% Pt nanoparticles":                 "MOF",
+    "Hollow g-C3N4 Nanotubes via EG/CA assembly template":         "C3N4",
+    "Zn_0.5Cd_0.5S + 1.6 wt% CoSx":                              "Zn0.5Cd0.5S",
+    "Mn_0.3Cd_0.7S solid solution + 10 wt% NiFe2O4":             "CdS",
+    "ZnIn2S4 + 4 wt% BiOCl composite":                            "ZnIn2S4",
+    "g-C3N4 + 1.0 wt% Pt co-catalyst":                            "C3N4",
+    "ZnIn2S4 with in-situ formed Bi2S3 interface":                 "ZnIn2S4",
+    # Source B Additions
+    "g-C3N4 decorated with NiS nanoparticles":                     "C3N4",
+    "Few-layer MoS2 on g-C3N4 nanosheets":                        "C3N4",
+    "ZnS loaded with 1 wt% Pt":                                    "ZnS",
+    "CdS-ZnS solid solution":                                       "CdS",
+    "CdS nanorods with 0.5 wt% Pt":                               "CdS",
+    "WO3-TiO2 composite photocatalyst":                            "WO3",
+    "Cu2O coupled TiO2 heterojunction":                            "TiO2",
+    "NiS nanoparticles on CdS":                                    "CdS",
+    "Mesoporous TiO2 loaded with Pt":                              "TiO2",
+    "g-C3N4 coupled TiO2 nanotube arrays":                         "C3N4",
+    "Silver deposited on g-C3N4":                                   "C3N4",
+    "ZnIn2S4 nanosheets coupled with g-C3N4":                      "ZnIn2S4",
+    "CdS nanospheres decorated with MoS2":                         "CdS",
+    "Hematite-TiO2 heterojunction":                                "TiO2",
+    "ZnIn2S4 loaded with Pt cocatalyst":                           "ZnIn2S4",
+    # Source C Additions
+    "Pt-loaded multiphase Cd1-xZnxS/ZnO/Zn(OH)2":                "CdS",
+    "Pt-loaded single phase Cd1-xZnxS":                            "CdS",
+    "Hexagonal CdS + Pt":                                          "CdS",
+    "Pt-loaded CdS/TiO2 hybrid":                                   "CdS",
+    "Pt-loaded TiO2/CdS hybrid":                                   "TiO2",
+    "Pt deposited on physical mixture of TiO2 and g-C3N4":        "TiO2",
+    "C-doped exfoliated g-C3N4":                                   "C3N4",
+    "Ni modified TiO2@g-C3N4 composite":                           "TiO2",
+    "TiO2 (Degussa P25) + 1 wt% Pt":                             "TiO2",
+    "TiO2 granular photocatalyst + Pt":                            "TiO2",
+    "TiO2 granular photocatalyst + Au":                            "TiO2",
+    "Pt deposited on g-C3N4/TiO2 heterojunction":                 "TiO2",
+    "Ag2O coupled TiO2 heterostructure":                           "TiO2",
+    "Au-loaded TiO2 powder photocatalyst":                         "TiO2",
+    "g-C3N4 + Pt":                                                 "C3N4",
+    "Pt deposited on g-C3N4 granular":                             "C3N4"
 }
 
 def clean_her(val):
@@ -193,6 +251,9 @@ def main():
     df["VB_eV_vs_NHE"] = df["VB_eV_vs_NHE"].fillna(df["VB_eV_vs_NHE"].median())
     df["CB_eV_vs_NHE"] = df["CB_eV_vs_NHE"].fillna(df["CB_eV_vs_NHE"].median())
     df["BET_m2_g"] = df["BET_m2_g"].fillna(df["BET_m2_g"].median())
+
+    # Add is_outlier column
+    df["is_outlier"] = (df["Catalyst"] == "Ni-hybrid CdS QDs")
 
     # Save cleaned data to CSV
     df.to_csv(output_csv_path, index=False)

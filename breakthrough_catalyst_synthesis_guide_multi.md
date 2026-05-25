@@ -109,19 +109,19 @@ To predict multiple outputs simultaneously, we evaluate three multi-objective mo
 2.  **Option B (Gaussian Process Regressor):** Trains individual GP Regressors per target (critical for generating uncertainty estimates).
 3.  **Option C (Multi-Head Neural Network):** An MLPRegressor that outputs all three targets simultaneously.
 
-Under Leave-One-Out (LOO) cross-validation on the augmented dataset ($N=83$ samples, expanding the $N=33$ baseline with 50 synthetic noise-augmented points), the models achieved the following performance metrics:
+Under Leave-One-Out (LOO) cross-validation on the augmented dataset ($N=136$ samples, expanding the $N=88$ baseline (filtered to 86 after outlier removal) with 50 synthetic noise-augmented points), the models achieved the following performance metrics:
 
 #### **Option A: GradientBoosting (MultiOutput)**
-- **HER**: $R^2 = 0.849$, $\text{MAE} = 1339.93\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 2066.36$
-- **AQY_420**: $R^2 = 0.971$, $\text{MAE} = 1.35\%$, $\text{RMSE} = 2.15\%$
+- **HER**: $R^2 = 0.467$, $\text{MAE} = 3253.754\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 4318.639$
+- **AQY_420**: $R^2 = 0.073$, $\text{MAE} = 3.428\%$, $\text{RMSE} = 9.054\%$
 
 #### **Option B: Gaussian Process Regressor** (Chosen for Uncertainty Quantification & Screening)
-- **HER**: $R^2 = 0.616$, $\text{MAE} = 2215.78\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 3292.42$
-- **AQY_420**: $R^2 = 0.697$, $\text{MAE} = 1.77\%$, $\text{RMSE} = 6.99$
+- **HER**: $R^2 = 0.212$, $\text{MAE} = 3958.145\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 5249.888$
+- **AQY_420**: $R^2 = 0.028$, $\text{MAE} = 4.418\%$, $\text{RMSE} = 9.269\%$
 
 #### **Option C: Multi-Head MLP Neural Network**
-- **HER**: $R^2 = -0.810$, $\text{MAE} = 4780.27\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 7145.78$
-- **AQY_420**: $R^2 = -0.102$, $\text{MAE} = 4.94\%$, $\text{RMSE} = 13.33$
+- **HER**: $R^2 = -0.901$, $\text{MAE} = 5614.203\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 8153.831$
+- **AQY_420**: $R^2 = -0.040$, $\text{MAE} = 3.592\%$, $\text{RMSE} = 9.590\%$
 
 *Note: STH is not modeled by GPR in LOO CV; physics-based Theoretical_Max_STH (AM1.5G integration) is used in composite scoring instead.*
 
@@ -225,24 +225,24 @@ def apply_glycerol_oxidation_filter(df_candidates):
 
 ---
 
-### Step 5b: Leave-One-Out Cross-Validation Results (N = 83, augmented)
+### Step 5b: Leave-One-Out Cross-Validation Results (N = 136, augmented)
 
 **Note:** STH is **not** modelled by GPR — all STH values in the composite score use the physics-based `Theoretical_Max_STH` (AM1.5G spectrum integration) instead.
 
 | Model | Target | R² | MAE | RMSE |
 | :---- | :----- | :-- | :-- | :--- |
-| GradientBoosting (MultiOutput) | HER | 0.849 | 1339.9 | 2066.4 |
-| GradientBoosting (MultiOutput) | AQY | 0.971 | 1.348 | 2.147 |
-| Gaussian Process Regressor | HER | 0.616 | 2215.8 | 3292.4 |
-| Gaussian Process Regressor | AQY | 0.697 | 1.768 | 6.994 |
-| Multi-Head MLP Neural Network | HER | −0.810 | 4780.3 | 7145.8 |
-| Multi-Head MLP Neural Network | AQY | −0.102 | 4.940 | 13.326 |
+| GradientBoosting (MultiOutput) | HER | 0.467 | 3253.8 | 4318.6 |
+| GradientBoosting (MultiOutput) | AQY | 0.073 | 3.428 | 9.054 |
+| Gaussian Process Regressor | HER | 0.212 | 3958.1 | 5249.9 |
+| Gaussian Process Regressor | AQY | 0.028 | 4.418 | 9.269 |
+| Multi-Head MLP Neural Network | HER | -0.901 | 5614.2 | 8153.8 |
+| Multi-Head MLP Neural Network | AQY | -0.040 | 3.592 | 9.590 |
 
 **Screening funnel:**
 - Initial virtual library: **7,000** candidates (13 hosts × 7 co-catalysts × ~500 variants + ZnCdS)
 - After bandgap filter ($1.8 - 2.4\text{ eV}$): **2,551** candidates
-- After glycerol thermodynamic filter: subset of 2,551
-- After uncertainty validity filter ($\sigma_\text{HER} < \text{Pred HER}$): **230** candidates
+- After glycerol thermodynamic filter: **263** candidates
+- After uncertainty validity filter ($\sigma_\text{HER} < \text{Pred HER}$): **261** candidates
 
 ---
 
@@ -251,16 +251,16 @@ The generated top 10 candidates outputted by the corrected pipeline are displaye
 
 | Rank | Formula | Host | Co-cat | Loading (wt%) | BET (m²/g) | Bandgap (eV) | CB (V vs NHE) | VB (V vs NHE) | Pred HER (μmol/g/h) | HER σ | Pred AQY (%) | AQY σ | Theo. Max STH (%) | Glycerol Pass | Score |
 | :--- | :------ | :--- | :----- | :------------ | :--------- | :----------- | :------------ | :------------ | :------------------- | :---- | :----------- | :---- | :----------------- | :------------ | :---- |
-| 1 | Ni(2.59wt%)/In2S3 | In2S3 | Ni | 2.59 | 34.1 | 1.87 | −0.75 | +1.12 | 8810.0 | 6064.6 | 13.28 | 8.99 | 18.93 | True | 2.855 |
-| 2 | Ni(2.21wt%)/In2S3 | In2S3 | Ni | 2.21 | 54.6 | 1.84 | −0.78 | +1.05 | 9432.4 | 5798.6 | 11.97 | 8.67 | 19.83 | True | 2.855 |
-| 3 | Ni(2.69wt%)/In2S3 | In2S3 | Ni | 2.69 | 73.0 | 1.82 | −0.66 | +1.16 | 9001.9 | 6342.8 | 11.55 | 9.46 | 20.42 | True | 2.842 |
-| 4 | Ni(2.85wt%)/In2S3 | In2S3 | Ni | 2.85 | 68.7 | 1.88 | −0.83 | +1.05 | 8635.2 | 6259.3 | 13.55 | 9.27 | 18.63 | True | 2.838 |
-| 5 | NiS(2.82wt%)/In2S3 | In2S3 | NiS | 2.82 | 86.4 | 1.82 | −0.60 | +1.22 | 8758.8 | 6636.1 | 11.68 | 9.29 | 20.42 | True | 2.838 |
-| 6 | Ni(1.91wt%)/In2S3 | In2S3 | Ni | 1.91 | 86.1 | 1.89 | −0.74 | +1.15 | 9465.2 | 5281.5 | 12.70 | 8.04 | 18.18 | True | 2.827 |
-| 7 | NiS(2.81wt%)/In2S3 | In2S3 | NiS | 2.81 | 67.4 | 1.85 | −0.67 | +1.17 | 8599.3 | 6527.4 | 12.15 | 9.05 | 19.53 | True | 2.803 |
-| 8 | Ni(2.60wt%)/In2S3 | In2S3 | Ni | 2.60 | 37.0 | 1.96 | −0.81 | +1.15 | 8442.9 | 5740.1 | 14.87 | 8.52 | 16.39 | True | 2.800 |
-| 9 | Ni(1.48wt%)/In2S3 | In2S3 | Ni | 1.48 | 50.0 | 1.88 | −0.84 | +1.04 | 9721.3 | 4836.3 | 11.78 | 7.66 | 18.48 | True | 2.782 |
-| 10 | Ni(2.77wt%)/In2S3 | In2S3 | Ni | 2.77 | 39.2 | 1.89 | −0.71 | +1.18 | 8459.6 | 6138.9 | 12.85 | 9.09 | 18.33 | True | 2.775 |
+| 1 | NiS(2.82wt%)/In2S3 | In2S3 | NiS | 2.82 | 86.40 | 1.82 | -0.60 | +1.22 | 10794.6 | 5828.6 | 3.28 | 9.69 | 20.42 | True | 3.041 |
+| 2 | Ni(2.69wt%)/In2S3 | In2S3 | Ni | 2.69 | 72.99 | 1.82 | -0.66 | +1.16 | 10859.2 | 5649.7 | 3.28 | 9.69 | 20.42 | True | 3.036 |
+| 3 | NiS(2.80wt%)/In2S3 | In2S3 | NiS | 2.80 | 46.56 | 1.82 | -0.72 | +1.10 | 10896.1 | 5824.8 | 3.28 | 9.69 | 20.27 | True | 3.028 |
+| 4 | NiS(2.81wt%)/In2S3 | In2S3 | NiS | 2.81 | 67.42 | 1.85 | -0.67 | +1.17 | 10886.1 | 5767.4 | 3.28 | 9.69 | 19.53 | True | 2.999 |
+| 5 | NiS(2.36wt%)/In2S3 | In2S3 | NiS | 2.36 | 45.18 | 1.81 | -0.70 | +1.11 | 10461.3 | 5769.0 | 3.28 | 9.68 | 20.42 | True | 2.995 |
+| 6 | Au(2.68wt%)/In2S3 | In2S3 | Au | 2.68 | 79.05 | 1.80 | -0.72 | +1.08 | 10198.9 | 5871.4 | 3.28 | 9.69 | 20.72 | True | 2.985 |
+| 7 | Au(2.97wt%)/In2S3 | In2S3 | Au | 2.97 | 66.53 | 1.82 | -0.84 | +0.98 | 10606.7 | 5855.8 | 3.28 | 9.69 | 20.12 | True | 2.982 |
+| 8 | Au(2.74wt%)/In2S3 | In2S3 | Au | 2.74 | 46.73 | 1.82 | -0.79 | +1.03 | 10389.8 | 5843.4 | 3.28 | 9.69 | 20.27 | True | 2.974 |
+| 9 | Pt(2.87wt%)/In2S3 | In2S3 | Pt | 2.87 | 52.56 | 1.83 | -0.79 | +1.04 | 10515.9 | 5774.8 | 3.28 | 9.69 | 19.98 | True | 2.972 |
+| 10 | Pt(2.52wt%)/In2S3 | In2S3 | Pt | 2.52 | 61.57 | 1.81 | -0.81 | +1.00 | 10073.1 | 5770.7 | 3.28 | 9.69 | 20.72 | True | 2.962 |
 
 ---
 
