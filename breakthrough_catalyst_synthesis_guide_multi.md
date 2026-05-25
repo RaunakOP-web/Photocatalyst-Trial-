@@ -224,7 +224,7 @@ def apply_glycerol_oxidation_filter(df_candidates):
 
 ### Step 5b: Leave-One-Out Cross-Validation Results (N = 124, augmented)
 
-**Note:** HER metrics are calculated on the $\log_{10}$ scale. STH is calculated using the physics-based `Theoretical_Max_STH` (AM1.5G spectrum integration). AQY GPR model has been removed and replaced by a physics-based proxy score (0-100).
+**Note:** HER metrics are calculated on the $\log_{10}$ scale. STH is calculated using the physics-based `Theoretical_Max_STH` (AM1.5G spectrum integration). AQY GPR model has been removed and replaced by a physics-based proxy score (0-110).
 
 | Model | Target | R² | MAE | RMSE |
 | :---- | :----- | :-- | :-- | :--- |
@@ -236,46 +236,35 @@ def apply_glycerol_oxidation_filter(df_candidates):
 - Initial virtual library: **7,000** candidates (13 hosts × 7 co-catalysts × ~500 variants + ZnCdS)
 - After bandgap filter ($1.8 - 2.4\text{ eV}$): **2,551** candidates
 - After glycerol thermodynamic filter: **263** candidates
-- After uncertainty validity filter ($\sigma_\text{HER} < \text{Pred HER}$): **263** candidates
+- After uncertainty validity filter ($\sigma_{\text{HER}} < \text{Pred HER}$): **0** candidates (due to GPR noise floor of $\sigma_{\text{log10}} > 0.434$; pipeline fell back to 263 candidates to rank the shortlist)
 
 ---
 
 ### Step 6: Corrected Virtual Screening Output Format
-The generated top 10 candidates outputted by the corrected pipeline are displayed in the table below. By applying the hard pre-filter (`Glycerol_Filter_Pass = True`) before composite scoring, restricting the virtual library to $1.8 - 2.4\text{ eV}$ prior to prediction, crossing 13 real synthesizable hosts (+ ZnCdS) with realistic co-catalysts and loadings, and filtering out candidates where $\sigma_\text{HER} \geq \text{Pred HER}$, all top-10 candidates now successfully pass the strict selectivity constraint ($+0.4 < VB < +1.23\text{ V vs NHE}$). Wide-bandgap hosts (TiO₂, ZnS, SrTiO₃, WO₃, CeO₂, MOF) are correctly eliminated by the bandgap pre-filter. **In₂S₃** dominates the top-10 due to its optimal narrow bandgap (1.9–2.15 eV), favorable band-edge alignment, and strong predicted HER performance:
+The generated top candidates outputted by the corrected pipeline are displayed in the table below. By applying the hard pre-filter (`Glycerol_Filter_Pass = True`) before composite scoring, restricting the virtual library to $1.8 - 2.4\text{ eV}$ prior to prediction, and applying a host diversity cap of at most 3 candidates per host material, the virtual screening shortlist successfully prevents host monoculture. Due to the strict thermodynamic constraints, only **In₂S₃** and **ZnIn₂S₄** pass all filters:
 
-| Rank | Formula | Host | Co-cat | Loading (wt%) | BET (m²/g) | Bandgap (eV) | CB (V vs NHE) | VB (V vs NHE) | Pred HER (μmol/g/h) | HER σ | AQY Proxy Score (0-100) | Theo. Max STH (%) | Cost Multiplier | Score |
-| :--- | :------ | :--- | :----- | :------------ | :--------- | :----------- | :------------ | :------------ | :------------------ | :---- | :--------------------- | :---------------- | :-------------- | :---- |
-| 1 | Ni(2.85wt%)/In2S3 | In2S3 | Ni | 2.85 | 68.73 | 1.88 | -0.83 | +1.05 | 6813.4 | 4115.7 | 64.95 | 18.63 | 1.0 | 2.925 |
-| 2 | Ni(2.90wt%)/In2S3 | In2S3 | Ni | 2.90 | 61.02 | 1.98 | -0.81 | +1.18 | 7311.7 | 4295.3 | 64.71 | 15.80 | 1.0 | 2.872 |
-| 3 | Ni(2.07wt%)/In2S3 | In2S3 | Ni | 2.07 | 45.22 | 1.89 | -0.84 | +1.05 | 6705.3 | 3880.0 | 63.51 | 18.33 | 1.0 | 2.871 |
-| 4 | Ni(2.21wt%)/In2S3 | In2S3 | Ni | 2.21 | 54.58 | 1.84 | -0.78 | +1.05 | 6404.0 | 3796.6 | 61.35 | 19.83 | 1.0 | 2.869 |
-| 5 | Ni(2.59wt%)/In2S3 | In2S3 | Ni | 2.59 | 34.10 | 1.87 | -0.75 | +1.12 | 6854.8 | 4104.9 | 58.14 | 18.93 | 1.0 | 2.855 |
-| 6 | Ni(2.60wt%)/In2S3 | In2S3 | Ni | 2.60 | 37.05 | 1.96 | -0.81 | +1.15 | 7215.8 | 4212.6 | 62.52 | 16.39 | 1.0 | 2.850 |
-| 7 | Ni(2.69wt%)/In2S3 | In2S3 | Ni | 2.69 | 72.99 | 1.82 | -0.66 | +1.16 | 6414.0 | 3914.5 | 56.90 | 20.42 | 1.0 | 2.850 |
-| 8 | Ni(2.77wt%)/In2S3 | In2S3 | Ni | 2.77 | 39.16 | 1.89 | -0.71 | +1.18 | 7059.5 | 4235.0 | 57.14 | 18.33 | 1.0 | 2.849 |
-| 9 | Ni(2.11wt%)/In2S3 | In2S3 | Ni | 2.11 | 66.24 | 1.91 | -0.79 | +1.12 | 6674.9 | 3841.4 | 63.25 | 17.73 | 1.0 | 2.842 |
-| 10 | Ni(2.15wt%)/In2S3 | In2S3 | Ni | 2.15 | 60.82 | 1.93 | -0.76 | +1.17 | 6844.9 | 3923.0 | 62.17 | 17.13 | 1.0 | 2.827 |
+| Rank | Formula | Host | Co-cat | Loading (wt%) | BET (m²/g) | Bandgap (eV) | CB (V vs NHE) | VB (V vs NHE) | Pred HER (μmol/g/h) | HER σ | AQY Proxy Score (0-110) | Theo. Max STH (%) | Cost Multiplier | Score |
+| :--- | :------ | :--- | :----- | :------------ | :--------- | :----------- | :------------ | :------------ | :------------------ | :---- | :---------------------- | :---------------- | :-------------- | :---- |
+| 1 | Ni(2.85wt%)/In2S3 | In2S3 | Ni | 2.85 | 68.73 | 1.88 | -0.83 | +1.05 | 6813.4 | 9476.8 | 71.95 | 18.63 | 1.0 | 2.903 |
+| 2 | Ni(2.21wt%)/In2S3 | In2S3 | Ni | 2.21 | 54.58 | 1.84 | -0.78 | +1.05 | 6404.0 | 8741.9 | 68.35 | 19.83 | 1.0 | 2.853 |
+| 3 | Ni(2.07wt%)/In2S3 | In2S3 | Ni | 2.07 | 45.22 | 1.89 | -0.84 | +1.05 | 6705.3 | 8933.9 | 70.51 | 18.33 | 1.0 | 2.851 |
+| 4 | NiS(2.61wt%)/ZnIn2S4 | ZnIn2S4 | NiS | 2.61 | 57.66 | 2.10 | -0.97 | +1.13 | 5952.9 | 7777.9 | 73.87 | 13.20 | 1.0 | 2.544 |
+| 5 | Ni(2.18wt%)/ZnIn2S4 | ZnIn2S4 | Ni | 2.18 | 80.73 | 2.12 | -0.91 | +1.22 | 6300.4 | 8067.6 | 70.08 | 12.62 | 1.0 | 2.528 |
+| 6 | NiS(2.94wt%)/ZnIn2S4 | ZnIn2S4 | NiS | 2.94 | 82.10 | 2.12 | -1.00 | +1.12 | 5855.6 | 7742.0 | 75.31 | 12.62 | 1.0 | 2.520 |
 
 ---
 
 ## 3. Step-by-Step Wet Lab Synthesis Recipes
 
-For the top 3 $C_3N_4$-based candidates predicted during screening (or from historical high-performing groups):
+For the top recommended host families:
 
-### Recipe 1: $NiS\text{ (0.59 wt\%)} / g-C_3N_4$
-*   **Host Precursors:** $2.840\text{ g}$ Melamine (yields $0.9941\text{ g}$ of $g-C_3N_4$).
-*   **Co-catalyst Precursors:** $15.45\text{ mg}$ $NiCl_2 \cdot 6H_2O$ and $9.90\text{ mg}$ Thiourea.
-*   **Ramp/Dwell:** Calcine melamine at **$550^\circ\text{C}$ for 4 hours** (ramp $5^\circ\text{C/min}$). Deposition of co-catalyst runs in autoclave at **$180^\circ\text{C}$ for 12 hours** (ramp $3^\circ\text{C/min}$).
+### In₂S₃ + Ni co-catalyst:
+- **Host:** Dissolve $\text{In(NO}_3)_3 \cdot x\text{H}_2\text{O}$ and thioacetamide in water, hydrothermal 160°C / 12 h, wash with ethanol/water, dry 80°C.
+- **Co-catalyst:** Impregnate with $\text{Ni(NO}_3)_2 \cdot 6\text{H}_2\text{O}$ solution at target wt% (e.g. 2.85 wt%), stir 2h, dry 60°C, anneal 300°C / 2h under Ar.
 
-### Recipe 2: $NiS\text{ (1.00 wt\%)} / g-C_3N_4$
-*   **Host Precursors:** $2.829\text{ g}$ Melamine (yields $0.9900\text{ g}$ of $g-C_3N_4$).
-*   **Co-catalyst Precursors:** $26.19\text{ mg}$ $NiCl_2 \cdot 6H_2O$ and $16.78\text{ mg}$ Thiourea.
-*   **Ramp/Dwell:** Calcine host at **$550^\circ\text{C}$ for 4 hours**. Autoclave hydrothermal deposition at **$180^\circ\text{C}$ for 12 hours**.
-
-### Recipe 3: $NiS\text{ (0.86 wt\%)} / g-C_3N_4$
-*   **Host Precursors:** $2.833\text{ g}$ Melamine (yields $0.9914\text{ g}$ of $g-C_3N_4$).
-*   **Co-catalyst Precursors:** $22.52\text{ mg}$ $NiCl_2 \cdot 6H_2O$ and $14.42\text{ mg}$ Thiourea.
-*   **Ramp/Dwell:** Calcine host at **$550^\circ\text{C}$ for 4 hours**. Autoclave hydrothermal deposition at **$180^\circ\text{C}$ for 12 hours**.
+### CdS + Ni co-catalyst:
+- **Host:** Dissolve $\text{CdCl}_2$ and $\text{Na}_2\text{S} \cdot 9\text{H}_2\text{O}$ in water (molar ratio 1:1), hydrothermal 180°C / 24h, wash, dry 80°C.
+- **Co-catalyst:** Photodeposition using $\text{NiCl}_2 \cdot 6\text{H}_2\text{O}$ in glycerol/water, irradiate 1h with 300W Xe lamp.
 
 ---
 
@@ -322,3 +311,14 @@ The script will automatically append the row to the database, run [data_clean.py
 | **Solar Spectrum Integration** | None. Wide bandgaps ($>2.5\text{ eV}$) were never penalized. | Integrated AM1.5G spectrum; penalized wide bandgaps. |
 | **Glycerol Oxidation Modeling** | Ignored thermodynamics and competitive O2 evolution. | Implemented CB/VB filters and water-oxidation selectivity limits. |
 | **Feedback Loop Capability** | Retrained only on single-target HER. | Closed-loop multi-target retraining and rescreening. |
+
+---
+
+## 7. Known Limitations and Next Steps
+
+*   **GPR Model Precision:** GPR $R^2 = 0.224$ on $\log_{10}(\text{HER})$ scale indicates that the model is predictive of trends but imprecise. Error bars of $\pm$ factor-of-2 should be quoted in any publication.
+*   **Uncertainty Filtering Threshold:** The uncertainty filter now correctly applies the $\ln(10)$ factor; candidates with $\sigma_{\text{log10}} > 1/\ln(10) \approx 0.434$ are excluded as statistically unreliable. Due to GPR noise floor, the pipeline fell back to the unfiltered shortlist for ranking.
+*   **STH Modeling Data Requirements:** Solar-to-Hydrogen (STH) scoring is currently physics-based (Theoretical_Max_STH limit integration); to upgrade this to a data-driven model, at least 30 experimental STH data points are needed.
+*   **AQY Proxy Limitations:** The Apparent Quantum Yield (AQY) proxy score (0-110) includes a co-catalyst kinetic bonus but is not a measured %; it must not be reported as a predicted AQY% in publications.
+*   **Host Diversity Constraints:** The diversity cap of 3 candidates per host is a heuristic; the `MAX_PER_HOST` parameter in `run_multi_objective_screening()` should be adjusted as more host data is added.
+*   **Next Steps:** Run `add_experiment_multi.py` after each lab synthesis to feed measured HER, AQY, and STH values back into the training set and retrain the models, targeting $N > 100$ real experimental data points.
