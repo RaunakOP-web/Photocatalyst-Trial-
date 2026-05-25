@@ -109,19 +109,16 @@ To predict multiple outputs simultaneously, we evaluate three multi-objective mo
 2.  **Option B (Gaussian Process Regressor):** Trains individual GP Regressors per target (critical for generating uncertainty estimates).
 3.  **Option C (Multi-Head Neural Network):** An MLPRegressor that outputs all three targets simultaneously.
 
-Under Leave-One-Out (LOO) cross-validation on the augmented dataset ($N=136$ samples, expanding the $N=88$ baseline (filtered to 86 after outlier removal) with 50 synthetic noise-augmented points), the models achieved the following performance metrics:
+Under Leave-One-Out (LOO) cross-validation on the target-filtered log-transformed dataset ($N=124$ samples, expanding the $N=74$ baseline entries with valid HER > 0 with 50 synthetic noise-augmented points), the models achieved the following performance metrics on the $\log_{10}(\text{HER})$ scale:
 
-#### **Option A: GradientBoosting (MultiOutput)**
-- **HER**: $R^2 = 0.467$, $\text{MAE} = 3253.754\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 4318.639$
-- **AQY_420**: $R^2 = 0.073$, $\text{MAE} = 3.428\%$, $\text{RMSE} = 9.054\%$
+#### **Option A: GradientBoosting**
+- **HER (log10)**: $R^2 = 0.394$, $\text{MAE} = 0.351$, $\text{RMSE} = 0.466$
 
 #### **Option B: Gaussian Process Regressor** (Chosen for Uncertainty Quantification & Screening)
-- **HER**: $R^2 = 0.212$, $\text{MAE} = 3958.145\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 5249.888$
-- **AQY_420**: $R^2 = 0.028$, $\text{MAE} = 4.418\%$, $\text{RMSE} = 9.269\%$
+- **HER (log10)**: $R^2 = 0.224$, $\text{MAE} = 0.419$, $\text{RMSE} = 0.528$
 
 #### **Option C: Multi-Head MLP Neural Network**
-- **HER**: $R^2 = -0.901$, $\text{MAE} = 5614.203\text{ \mu mol g}^{-1}\text{ h}^{-1}$, $\text{RMSE} = 8153.831$
-- **AQY_420**: $R^2 = -0.040$, $\text{MAE} = 3.592\%$, $\text{RMSE} = 9.590\%$
+- **HER (log10)**: $R^2 = -0.861$, $\text{MAE} = 0.652$, $\text{RMSE} = 0.817$
 
 *Note: STH is not modeled by GPR in LOO CV; physics-based Theoretical_Max_STH (AM1.5G integration) is used in composite scoring instead.*
 
@@ -225,42 +222,39 @@ def apply_glycerol_oxidation_filter(df_candidates):
 
 ---
 
-### Step 5b: Leave-One-Out Cross-Validation Results (N = 136, augmented)
+### Step 5b: Leave-One-Out Cross-Validation Results (N = 124, augmented)
 
-**Note:** STH is **not** modelled by GPR — all STH values in the composite score use the physics-based `Theoretical_Max_STH` (AM1.5G spectrum integration) instead.
+**Note:** HER metrics are calculated on the $\log_{10}$ scale. STH is calculated using the physics-based `Theoretical_Max_STH` (AM1.5G spectrum integration). AQY GPR model has been removed and replaced by a physics-based proxy score (0-100).
 
 | Model | Target | R² | MAE | RMSE |
 | :---- | :----- | :-- | :-- | :--- |
-| GradientBoosting (MultiOutput) | HER | 0.467 | 3253.8 | 4318.6 |
-| GradientBoosting (MultiOutput) | AQY | 0.073 | 3.428 | 9.054 |
-| Gaussian Process Regressor | HER | 0.212 | 3958.1 | 5249.9 |
-| Gaussian Process Regressor | AQY | 0.028 | 4.418 | 9.269 |
-| Multi-Head MLP Neural Network | HER | -0.901 | 5614.2 | 8153.8 |
-| Multi-Head MLP Neural Network | AQY | -0.040 | 3.592 | 9.590 |
+| GradientBoosting | HER (log10) | 0.394 | 0.351 | 0.466 |
+| Gaussian Process Regressor | HER (log10) | 0.224 | 0.419 | 0.528 |
+| Multi-Head MLP Neural Network | HER (log10) | -0.861 | 0.652 | 0.817 |
 
 **Screening funnel:**
 - Initial virtual library: **7,000** candidates (13 hosts × 7 co-catalysts × ~500 variants + ZnCdS)
 - After bandgap filter ($1.8 - 2.4\text{ eV}$): **2,551** candidates
 - After glycerol thermodynamic filter: **263** candidates
-- After uncertainty validity filter ($\sigma_\text{HER} < \text{Pred HER}$): **261** candidates
+- After uncertainty validity filter ($\sigma_\text{HER} < \text{Pred HER}$): **263** candidates
 
 ---
 
 ### Step 6: Corrected Virtual Screening Output Format
 The generated top 10 candidates outputted by the corrected pipeline are displayed in the table below. By applying the hard pre-filter (`Glycerol_Filter_Pass = True`) before composite scoring, restricting the virtual library to $1.8 - 2.4\text{ eV}$ prior to prediction, crossing 13 real synthesizable hosts (+ ZnCdS) with realistic co-catalysts and loadings, and filtering out candidates where $\sigma_\text{HER} \geq \text{Pred HER}$, all top-10 candidates now successfully pass the strict selectivity constraint ($+0.4 < VB < +1.23\text{ V vs NHE}$). Wide-bandgap hosts (TiO₂, ZnS, SrTiO₃, WO₃, CeO₂, MOF) are correctly eliminated by the bandgap pre-filter. **In₂S₃** dominates the top-10 due to its optimal narrow bandgap (1.9–2.15 eV), favorable band-edge alignment, and strong predicted HER performance:
 
-| Rank | Formula | Host | Co-cat | Loading (wt%) | BET (m²/g) | Bandgap (eV) | CB (V vs NHE) | VB (V vs NHE) | Pred HER (μmol/g/h) | HER σ | Pred AQY (%) | AQY σ | Theo. Max STH (%) | Glycerol Pass | Score |
-| :--- | :------ | :--- | :----- | :------------ | :--------- | :----------- | :------------ | :------------ | :------------------- | :---- | :----------- | :---- | :----------------- | :------------ | :---- |
-| 1 | NiS(2.82wt%)/In2S3 | In2S3 | NiS | 2.82 | 86.40 | 1.82 | -0.60 | +1.22 | 10794.6 | 5828.6 | 3.28 | 9.69 | 20.42 | True | 3.041 |
-| 2 | Ni(2.69wt%)/In2S3 | In2S3 | Ni | 2.69 | 72.99 | 1.82 | -0.66 | +1.16 | 10859.2 | 5649.7 | 3.28 | 9.69 | 20.42 | True | 3.036 |
-| 3 | NiS(2.80wt%)/In2S3 | In2S3 | NiS | 2.80 | 46.56 | 1.82 | -0.72 | +1.10 | 10896.1 | 5824.8 | 3.28 | 9.69 | 20.27 | True | 3.028 |
-| 4 | NiS(2.81wt%)/In2S3 | In2S3 | NiS | 2.81 | 67.42 | 1.85 | -0.67 | +1.17 | 10886.1 | 5767.4 | 3.28 | 9.69 | 19.53 | True | 2.999 |
-| 5 | NiS(2.36wt%)/In2S3 | In2S3 | NiS | 2.36 | 45.18 | 1.81 | -0.70 | +1.11 | 10461.3 | 5769.0 | 3.28 | 9.68 | 20.42 | True | 2.995 |
-| 6 | Au(2.68wt%)/In2S3 | In2S3 | Au | 2.68 | 79.05 | 1.80 | -0.72 | +1.08 | 10198.9 | 5871.4 | 3.28 | 9.69 | 20.72 | True | 2.985 |
-| 7 | Au(2.97wt%)/In2S3 | In2S3 | Au | 2.97 | 66.53 | 1.82 | -0.84 | +0.98 | 10606.7 | 5855.8 | 3.28 | 9.69 | 20.12 | True | 2.982 |
-| 8 | Au(2.74wt%)/In2S3 | In2S3 | Au | 2.74 | 46.73 | 1.82 | -0.79 | +1.03 | 10389.8 | 5843.4 | 3.28 | 9.69 | 20.27 | True | 2.974 |
-| 9 | Pt(2.87wt%)/In2S3 | In2S3 | Pt | 2.87 | 52.56 | 1.83 | -0.79 | +1.04 | 10515.9 | 5774.8 | 3.28 | 9.69 | 19.98 | True | 2.972 |
-| 10 | Pt(2.52wt%)/In2S3 | In2S3 | Pt | 2.52 | 61.57 | 1.81 | -0.81 | +1.00 | 10073.1 | 5770.7 | 3.28 | 9.69 | 20.72 | True | 2.962 |
+| Rank | Formula | Host | Co-cat | Loading (wt%) | BET (m²/g) | Bandgap (eV) | CB (V vs NHE) | VB (V vs NHE) | Pred HER (μmol/g/h) | HER σ | AQY Proxy Score (0-100) | Theo. Max STH (%) | Cost Multiplier | Score |
+| :--- | :------ | :--- | :----- | :------------ | :--------- | :----------- | :------------ | :------------ | :------------------ | :---- | :--------------------- | :---------------- | :-------------- | :---- |
+| 1 | Ni(2.85wt%)/In2S3 | In2S3 | Ni | 2.85 | 68.73 | 1.88 | -0.83 | +1.05 | 6813.4 | 4115.7 | 64.95 | 18.63 | 1.0 | 2.925 |
+| 2 | Ni(2.90wt%)/In2S3 | In2S3 | Ni | 2.90 | 61.02 | 1.98 | -0.81 | +1.18 | 7311.7 | 4295.3 | 64.71 | 15.80 | 1.0 | 2.872 |
+| 3 | Ni(2.07wt%)/In2S3 | In2S3 | Ni | 2.07 | 45.22 | 1.89 | -0.84 | +1.05 | 6705.3 | 3880.0 | 63.51 | 18.33 | 1.0 | 2.871 |
+| 4 | Ni(2.21wt%)/In2S3 | In2S3 | Ni | 2.21 | 54.58 | 1.84 | -0.78 | +1.05 | 6404.0 | 3796.6 | 61.35 | 19.83 | 1.0 | 2.869 |
+| 5 | Ni(2.59wt%)/In2S3 | In2S3 | Ni | 2.59 | 34.10 | 1.87 | -0.75 | +1.12 | 6854.8 | 4104.9 | 58.14 | 18.93 | 1.0 | 2.855 |
+| 6 | Ni(2.60wt%)/In2S3 | In2S3 | Ni | 2.60 | 37.05 | 1.96 | -0.81 | +1.15 | 7215.8 | 4212.6 | 62.52 | 16.39 | 1.0 | 2.850 |
+| 7 | Ni(2.69wt%)/In2S3 | In2S3 | Ni | 2.69 | 72.99 | 1.82 | -0.66 | +1.16 | 6414.0 | 3914.5 | 56.90 | 20.42 | 1.0 | 2.850 |
+| 8 | Ni(2.77wt%)/In2S3 | In2S3 | Ni | 2.77 | 39.16 | 1.89 | -0.71 | +1.18 | 7059.5 | 4235.0 | 57.14 | 18.33 | 1.0 | 2.849 |
+| 9 | Ni(2.11wt%)/In2S3 | In2S3 | Ni | 2.11 | 66.24 | 1.91 | -0.79 | +1.12 | 6674.9 | 3841.4 | 63.25 | 17.73 | 1.0 | 2.842 |
+| 10 | Ni(2.15wt%)/In2S3 | In2S3 | Ni | 2.15 | 60.82 | 1.93 | -0.76 | +1.17 | 6844.9 | 3923.0 | 62.17 | 17.13 | 1.0 | 2.827 |
 
 ---
 
