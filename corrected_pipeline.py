@@ -12,7 +12,6 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, Matern, ConstantKernel, WhiteKernel
 from sklearn.base import clone
-from sklearn.base import clone
 from sklearn.neural_network import MLPRegressor
 
 # Ensure UTF-8 output encoding for Windows compatibility
@@ -311,9 +310,7 @@ def estimate_aqy_proxy(bandgap_eV, cb_eV, vb_eV, bet_m2g, co_catalyst_type):
         "Cu": 5.0, "CuO": 4.0, "Au": 6.0, "None": 0.0,
     }
     cocat_score = cocat_bonus_table.get(co_catalyst_type, 3.0)
-    cocat_bonus_table = {"Pt":10.0,"NiS":8.0,"Ni":7.0,"Cu":5.0,"CuO":4.0,"Au":6.0,"None":0.0}
-    cocat_score = cocat_bonus_table.get(co_catalyst_type, 3.0)
-    return bg_score + cb_score + vb_score + bet_score + cocat_score + cocat_score
+    return bg_score + cb_score + vb_score + bet_score + cocat_score
 
 def apply_bandgap_penalty(bandgap_eV, predicted_sth):
     sth_max = calculate_max_sth(bandgap_eV)
@@ -447,8 +444,7 @@ def run_multi_objective_screening(df_train, df_cand):
     df_cand["Pred_HER"] = 10 ** mean_scaled
     # Back-transform GPR standard deviation to raw scale (using Pred_HER * std_scaled)
     LN10 = np.log(10)
-    LN10 = np.log(10)
-    df_cand["Std_HER"] = df_cand["Pred_HER"] * std_scaled * LN10 * LN10
+    df_cand["Std_HER"] = df_cand["Pred_HER"] * std_scaled * LN10
     
     # Replaced AQY with physics-based proxy score
     df_cand["Pred_AQY"] = df_cand.apply(
