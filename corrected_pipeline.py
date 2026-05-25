@@ -449,40 +449,26 @@ def run_multi_objective_screening(df_train, df_cand):
     df_cand["Pred_HER"] = 10 ** mean_scaled
     df_cand["Std_HER"] = df_cand["Pred_HER"] * np.log(10) * std_scaled
     
-    # Remove statistically meaningless candidates (sigma > prediction)
-    before_unc = len(df_cand)
-    df_filtered = df_cand[df_cand["Std_HER"] < df_cand["Pred_HER"]].copy()
+    # Filter on log-space σ (physically meaningful for GPR)
+    log_sigma = df_cand["Std_HER"] / (df_cand["Pred_HER"] * np.log(10))
+    df_cand["Sigma_log10"] = log_sigma
+    before_filter = len(df_cand)
+    df_cand = df_cand[df_cand["Sigma_log10"] < 0.7].copy()
+    print(f"Log-space σ filter (σ_log < 0.7): "
+          f"{before_filter} → {len(df_cand)} candidates remain")
+    print(f"σ_log range in surviving candidates: "
+          f"{df_cand['Sigma_log10'].min():.3f} – "
+          f"{df_cand['Sigma_log10'].max():.3f}")
+          
+    # Reliability flag column
+    df_cand["Uncertainty_Factor"] = 10 ** df_cand["Sigma_log10"]
     
-    ratio = (df_filtered["Std_HER"] / df_filtered["Pred_HER"])
-    print(f"σ/Pred_HER — mean: {ratio.mean():.3f}, max: {ratio.max():.3f}")
-    print(f"Candidates passing σ < Pred_HER filter: {len(df_filtered)}")
-    
-    if len(df_filtered) == 0:
-        print(f"WARNING: All {before_unc} candidates have sigma >= Pred_HER (GPR noise floor too high).")
-        print("Falling back to glycerol-filtered pool ranked by Pred_HER * cost only.")
-        df_cand = apply_glycerol_oxidation_filter(df_cand)
-        df_cand = df_cand[df_cand["Glycerol_Filter_Pass"] == True].copy()
-        df_cand["Cost_Multiplier"] = df_cand["Co_catalyst_type"].map(
-            {"Ni":1.0,"NiS":1.0,"Cu":0.98,"CuO":0.98,"Au":0.70,"Pt":0.75,"None":0.85}
-        ).fillna(0.90)
-        df_cand["Composite_Score"] = (df_cand["Pred_HER"] / df_cand["Pred_HER"].max()) * df_cand["Cost_Multiplier"]
-        df_cand["Pred_AQY"] = df_cand.apply(lambda r: estimate_aqy_proxy(
-            r["Bandgap_eV"],r["CB_eV_vs_NHE"],r["VB_eV_vs_NHE"],r["BET_m2_g"],r["Co_catalyst_type"]),axis=1)
-        df_cand["Theoretical_Max_STH"] = df_cand["Bandgap_eV"].apply(calculate_max_sth)
-        df_cand["Std_AQY"] = 0.0
-        df_cand = df_cand.sort_values("Composite_Score",ascending=False).reset_index(drop=True)
-        selected, host_counts = [], {}
-        for _, row in df_cand.iterrows():
-            h = row["Host"]
-            if host_counts.get(h,0) < 3:
-                selected.append(row)
-                host_counts[h] = host_counts.get(h,0) + 1
-            if len(selected) >= 10: break
-        top_10 = pd.DataFrame(selected).reset_index(drop=True)
-        top_10["Rank"] = top_10.index + 1
-        return top_10
-        
-    df_cand = df_filtered
+    # Verification print
+    print(f"Uncertainty_Factor range: "
+          f"{df_cand['Uncertainty_Factor'].min():.2f}x – "
+          f"{df_cand['Uncertainty_Factor'].max():.2f}x")
+    print(f"  (e.g. 3.5x means HER prediction could be "
+          f"3.5x higher or lower)")
     
     # Replaced AQY with physics-based proxy score
     df_cand["Pred_AQY"] = df_cand.apply(
@@ -600,6 +586,7 @@ if __name__ == "__main__":
         display_cols = [
             "Rank", "Formula", "Host", "Co_catalyst_type", "Co_catalyst_loading_wt_pct", 
             "BET_m2_g", "Bandgap_eV", "CB_eV_vs_NHE", "VB_eV_vs_NHE", "Pred_HER", "Std_HER",
+            "Sigma_log10", "Uncertainty_Factor",
             "AQY_Proxy_Score", "Theoretical_Max_STH", "Cost_Multiplier", "Composite_Score"
         ]
         pd.set_option('display.max_columns', None)
