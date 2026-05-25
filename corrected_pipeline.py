@@ -38,11 +38,16 @@ def load_and_augment_dataset():
         print("Error: catalyst_dataset_clean.csv not found. Run data_clean.py first.")
         sys.exit(1)
         
-    # Outlier 2: "Cu/TiO2 (Thermal, 70C)" (contains "Thermal")
-    thermal_mask = base_df["Catalyst"].str.contains("Thermal", na=False)
-    if thermal_mask.any():
-        print("Confirming exclusion of photo-thermal system entries from training: " + ", ".join(base_df[thermal_mask]["Catalyst"].tolist()))
-    base_df = base_df[~thermal_mask]
+    OUTLIER_NAMES = {
+        "Cu/TiO2 (Thermal, 70C)",   # photo-thermal inflated rate
+        "0.5wt%Pt/TiO2",            # Photo-CREC reactor, 141840 µmol/g/h
+        "Bi2WO6",                    # anomalous 72000 µmol/g/h
+    }
+    initial_len = len(base_df)
+    base_df = base_df[~base_df["Catalyst"].isin(OUTLIER_NAMES)].copy()
+    print(f"Outlier filter: removed {initial_len - len(base_df)} entries "
+          f"({', '.join(OUTLIER_NAMES)})")
+    print(f"Training dataset after outlier removal: {len(base_df)} entries")
         
     df_aug = pd.DataFrame()
     df_aug["Catalyst"] = base_df["Catalyst"]
@@ -442,9 +447,42 @@ def run_multi_objective_screening(df_train, df_cand):
     
     # Back-transform from log10 space to µmol/g/h
     df_cand["Pred_HER"] = 10 ** mean_scaled
-    # Back-transform GPR standard deviation to raw scale (using Pred_HER * std_scaled)
-    LN10 = np.log(10)
-    df_cand["Std_HER"] = df_cand["Pred_HER"] * std_scaled * LN10
+    df_cand["Std_HER"] = df_cand["Pred_HER"] * np.log(10) * std_scaled
+    
+    # Remove statistically meaningless candidates (sigma > prediction)
+    before_unc = len(df_cand)
+    df_filtered = df_cand[df_cand["Std_HER"] < df_cand["Pred_HER"]].copy()
+    
+    ratio = (df_filtered["Std_HER"] / df_filtered["Pred_HER"])
+    print(f"σ/Pred_HER — mean: {ratio.mean():.3f}, max: {ratio.max():.3f}")
+    print(f"Candidates passing σ < Pred_HER filter: {len(df_filtered)}")
+    
+    if len(df_filtered) == 0:
+        print(f"WARNING: All {before_unc} candidates have sigma >= Pred_HER (GPR noise floor too high).")
+        print("Falling back to glycerol-filtered pool ranked by Pred_HER * cost only.")
+        df_cand = apply_glycerol_oxidation_filter(df_cand)
+        df_cand = df_cand[df_cand["Glycerol_Filter_Pass"] == True].copy()
+        df_cand["Cost_Multiplier"] = df_cand["Co_catalyst_type"].map(
+            {"Ni":1.0,"NiS":1.0,"Cu":0.98,"CuO":0.98,"Au":0.70,"Pt":0.75,"None":0.85}
+        ).fillna(0.90)
+        df_cand["Composite_Score"] = (df_cand["Pred_HER"] / df_cand["Pred_HER"].max()) * df_cand["Cost_Multiplier"]
+        df_cand["Pred_AQY"] = df_cand.apply(lambda r: estimate_aqy_proxy(
+            r["Bandgap_eV"],r["CB_eV_vs_NHE"],r["VB_eV_vs_NHE"],r["BET_m2_g"],r["Co_catalyst_type"]),axis=1)
+        df_cand["Theoretical_Max_STH"] = df_cand["Bandgap_eV"].apply(calculate_max_sth)
+        df_cand["Std_AQY"] = 0.0
+        df_cand = df_cand.sort_values("Composite_Score",ascending=False).reset_index(drop=True)
+        selected, host_counts = [], {}
+        for _, row in df_cand.iterrows():
+            h = row["Host"]
+            if host_counts.get(h,0) < 3:
+                selected.append(row)
+                host_counts[h] = host_counts.get(h,0) + 1
+            if len(selected) >= 10: break
+        top_10 = pd.DataFrame(selected).reset_index(drop=True)
+        top_10["Rank"] = top_10.index + 1
+        return top_10
+        
+    df_cand = df_filtered
     
     # Replaced AQY with physics-based proxy score
     df_cand["Pred_AQY"] = df_cand.apply(
@@ -472,33 +510,7 @@ def run_multi_objective_screening(df_train, df_cand):
     
     # HARD PRE-FILTER: Remove any candidate where glycerol_filter_pass = False BEFORE scoring
     df_cand = df_cand[df_cand["Glycerol_Filter_Pass"] == True].copy()
-    print(f"After glycerol thermodynamic filter: {len(df_cand)} candidates remain.")    # Remove statistically meaningless candidates (sigma > prediction)
-    before_unc = len(df_cand)
-    df_filtered = df_cand[df_cand["Std_HER"] < df_cand["Pred_HER"]].copy()
-    print(f"After uncertainty validity filter (sigma < Pred_HER): {len(df_filtered)} candidates remain.")
-    if len(df_filtered) == 0:
-        print(f"WARNING: All {before_unc} candidates have sigma >= Pred_HER (GPR noise floor too high).")
-        print("Falling back to glycerol-filtered pool ranked by Pred_HER * cost only.")
-        df_cand["Cost_Multiplier"] = df_cand["Co_catalyst_type"].map(
-            {"Ni":1.0,"NiS":1.0,"Cu":0.98,"CuO":0.98,"Au":0.70,"Pt":0.75,"None":0.85}
-        ).fillna(0.90)
-        df_cand["Composite_Score"] = (df_cand["Pred_HER"] / df_cand["Pred_HER"].max()) * df_cand["Cost_Multiplier"]
-        df_cand["Pred_AQY"] = df_cand.apply(lambda r: estimate_aqy_proxy(
-            r["Bandgap_eV"],r["CB_eV_vs_NHE"],r["VB_eV_vs_NHE"],r["BET_m2_g"],r["Co_catalyst_type"]),axis=1)
-        df_cand["Theoretical_Max_STH"] = df_cand["Bandgap_eV"].apply(calculate_max_sth)
-        df_cand["Std_AQY"] = 0.0
-        df_cand = df_cand.sort_values("Composite_Score",ascending=False).reset_index(drop=True)
-        selected, host_counts = [], {}
-        for _, row in df_cand.iterrows():
-            h = row["Host"]
-            if host_counts.get(h,0) < 3:
-                selected.append(row)
-                host_counts[h] = host_counts.get(h,0) + 1
-            if len(selected) >= 10: break
-        top_10 = pd.DataFrame(selected).reset_index(drop=True)
-        top_10["Rank"] = top_10.index + 1
-        return top_10
-    df_cand = df_filtered
+    print(f"After glycerol thermodynamic filter: {len(df_cand)} candidates remain.")
         
     # UCB composite scoring
     her_norm = df_cand["Pred_HER"] / (df_cand["Pred_HER"].max() + 1e-5)

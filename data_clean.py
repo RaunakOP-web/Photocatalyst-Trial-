@@ -99,7 +99,28 @@ formula_map = {
     "Ag2O coupled TiO2 heterostructure":                           "TiO2",
     "Au-loaded TiO2 powder photocatalyst":                         "TiO2",
     "g-C3N4 + Pt":                                                 "C3N4",
-    "Pt deposited on g-C3N4 granular":                             "C3N4"
+    "Pt deposited on g-C3N4 granular":                             "C3N4",
+    
+    # --- New Family: ZnO ---
+    "ZnO + 1.08 mol% Cu":                          "ZnO",
+    "ZnO nanorods (synthesized)":                  "ZnO",
+    "ZnO + Au nanoparticles":                      "ZnO",
+    "ZnO + Ag nanoparticles":                      "ZnO",
+    "ZnO + 1 wt% Cu":                              "ZnO",
+    "ZnO + 3 wt% Cu":                              "ZnO",
+    "ZnO + 5 wt% Cu":                              "ZnO",
+    "ZnO + 7 wt% Cu":                              "ZnO",
+
+    # --- New Family: BiVO4 ---
+    "Monoclinic BiVO4 (synthesized)":              "BiVO4",
+    "Monoclinic BiVO4 + 0.5 wt% Pt":              "BiVO4",
+
+    # --- New Family: Perovskite ---
+    "SrTiO3 perovskite + Cu cocatalyst":           "Perovskite",
+    "NaTaO3 perovskite + NiO cocatalyst":          "Perovskite",
+    "La-doped NaTaO3 with optimized morphology":   "Perovskite",
+    "NaTaO3 perovskite nanocubes (synthesized)":   "Perovskite",
+    "La-doped NaTaO3":                             "Perovskite"
 }
 
 def clean_her(val):
@@ -238,11 +259,21 @@ def main():
     # Map composition based on deterministic host matrix formula
     def map_composition(row):
         comp = row["Composition_Raw"]
+        # Fallback: use Family field directly if Composition_Raw not in map
+        family_to_comp = {
+            "TiO2": "TiO2", "CdS": "CdS", "g-C3N4": "C3N4",
+            "ZnS": "ZnS", "MOF": "MOF", "ZnO": "ZnO",
+            "BiVO4": "BiVO4", "Perovskite": "Perovskite",
+            "Other": "Other"
+        }
+        fam = row.get("Family", "Other")
         if comp in formula_map:
             return formula_map[comp]
+        elif fam in family_to_comp:
+            return family_to_comp[fam]
         else:
-            print(f"Warning: '{comp}' not found in formula_map. Defaulting to 'TiO2'.")
-            return "TiO2"
+            print(f"Warning: '{comp}' not in formula_map. Defaulting to 'Other'.")
+            return "Other"
             
     df["composition"] = df.apply(map_composition, axis=1)
 
