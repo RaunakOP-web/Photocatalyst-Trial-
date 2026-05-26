@@ -551,16 +551,19 @@ if __name__ == "__main__":
     print("==========================================================\n")
     
     print("Step 1: Loading and augmenting baseline dataset...")
-    df_train = load_and_augment_dataset()
-    print(f"Loaded {len(df_train)} baseline dataset points.")
+    df_real = load_and_augment_dataset()
+    print(f"Real data points: {len(df_real)}")
     
     # Generate 50 additional synthetic training points using 5% Gaussian noise (Step 4)
     print("Step 1b: Generating 50 synthetic training points using 5% Gaussian noise...")
-    df_train = augment_training_data(df_train, n_synthetic=50, noise_level=0.05)
-    print(f"Expanded dataset size to N = {len(df_train)} samples.")
+    df_train = augment_training_data(df_real, n_synthetic=50, noise_level=0.05)
+    print(f"Augmented dataset for model fitting: {len(df_train)} samples")
     
     print("Step 2: Evaluating multi-objective models via Leave-One-Out CV...")
-    eval_results = evaluate_models_loo(df_train)
+    print(f"LOO CV running on {len(df_real)} REAL data points only.")
+    print(f"Final model will be fit on {len(df_train)} augmented points.")
+    # LOO CV on REAL data only — no leakage from synthetic points
+    eval_results = evaluate_models_loo(df_real)
     
     print("\nStep 6: Executing virtual screening on candidate library...")
     df_candidates = generate_candidates_multi()
