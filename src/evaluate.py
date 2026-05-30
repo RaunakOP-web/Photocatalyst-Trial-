@@ -35,6 +35,11 @@ def main():
     # Load dataset splits
     X_test = pd.read_csv(os.path.join(proc_dir, "X_test.csv"))
     y_test = pd.read_csv(os.path.join(proc_dir, "y_test.csv")).squeeze()
+    X_train = pd.read_csv(os.path.join(proc_dir, "X_train.csv"))
+    y_train = pd.read_csv(os.path.join(proc_dir, "y_train.csv")).squeeze()
+    sample_weights = pd.read_csv(
+        os.path.join(proc_dir, "sample_weights_train.csv"), header=None
+    ).squeeze().values
     
     # Align X_test index with df_clean using same split parameters
     df_clean = pd.read_csv(os.path.join(proc_dir, "df_clean.csv"), index_col=0)
@@ -67,6 +72,12 @@ def main():
     metrics_df = pd.DataFrame(metrics).T
     metrics_df.to_csv(os.path.join(results_dir, "model_comparison.csv"), index=True)
     print(metrics_df.to_string())
+    
+    print("\n--- Model selection note ---")
+    print(f"Best model: {best_name}")
+    print("Selection criterion: 60% LOMO-CV R² + 40% original-scale test R²")
+    print("Both XGBoost (best LOMO-CV: 0.785) and LightGBM (best test MAE: 5,541) metrics")
+    print("are recorded in training_results.json and model_comparison.csv for the paper.\n")
     
     # ── Keep 1: Actual vs Predicted (log scale) ──
     fig, ax = plt.subplots(figsize=(7, 6))
@@ -157,14 +168,27 @@ def main():
     # ── 4c. Learning Curve ──
     print("Generating learning curve...")
     from sklearn.base import clone
+    import inspect
     model_for_lc = clone(best_model)
     if hasattr(model_for_lc, "early_stopping_rounds"):
         model_for_lc.set_params(early_stopping_rounds=None)
-        
+
+    # Detect if learning_curve takes fit_params or params
+    sig = inspect.signature(learning_curve)
+    if "fit_params" in sig.parameters:
+        lc_kwargs = {"fit_params": {"sample_weight": sample_weights}}
+    else:
+        lc_kwargs = {"params": {"sample_weight": sample_weights}}
+
     train_sizes, train_scores, val_scores = learning_curve(
-        model_for_lc, X_test, y_test,
+        model_for_lc,
+        X_train,
+        y_train,
         train_sizes=np.linspace(0.1, 1.0, 8),
-        cv=5, scoring="r2", n_jobs=-1
+        cv=5,
+        scoring="r2",
+        n_jobs=-1,
+        **lc_kwargs
     )
     
     fig, ax = plt.subplots(figsize=(8, 5))

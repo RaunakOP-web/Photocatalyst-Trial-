@@ -32,6 +32,10 @@ data:
     - "HER_reported"
     - "log_HER"
     - "metadata_completeness_score"
+    - "catalyst_loading_reported"
+    - "glycerol_concentration_reported"
+    - "light_power_reported"
+    - "irradiance_reported"
 
   cat_cols:
     - "host_material"

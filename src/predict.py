@@ -35,6 +35,13 @@ def predict(input_path, output_path=None, bootstrap_n=100):
     df_raw = pd.read_csv(input_path)
     df = df_raw.copy()
     
+    # Drop any reported-string columns that slipped through — these are
+    # provenance fields, not physical features.
+    reported_cols = [c for c in df.columns if c.endswith("_reported") and c != "HER_reported"]
+    if reported_cols:
+        print(f"Dropping provenance _reported columns from input: {reported_cols}")
+        df.drop(columns=reported_cols, inplace=True)
+    
     # 5c. Schema validation
     missing_cols = [col for col in feature_list if col not in df.columns]
     if missing_cols:
