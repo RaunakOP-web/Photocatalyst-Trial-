@@ -1,0 +1,72 @@
+paths:
+  raw_dir:     "data/raw"
+  proc_dir:    "data/processed"
+  models_dir:  "models"
+  results_dir: "data/results"
+
+data:
+  target:            "HER_std_umol_g_h"
+  hash_col:          "experiment_hash"
+  random_state:      42
+  test_size:         0.15
+  missing_threshold: 0.95
+
+  leakage_cols:
+    - "AQY_pct"
+    - "AQE_pct"
+    - "STH_pct"
+    - "HER_reported"
+
+  provenance_cols:
+    - "DOI"
+    - "source_url"
+    - "paper_title"
+    - "journal"
+    - "year"
+    - "authors"
+    - "reference_match_check"
+    - "data_quality_flag"
+    - "data_quality_note"
+    - "experiment_hash"
+    - "full_catalyst"
+    - "HER_reported"
+    - "log_HER"
+    - "metadata_completeness_score"
+
+  cat_cols:
+    - "host_material"
+    - "co_catalyst"
+    - "semiconductor_2"
+    - "semiconductor_3"
+    - "form"
+    - "structure"
+    - "preparation_semiconductor"
+    - "preparation_photocatalyst"
+    - "sacrificial_donor"
+    - "reactor_type"
+    - "water_source"
+    - "light_source_type"
+    - "light_type"
+
+  confidence_weight_map:
+    HIGH:   1.0
+    MEDIUM: 0.7
+    LOW:    0.3
+
+  confidence_weight_cols:
+    - "confidence_HER"
+    - "confidence_loading"
+    - "confidence_light"
+    - "confidence_wavelength"
+
+tuning:
+  n_trials:         60
+  cv_folds:         5
+  timeout_seconds:  600
+
+models:
+  xgboost:
+    tree_method: "hist"
+    verbosity:   0
+  lightgbm:
+    verbose: -1

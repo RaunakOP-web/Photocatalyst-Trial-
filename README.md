@@ -4,7 +4,7 @@
 
 Machine learning pipeline to **predict and rank photocatalysts** for hydrogen
 evolution via glycerol photoreforming. Trains XGBoost and LightGBM regressors on
-an 886-row literature-mined dataset, using 17 physically meaningful features to
+an 886-row literature-mined dataset, using physically meaningful features to
 predict the hydrogen evolution rate (HER, µmol g⁻¹ h⁻¹).
 
 ## Project Structure
@@ -63,9 +63,7 @@ Drop your master dataset (CSV, JSON, or XLSX) into `data/raw/`.
 python src/preprocess.py
 ```
 
-Loads the raw data, removes error-flagged and zero-HER rows, drops leakage
-columns, encodes categoricals, log-transforms the target, and saves train/test
-splits to `data/processed/`.
+Loads the raw data, cleans out outliers and duplicates, handles missing values dynamically, normalizes strings, splits dataset using stratified sampling, and target-encodes categorical variables.
 
 ### Step 3: Train
 
@@ -73,8 +71,7 @@ splits to `data/processed/`.
 python src/train.py
 ```
 
-Trains XGBoost and LightGBM with 5-fold cross-validation. Saves all models to
-`models/` and training metrics to `data/results/training_results.json`.
+Performs Optuna hyperparameter optimization for LightGBM and XGBoost, performs a final fit with early stopping, trains a Ridge baseline, runs Leave-One-Material-Out CV (LOMO-CV), and saves the trained models and training results.
 
 ### Step 4: Evaluate
 
@@ -82,17 +79,15 @@ Trains XGBoost and LightGBM with 5-fold cross-validation. Saves all models to
 python src/evaluate.py
 ```
 
-Generates actual-vs-predicted plots, residual plots, SHAP feature importance
-bar charts, and SHAP beeswarm plots. All saved to `data/results/`.
+Generates 10 performance, residual, distribution, learning curve, and SHAP plots, and outputs consolidated metrics.
 
 ### Step 5 (optional): Predict on new catalysts
 
 ```bash
-python src/predict.py --input my_candidates.csv
+python src/predict.py --input my_candidates.csv --bootstrap_n 100
 ```
 
-Predicts HER for each row in the input CSV and ranks candidates from highest to
-lowest predicted activity.
+Predicts HER for each row in the input CSV and computes bootstrap confidence intervals.
 
 ## Dataset
 
@@ -104,49 +99,35 @@ hydrogen evolution rate (HER).
 > **Note:** The raw dataset is gitignored because it may contain unpublished
 > research data. Add it locally to `data/raw/` before running the pipeline.
 
+## Data Quality
+- `data_quality_flag`: OK = verified; NEEDS_REVIEW = plausible but unverified; LIKELY_ERROR = confirmed duplicate or impossible value — all LIKELY_ERROR rows are dropped before training.
+- Duplicate `experiment_hash` rows are deduplicated by keeping the row with the highest `metadata_completeness_score`.
+- Confidence columns weight each row during training: HIGH=1.0, MEDIUM=0.7, LOW=0.3.
+- **Primary generalization metric in the paper is LOMO-CV R²** (leave-one-material-out), not random CV R², because TiO₂ comprises 72% of the dataset.
+
 ## Model
 
 | Aspect | Detail |
 |---|---|
-| Algorithms | XGBoost, LightGBM |
-| Validation | 5-fold cross-validation |
+| Algorithms | XGBoost, LightGBM, Ridge |
+| Validation | 5-fold cross-validation & LOMO-CV |
 | Target | log₁₊ₓ(HER) — log-transformed to handle skewed distribution |
-| Metrics | R² (log and original scale), MAE (µmol g⁻¹ h⁻¹) |
+| Metrics | R² (log and original scale), MAE (µmol g⁻¹ h⁻¹), RMSE |
 | Explainability | SHAP TreeExplainer |
-
-## Features Used
-
-The model uses 17 features:
-
-| # | Feature | Type |
-|---|---|---|
-| 1 | `host_material` | Categorical |
-| 2 | `co_catalyst` | Categorical |
-| 3 | `co_catalyst_wt_pct` | Numeric |
-| 4 | `semiconductor_2` | Categorical |
-| 5 | `glycerol_concentration_std` | Numeric |
-| 6 | `catalyst_loading_mg` | Numeric |
-| 7 | `reaction_volume_mL` | Numeric |
-| 8 | `temperature_C` | Numeric |
-| 9 | `pH` | Numeric |
-| 10 | `light_power_W` | Numeric |
-| 11 | `wavelength_cutoff_nm` | Numeric |
-| 12 | `is_xe_lamp` | Binary |
-| 13 | `is_hg_lamp` | Binary |
-| 14 | `is_led` | Binary |
-| 15 | `is_uv` | Binary |
-| 16 | `is_visible_light` | Binary |
-| 17 | `is_solar_simulator` | Binary |
 
 ## Results
 
-> _Placeholder — fill in after training with your dataset._
->
-> | Model | CV R² | Test R² | Test MAE (µmol/g/h) |
-> |---|---|---|---|
-> | XGBoost | — | — | — |
-> | LightGBM | — | — | — |
+Results will be populated after training. Run `python run_all.py`.
 
 ## Citation
 
-> _Placeholder — add citation when the paper is published._
+```bibtex
+@article{pending,
+  title   = {Machine Learning-Guided Discovery of High-Performance Photocatalysts
+             for Glycerol Photoreforming Hydrogen Evolution},
+  author  = {[authors]},
+  journal = {[journal]},
+  year    = {2025},
+  doi     = {pending}
+}
+```
