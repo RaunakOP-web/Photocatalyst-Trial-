@@ -1,0 +1,10 @@
+{
+  "bootstrap_n_estimators": 200,
+  "bootstrap_alpha": 0.1,
+  "bootstrap_empirical_coverage": 0.6429,
+  "bootstrap_mean_ci_width_log": 1.4446,
+  "conformal_alpha": 0.1,
+  "conformal_threshold_log": 1.1278,
+  "conformal_empirical_coverage": 0.7619,
+  "mean_model_disagreement_std": 0.4719
+}

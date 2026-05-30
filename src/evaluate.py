@@ -1,8 +1,9 @@
 """
 evaluate.py
-Generates comparison reports and all 10 visual artifacts: actual vs predicted,
+Generates comparison reports and all visual artifacts: actual vs predicted,
 residuals, SHAP importance, SHAP beeswarm, HER distribution, learning curves,
-SHAP dependence plots, and per-material error analysis.
+SHAP dependence plots, per-material error analysis, and enhanced SHAP plots
+(global summary, material-family, local SHAP for top candidates).
 """
 
 import os
