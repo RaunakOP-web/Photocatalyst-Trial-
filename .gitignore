@@ -32,3 +32,8 @@ env/
 
 # ── Logs ──
 *.log
+
+# ── Graphify ──
+graphify-out/
+.graphify_cache/
+

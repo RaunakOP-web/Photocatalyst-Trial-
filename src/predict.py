@@ -45,9 +45,53 @@ def predict(input_path, output_path=None):
                       "predicted_HER_umol_g_h"]].head())
     print(f"\nFull predictions saved to: {output_path}")
 
+    # ── Explainability Integration ───────────────────────
+    try:
+        from src.graphify.explain import PredictExplainer
+        explainer = PredictExplainer()
+        
+        # Get the top candidate features
+        top_row = df_ranked.iloc[0]
+        feats = {
+            "host_material": top_row.get("host_material", "unknown"),
+            "co_catalyst": top_row.get("co_catalyst", "none"),
+            "co_catalyst_wt_pct": float(top_row.get("co_catalyst_wt_pct", 0.0)) if not pd.isna(top_row.get("co_catalyst_wt_pct")) else 0.0,
+            "pH": float(top_row.get("pH", 7.0)) if not pd.isna(top_row.get("pH")) else 7.0,
+            "temperature_C": float(top_row.get("temperature_C", 25.0)) if not pd.isna(top_row.get("temperature_C")) else 25.0
+        }
+        pred_her = float(top_row["predicted_HER_umol_g_h"])
+        
+        print("\n[Graphify] Generating explanation for the top-performing candidate...")
+        exp = explainer.explain_prediction(feats, pred_her)
+        explainer.print_ascii_explanation(exp)
+        
+        # Save explanations for all top 5 candidates to a JSON report
+        explanations_report = []
+        for i in range(min(5, len(df_ranked))):
+            cand_row = df_ranked.iloc[i]
+            cand_feats = {
+                "host_material": cand_row.get("host_material", "unknown"),
+                "co_catalyst": cand_row.get("co_catalyst", "none"),
+                "co_catalyst_wt_pct": float(cand_row.get("co_catalyst_wt_pct", 0.0)) if not pd.isna(cand_row.get("co_catalyst_wt_pct")) else 0.0,
+                "pH": float(cand_row.get("pH", 7.0)) if not pd.isna(cand_row.get("pH")) else 7.0,
+                "temperature_C": float(cand_row.get("temperature_C", 25.0)) if not pd.isna(cand_row.get("temperature_C")) else 25.0
+            }
+            cand_her = float(cand_row["predicted_HER_umol_g_h"])
+            cand_exp = explainer.explain_prediction(cand_feats, cand_her)
+            explanations_report.append(cand_exp)
+            
+        res_dir = "data/results"
+        os.makedirs(res_dir, exist_ok=True)
+        with open(f"{res_dir}/predictions_explanations.json", "w") as f:
+            json.dump(explanations_report, f, indent=2)
+        print(f"[Graphify] Saved explanation report to {res_dir}/predictions_explanations.json")
+    except Exception as e:
+        print(f"[Graphify Warning] Explainability generation skipped: {e}")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input",  required=True, help="Path to candidates CSV")
     parser.add_argument("--output", default=None,  help="Output path (optional)")
     args = parser.parse_args()
     predict(args.input, args.output)
+
