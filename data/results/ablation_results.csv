@@ -1,5 +1,6 @@
 model,n_features,lomo_r2,lomo_std,delta_r2
-Model A: All features (baseline),32,0.7369,0.0881,0.0
-Model B: No synthesis features,24,0.7167,0.0937,-0.0202
-Model C: No co-catalyst features,30,0.7261,0.0856,-0.0108
-Model D: No optical features,23,0.7243,0.0819,-0.0126
+Model A: All features (baseline),40,0.7319,0.1101,0.0
+Model B: No synthesis features,32,0.7116,0.109,-0.0203
+Model C: No co-catalyst features,39,0.7349,0.1264,0.003
+Model D: No optical features,31,0.7037,0.0999,-0.0282
+Model E: Only material descriptors,4,0.2609,0.1564,-0.471

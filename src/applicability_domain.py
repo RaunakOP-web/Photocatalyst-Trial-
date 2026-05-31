@@ -140,8 +140,8 @@ def run_ad_check():
     # Exclude self (index 0), use remaining K neighbors
     train_ad = train_dists[:, 1:].mean(axis=1)
 
-    # AD threshold = mean + 2 * std of training distances
-    ad_threshold = train_ad.mean() + 2 * train_ad.std()
+    # AD threshold = mean + 1 * std of training distances (tighter threshold)
+    ad_threshold = train_ad.mean() + 1 * train_ad.std()
     print(f"  AD threshold: {ad_threshold:.4f}")
     print(f"  Training AD mean: {train_ad.mean():.4f}, std: {train_ad.std():.4f}")
 
@@ -195,8 +195,10 @@ def run_ad_check():
         print("\n  Top 10 candidates with AD status:")
         print(top[display_cols].to_string(index=False))
 
-        # Save top 20 with AD labels
-        top20 = disc.sort_values(sort_col, ascending=False).head(20)
+        # Save top 20 unique material combinations with AD labels
+        top20 = disc.sort_values(sort_col, ascending=False).drop_duplicates(
+            subset=["host_material", "co_catalyst"], keep="first"
+        ).head(20)
         top20.to_csv(f"{RESULTS_DIR}/top_20_candidates.csv", index=False)
         print(f"\n  Saved top_20_candidates.csv with AD labels")
 

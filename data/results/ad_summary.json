@@ -1,15 +1,15 @@
 {
-  "ad_threshold": 130.1672,
+  "ad_threshold": 88.1398,
   "k_neighbors": 5,
-  "training_ad_mean": 25.2763,
-  "training_ad_std": 52.4455,
-  "test_within_ad_count": 125,
+  "training_ad_mean": 32.9187,
+  "training_ad_std": 55.221,
+  "test_within_ad_count": 123,
   "test_total": 126,
-  "test_within_ad_pct": 99.2,
+  "test_within_ad_pct": 97.6,
   "discovery_within_ad_count": 91800,
   "discovery_outside_ad_count": 0,
   "discovery_total": 91800,
-  "wo3_pd_ad_score": 18.7393,
+  "wo3_pd_ad_score": 18.8532,
   "wo3_pd_ad_label": "within_AD",
-  "wo3_pd_pred_her": 3175.5
+  "wo3_pd_pred_her": 1160.6
 }

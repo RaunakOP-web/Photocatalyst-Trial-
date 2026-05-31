@@ -1,0 +1,3 @@
+encoding_strategy,LOMO_R2,Test_R2_log,Spearman_rho
+target_encoding,0.7718,0.7683,0.9169
+physical_features,0.7845,0.7780,0.9186

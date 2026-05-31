@@ -30,6 +30,7 @@ from itertools import product
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.model_selection import train_test_split
 import random
+from src.material_features import add_physical_features
 
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -111,6 +112,9 @@ def build_candidate_library(feature_cols, medians, encoder):
     cand_df = pd.DataFrame(records)
     n_candidates = len(cand_df)
     print(f"  Generated {n_candidates:,} base candidate combinations")
+
+    # Map materials to physical properties
+    cand_df = add_physical_features(cand_df)
 
     # Add heterojunctions: set semiconductor_2 for hosts that have them
     if "semiconductor_2" in feature_cols:
@@ -447,8 +451,10 @@ def main():
     result_df.to_csv(os.path.join(RES, "discovery_candidates.csv"), index=False)
     print(f"\n  Saved {len(result_df):,} ranked candidates -> discovery_candidates.csv")
 
-    # Save top-100 novel candidates
-    top100 = result_df.head(100).copy()
+    # Save top-100 novel candidates (unique material compositions)
+    top100 = result_df.drop_duplicates(
+        subset=["host_material", "co_catalyst"], keep="first"
+    ).head(100).copy()
     top100_out = top100[[
         "composition", "host_material", "co_catalyst", "cocatalyst_wt_pct",
         "pred_her_umol_g_h", "ucb_her_umol_g_h",
@@ -458,8 +464,10 @@ def main():
     top100_out.to_csv(os.path.join(RES, "top_novel_candidates.csv"), index=False)
     print(f"  Saved top-100 novel candidates -> top_novel_candidates.csv")
 
-    # Print top 10
-    top10 = result_df.head(10)[["host_material", "co_catalyst", "cocatalyst_wt_pct",
+    # Print top 10 unique material combinations
+    top10 = result_df.drop_duplicates(
+        subset=["host_material", "co_catalyst"], keep="first"
+    ).head(10)[["host_material", "co_catalyst", "cocatalyst_wt_pct",
                                  "glycerol_vol_pct", "light_source_type",
                                  "pred_her_umol_g_h", "ucb_her_umol_g_h",
                                  "novelty_score", "confidence"]]

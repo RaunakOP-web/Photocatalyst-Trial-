@@ -12,6 +12,7 @@ import argparse
 import numpy as np
 import pandas as pd
 from sklearn.base import clone
+from src.material_features import add_physical_features
 
 # Load config
 with open("config.yaml") as f:
@@ -41,6 +42,9 @@ def predict(input_path, output_path=None, bootstrap_n=100):
     if reported_cols:
         print(f"Dropping provenance _reported columns from input: {reported_cols}")
         df.drop(columns=reported_cols, inplace=True)
+        
+    # Add physical features before checking schema / feature list compatibility
+    df = add_physical_features(df)
     
     # 5c. Schema validation
     missing_cols = [col for col in feature_list if col not in df.columns]

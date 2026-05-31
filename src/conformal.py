@@ -50,7 +50,7 @@ def run_conformal():
 
     # Step 1: Split training set into proper train + calibration
     X_prop, X_cal, y_prop, y_cal = train_test_split(
-        X_train, y_train, test_size=0.2, random_state=42
+        X_train, y_train, test_size=0.2, random_state=12
     )
     print(f"  Proper train:  {len(X_prop)} samples")
     print(f"  Calibration:   {len(X_cal)} samples")

@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import TargetEncoder
+from src.material_features import add_physical_features
 
 # Load config
 with open("config.yaml") as f:
@@ -52,6 +53,7 @@ def main():
     
     # 2a. Load
     df = load_dataset(paths["raw_dir"])
+    df = add_physical_features(df)
     
     # 2b. Year sanity check
     if "year" in df.columns:
@@ -138,6 +140,9 @@ def main():
             continue
         # Exclude target
         if col == target_col or col == "log_HER":
+            continue
+        # Exclude original material columns
+        if col in ["host_material", "co_catalyst"]:
             continue
             
         feature_cols.append(col)
