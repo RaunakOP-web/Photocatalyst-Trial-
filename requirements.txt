@@ -15,3 +15,5 @@ jupyter>=1.0
 ipykernel>=6.25
 optuna>=3.4
 pyyaml>=6.0
+streamlit>=1.30.0
+plotly>=5.18.0
