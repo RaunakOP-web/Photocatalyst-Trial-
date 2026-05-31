@@ -215,7 +215,6 @@ with tab1:
                          y="HER_std_umol_g_h",
                          color="co_catalyst",
                          log_y=True,
-                         trendline="lowess",
                          labels={"co_catalyst_wt_pct": "Co-catalyst wt%",
                                  "HER_std_umol_g_h": "HER (µmol/g/h, log)",
                                  "co_catalyst": "Co-catalyst"},
@@ -348,41 +347,41 @@ with tab2:
 with tab3:
     st.header("Feature importance — SHAP analysis")
 
-    shap_png = os.path.join(FIGS_DIR, "fig2_shap_importance.png")
-    bee_png  = os.path.join(FIGS_DIR, "fig3_shap_beeswarm.png")
-    dep_png  = os.path.join(FIGS_DIR, "fig4_shap_dependence.png")
-    pdp_png  = os.path.join(FIGS_DIR, "fig5_partial_dependence.png")
+    shap_png = os.path.join(RESULTS_DIR, "shap_importance.png")
+    bee_png  = os.path.join(RESULTS_DIR, "shap_beeswarm.png")
+    dep_host = os.path.join(RESULTS_DIR, "shap_dependence_host_material.png")
+    dep_wt   = os.path.join(RESULTS_DIR, "shap_dependence_co_catalyst_wt_pct.png")
 
     c1, c2 = st.columns(2)
     with c1:
         st.subheader("Global feature importance (|SHAP|)")
         if os.path.exists(shap_png):
-            st.image(shap_png, use_column_width=True)
+            st.image(shap_png, use_container_width=True)
         else:
-            st.info("Run manuscript_figures.py to generate this figure.")
+            st.info("Run shap_analysis.py to generate this figure.")
 
     with c2:
         st.subheader("Feature effect directions (beeswarm)")
         if os.path.exists(bee_png):
-            st.image(bee_png, use_column_width=True)
+            st.image(bee_png, use_container_width=True)
         else:
-            st.info("Run manuscript_figures.py to generate this figure.")
+            st.info("Run shap_analysis.py to generate this figure.")
 
     st.divider()
     c1, c2 = st.columns(2)
     with c1:
-        st.subheader("SHAP dependence plots")
-        if os.path.exists(dep_png):
-            st.image(dep_png, use_column_width=True)
+        st.subheader("SHAP semiconductor dependence")
+        if os.path.exists(dep_host):
+            st.image(dep_host, use_container_width=True)
         else:
-            st.info("Run manuscript_figures.py to generate this figure.")
+            st.info("Run shap_analysis.py to generate this figure.")
 
     with c2:
-        st.subheader("Partial dependence plots")
-        if os.path.exists(pdp_png):
-            st.image(pdp_png, use_column_width=True)
+        st.subheader("SHAP co-catalyst wt% dependence")
+        if os.path.exists(dep_wt):
+            st.image(dep_wt, use_container_width=True)
         else:
-            st.info("Run manuscript_figures.py to generate this figure.")
+            st.info("Run shap_analysis.py to generate this figure.")
 
     st.subheader("Physical feature interpretation")
     interpretation = {
@@ -434,8 +433,8 @@ with tab4:
                 if "host_material" in disc.columns else []
         cats  = sorted(disc["co_catalyst"].dropna().unique().tolist()) \
                 if "co_catalyst"  in disc.columns else []
-        lights= sorted(disc["light_type"].dropna().unique().tolist()) \
-                if "light_type"   in disc.columns else []
+        lights= sorted(disc["light_source_type"].dropna().unique().tolist()) \
+                if "light_source_type" in disc.columns else []
 
         sel_semi  = col_f1.multiselect("Semiconductor", semis,
                                         default=semis[:5] if semis else [])
@@ -450,8 +449,8 @@ with tab4:
             df_f = df_f[df_f["host_material"].isin(sel_semi)]
         if sel_cat   and "co_catalyst"   in df_f.columns:
             df_f = df_f[df_f["co_catalyst"].isin(sel_cat)]
-        if sel_light and "light_type"    in df_f.columns:
-            df_f = df_f[df_f["light_type"].isin(sel_light)]
+        if sel_light and "light_source_type" in df_f.columns:
+            df_f = df_f[df_f["light_source_type"].isin(sel_light)]
         if only_ad   and "within_ad"     in df_f.columns:
             df_f = df_f[df_f["within_ad"] == True]
 
@@ -465,7 +464,7 @@ with tab4:
             y=df_top.head(20).apply(
                 lambda r: f"{r.get('host_material','?')}/"
                           f"{r.get('co_catalyst','?')} "
-                          f"({r.get('co_catalyst_wt_pct','?')}wt%)", axis=1),
+                          f"({r.get('cocatalyst_wt_pct','?')}wt%)", axis=1),
             orientation="h",
             color="host_material" if "host_material" in df_top.columns else None,
             error_x=df_top.head(20).apply(
@@ -485,7 +484,7 @@ with tab4:
             y="pred_her_umol_g_h",
             color="host_material" if "host_material" in df_f.columns else None,
             log_y=True,
-            hover_data=["co_catalyst", "co_catalyst_wt_pct"]
+            hover_data=["co_catalyst", "cocatalyst_wt_pct"]
                        if "co_catalyst" in df_f.columns else None,
             labels={"ad_score": "AD score (lower = safer prediction)",
                     "pred_her_umol_g_h": "Predicted HER (µmol/g/h, log)",
@@ -502,9 +501,9 @@ with tab4:
 
         st.subheader("Full filtered table (download below)")
         show_cols = [c for c in ["host_material","co_catalyst",
-                                  "co_catalyst_wt_pct",
+                                  "cocatalyst_wt_pct",
                                   "glycerol_concentration_std",
-                                  "light_type","pred_her_umol_g_h",
+                                  "light_source_type","pred_her_umol_g_h",
                                   "ad_score","ad_label","within_ad"]
                      if c in df_top.columns]
         st.dataframe(df_top[show_cols], use_container_width=True,
@@ -542,11 +541,11 @@ with tab5:
     if model_loaded:
         c1, c2, c3 = st.columns(3)
         semi  = c1.selectbox("Semiconductor",   semi_options,
-                              index=semi_options.index("TiO2")
-                              if "TiO2" in semi_options else 0)
+                              index=semi_options.index("tio2")
+                              if "tio2" in semi_options else 0)
         cocat = c2.selectbox("Co-catalyst",     cocat_options,
-                              index=cocat_options.index("Pt")
-                              if "Pt"   in cocat_options else 0)
+                              index=cocat_options.index("pt")
+                              if "pt"   in cocat_options else 0)
         wt_pct= c3.slider("Co-catalyst wt%", 0.1, 5.0, 1.0, 0.1)
 
         c4, c5, c6 = st.columns(3)
@@ -589,12 +588,33 @@ with tab5:
                 input_df = pd.DataFrame([input_row])
                 input_df = add_physical_features(input_df)
 
-                X = input_df[[f for f in feature_list
-                               if f in input_df.columns]].copy()
-                missing_f = [f for f in feature_list if f not in input_df.columns]
-                for mf in missing_f:
-                    X[mf] = 0.0
-                X = X[feature_list]
+                # Fill missing columns using medians/missing fallback
+                medians = joblib.load(os.path.join(PROC_DIR, "numeric_medians.joblib"))
+                for col in feature_list:
+                    if col not in input_df.columns:
+                        if col in medians.index:
+                            input_df[col] = medians[col]
+                        else:
+                            input_df[col] = "missing"
+
+                # Target encoding for categorical columns
+                encoder_path = os.path.join(PROC_DIR, "target_encoder.joblib")
+                if os.path.exists(encoder_path):
+                    encoder = joblib.load(encoder_path)
+                    cat_cols_present = [c for c in encoder.feature_names_in_ if c in input_df.columns]
+                    if cat_cols_present:
+                        for col in cat_cols_present:
+                            input_df[col] = input_df[col].astype(str).str.strip().str.lower()
+                            input_df[col] = input_df[col].replace({"nan": np.nan, "none": np.nan, "null": np.nan})
+                            input_df[col] = input_df[col].fillna("missing")
+                        # Transform
+                        input_df[cat_cols_present] = encoder.transform(input_df[cat_cols_present])
+
+                # Impute numeric columns
+                numeric_cols_present = [c for c in medians.index if c in input_df.columns]
+                input_df[numeric_cols_present] = input_df[numeric_cols_present].fillna(medians)
+
+                X = input_df[feature_list].copy()
 
                 log_pred = model.predict(X)[0]
                 her_pred = np.expm1(log_pred)
