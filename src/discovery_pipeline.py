@@ -329,6 +329,39 @@ def plot_top20(df_ranked, results_dir):
     print("  Saved discovery_top20.png / .pdf")
 
 
+def rescore_with_conformal(result_df, cand_X):
+    """
+    Replaces bootstrap CI/pred columns in result_df with split conformal prediction intervals.
+    Uses the model and q_hat saved in conformal_model.joblib.
+    """
+    conformal_path = os.path.join(MOD, "conformal_model.joblib")
+    if not os.path.exists(conformal_path):
+        print(f"  Warning: {conformal_path} not found. Skipping conformal rescoring.")
+        return result_df
+
+    print(f"  Applying conformal UQ to candidates using {conformal_path}...")
+    conformal_data = joblib.load(conformal_path)
+    q_hat = conformal_data["q_hat"]
+    model = conformal_data["model"]
+
+    # Predict log-HER
+    batch_size = 5000
+    pred_log = np.zeros(len(cand_X))
+    for start in range(0, len(cand_X), batch_size):
+        end = min(start + batch_size, len(cand_X))
+        pred_log[start:end] = model.predict(cand_X.iloc[start:end])
+
+    # Conformal intervals
+    result_df["pred_median_log"] = pred_log
+    result_df["pred_p05_log"] = pred_log - q_hat
+    result_df["pred_p95_log"] = pred_log + q_hat
+    result_df["ucb_log"] = pred_log + q_hat  # UCB is upper bound of interval
+    result_df["pred_her_umol_g_h"] = np.expm1(pred_log)
+    result_df["ucb_her_umol_g_h"] = np.expm1(pred_log + q_hat)
+
+    return result_df
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # MAIN
 # ─────────────────────────────────────────────────────────────────────────────
@@ -383,6 +416,9 @@ def main():
     result_df["novelty_score"] = novel
     result_df["pred_her_umol_g_h"] = np.expm1(pred_med)
     result_df["ucb_her_umol_g_h"] = np.expm1(ucb)
+
+    # Re-score with conformal UQ if available
+    result_df = rescore_with_conformal(result_df, cand_X)
 
     # Construct composition column
     result_df["composition"] = (

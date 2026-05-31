@@ -397,6 +397,16 @@ def main():
                         print(f"  Copied {src} -> fig8_ablation.{ext}")
                         break
 
+    # ════════════════════════════════════════════════════════════════════════
+    # FIG 9 — Applicability Domain
+    # ════════════════════════════════════════════════════════════════════════
+    import shutil
+    for ext in ["png", "pdf", "svg"]:
+        src = os.path.join(FIG_DIR, f"fig_applicability_domain.{ext}")
+        if os.path.exists(src):
+            shutil.copy(src, os.path.join(FIG_DIR, f"fig9_applicability_domain.{ext}"))
+            print(f"  Copied fig_applicability_domain.{ext} -> fig9_applicability_domain.{ext}")
+
     print(f"\nPhase 11 complete. All figures saved to {FIG_DIR}/")
 
 

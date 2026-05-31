@@ -21,7 +21,11 @@
     "Test_MAE_log": 0.7602186320000456,
     "Test_MAE_umol_g_h": 6738.123389176215,
     "Test_RMSE_umol_g_h": 19978.963263776368,
-    "composite_selection_score": 0.6472
+    "composite_selection_score": 0.6472,
+    "Spearman_rho_log": 0.9169,
+    "Spearman_pval_log": 2.7162840455339773e-51,
+    "Spearman_rho_original": 0.9169,
+    "Spearman_pval_original": 2.7162840455339773e-51
   },
   "Ridge": {
     "CV_R2_mean": 0.44123567939563857,
