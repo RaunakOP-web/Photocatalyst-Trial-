@@ -1,6 +1,20 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "src/app.js", "use": "@vercel/static" },
+    { "src": "data/processed/df_clean.csv", "use": "@vercel/static" },
+    { "src": "data/results/conformal_intervals.csv", "use": "@vercel/static" },
+    { "src": "data/results/top_20_candidates.csv", "use": "@vercel/static" },
+    { "src": "data/results/top_novel_candidates.csv", "use": "@vercel/static" },
+    { "src": "data/results/training_results.json", "use": "@vercel/static" },
+    { "src": "data/results/conformal_summary.json", "use": "@vercel/static" },
+    { "src": "data/results/ad_summary.json", "use": "@vercel/static" },
+    { "src": "data/results/shap_summary_data.json", "use": "@vercel/static" },
+    { "src": "data/results/figures/**", "use": "@vercel/static" },
+    { "src": "stitch_assets/**", "use": "@vercel/static" }
+  ],
   "routes": [
     {
       "src": "/(.*)",
