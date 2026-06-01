@@ -14,15 +14,5 @@
     { "src": "data/results/shap_summary_data.json", "use": "@vercel/static" },
     { "src": "data/results/figures/**", "use": "@vercel/static" },
     { "src": "stitch_assets/**", "use": "@vercel/static" }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "headers": {
-        "Cross-Origin-Opener-Policy": "same-origin",
-        "Cross-Origin-Embedder-Policy": "require-corp"
-      },
-      "continue": true
-    }
   ]
 }
