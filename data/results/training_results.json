@@ -9,7 +9,11 @@
     "Test_MAE_log": 0.7428696409555043,
     "Test_MAE_umol_g_h": 6326.929078113163,
     "Test_RMSE_umol_g_h": 18704.07584734146,
-    "composite_selection_score": 0.6751
+    "composite_selection_score": 0.6751,
+    "Spearman_rho_log": 0.9162,
+    "Spearman_pval_log": 4.4003094249180683e-51,
+    "Spearman_rho_original": 0.9162,
+    "Spearman_pval_original": 4.4003094249180683e-51
   },
   "LightGBM": {
     "CV_R2_mean": 0.7969417619365339,
@@ -37,6 +41,10 @@
     "Test_MAE_log": 1.4063864185352863,
     "Test_MAE_umol_g_h": 10314.573957982595,
     "Test_RMSE_umol_g_h": 28340.971907572493,
-    "composite_selection_score": 0.2515
+    "composite_selection_score": 0.2515,
+    "Spearman_rho_log": 0.6558,
+    "Spearman_pval_log": 7.831175441631466e-17,
+    "Spearman_rho_original": 0.6558,
+    "Spearman_pval_original": 7.831175441631466e-17
   }
 }
