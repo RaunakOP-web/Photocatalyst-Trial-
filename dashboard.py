@@ -127,12 +127,11 @@ with st.sidebar:
 
 # ── TABS ───────────────────────────────────────────────────────────
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📊 Dataset",
     "🤖 Model performance",
     "🔍 Feature importance",
     "🧪 Virtual screening",
-    "🎯 Predict new catalyst",
     "📄 Publication figures",
 ])
 
@@ -516,145 +515,12 @@ with tab4:
         )
 
 
+
 # ══════════════════════════════════════════════════════════════════
-# TAB 5 — PREDICT NEW CATALYST
+# TAB 5 — PUBLICATION FIGURES
 # ══════════════════════════════════════════════════════════════════
 
 with tab5:
-    st.header("Predict HER for a new catalyst")
-    st.info("Enter your catalyst conditions and get an instant HER prediction "
-            "with a 90% conformal confidence interval.")
-
-    try:
-        from src.material_features import (
-            SEMICONDUCTOR_PROPS, COCATALYST_PROPS,
-            add_physical_features
-        )
-        semi_options  = sorted(SEMICONDUCTOR_PROPS.keys())
-        cocat_options = sorted(COCATALYST_PROPS.keys())
-        model_loaded  = True
-    except ImportError:
-        st.warning("Could not import material_features. "
-                   "Run from the repo root directory.")
-        model_loaded = False
-
-    if model_loaded:
-        c1, c2, c3 = st.columns(3)
-        semi  = c1.selectbox("Semiconductor",   semi_options,
-                              index=semi_options.index("tio2")
-                              if "tio2" in semi_options else 0)
-        cocat = c2.selectbox("Co-catalyst",     cocat_options,
-                              index=cocat_options.index("pt")
-                              if "pt"   in cocat_options else 0)
-        wt_pct= c3.slider("Co-catalyst wt%", 0.1, 5.0, 1.0, 0.1)
-
-        c4, c5, c6 = st.columns(3)
-        glyc  = c4.slider("Glycerol concentration (mol/L)", 0.1, 5.0, 1.37, 0.05)
-        load  = c5.slider("Catalyst loading (mg)", 10, 500, 50, 10)
-        vol   = c6.slider("Reaction volume (mL)", 10, 500, 100, 10)
-
-        c7, c8 = st.columns(2)
-        light = c7.selectbox("Light type", ["UV", "Visible"])
-        wl    = c8.slider("Wavelength cutoff (nm)", 300, 500, 420, 5)
-
-        if st.button("🔮 Predict HER", type="primary"):
-            try:
-                feature_list = joblib.load(
-                    os.path.join(PROC_DIR, "feature_list.joblib"))
-                conf_pkg     = joblib.load(
-                    os.path.join(MODELS_DIR, "conformal_model.joblib"))
-                model  = conf_pkg["model"]
-                q_hat  = conf_pkg["q_hat"]
-
-                input_row = {
-                    "host_material":            semi,
-                    "co_catalyst":              cocat,
-                    "co_catalyst_wt_pct":       wt_pct,
-                    "semiconductor_2":          "unknown",
-                    "glycerol_concentration_std": glyc,
-                    "catalyst_loading_mg":      load,
-                    "reaction_volume_mL":       vol,
-                    "temperature_C":            25,
-                    "pH":                       None,
-                    "light_power_W":            300,
-                    "wavelength_cutoff_nm":     wl,
-                    "is_xe_lamp":               1 if light == "Visible" else 0,
-                    "is_hg_lamp":               1 if light == "UV" else 0,
-                    "is_led":                   0,
-                    "is_uv":                    1 if light == "UV" else 0,
-                    "is_visible_light":         1 if light == "Visible" else 0,
-                    "is_solar_simulator":       0,
-                }
-                input_df = pd.DataFrame([input_row])
-                input_df = add_physical_features(input_df)
-
-                # Fill missing columns using medians/missing fallback
-                medians = joblib.load(os.path.join(PROC_DIR, "numeric_medians.joblib"))
-                for col in feature_list:
-                    if col not in input_df.columns:
-                        if col in medians.index:
-                            input_df[col] = medians[col]
-                        else:
-                            input_df[col] = "missing"
-
-                # Target encoding for categorical columns
-                encoder_path = os.path.join(PROC_DIR, "target_encoder.joblib")
-                if os.path.exists(encoder_path):
-                    encoder = joblib.load(encoder_path)
-                    cat_cols_present = [c for c in encoder.feature_names_in_ if c in input_df.columns]
-                    if cat_cols_present:
-                        for col in cat_cols_present:
-                            input_df[col] = input_df[col].astype(str).str.strip().str.lower()
-                            input_df[col] = input_df[col].replace({"nan": np.nan, "none": np.nan, "null": np.nan})
-                            input_df[col] = input_df[col].fillna("missing")
-                        # Transform
-                        input_df[cat_cols_present] = encoder.transform(input_df[cat_cols_present])
-
-                # Impute numeric columns
-                numeric_cols_present = [c for c in medians.index if c in input_df.columns]
-                input_df[numeric_cols_present] = input_df[numeric_cols_present].fillna(medians)
-
-                X = input_df[feature_list].copy()
-
-                log_pred = model.predict(X)[0]
-                her_pred = np.expm1(log_pred)
-                her_lo   = np.expm1(log_pred - q_hat)
-                her_hi   = np.expm1(log_pred + q_hat)
-
-                st.success(f"**Predicted HER: {her_pred:,.0f} µmol/g/h**")
-                m1, m2, m3 = st.columns(3)
-                m1.metric("Predicted HER", f"{her_pred:,.0f} µmol/g/h")
-                m2.metric("90% CI lower",  f"{her_lo:,.0f} µmol/g/h")
-                m3.metric("90% CI upper",  f"{her_hi:,.0f} µmol/g/h")
-
-                fig = go.Figure()
-                fig.add_trace(go.Bar(
-                    x=[f"{semi}/{cocat}"],
-                    y=[her_pred],
-                    error_y=dict(type="data",
-                                 array=[her_hi - her_pred],
-                                 arrayminus=[her_pred - her_lo],
-                                 visible=True),
-                    marker_color="#1D9E75",
-                    width=0.3,
-                ))
-                fig.update_layout(
-                    yaxis_title="Predicted HER (µmol/g/h)",
-                    height=320,
-                    plot_bgcolor="rgba(0,0,0,0)",
-                )
-                st.plotly_chart(fig, use_container_width=True)
-
-            except Exception as e:
-                st.error(f"Prediction failed: {e}")
-                st.info("Make sure all pipeline scripts have been run first.")
-
-
-# ══════════════════════════════════════════════════════════════════
-# TAB 6 — PUBLICATION FIGURES
-# ══════════════════════════════════════════════════════════════════
-
-with tab6:
     st.header("Publication figures")
     st.caption("All figures are saved as PNG (300 DPI), PDF, and SVG "
                "in data/results/figures/")
