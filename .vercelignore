@@ -1,0 +1,27 @@
+# Ignore python virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Ignore development directories not needed by dashboard
+.git/
+.github/
+.graphify_cache/
+graphify-out/
+notebooks/
+tests/
+docs/
+src/
+models/
+
+# Ignore specific development/training scripts
+run_all.py
+run_all_publication.py
+extract_stats.py
+*.joblib
+*.pkl
+
+# Keep data/processed and data/results but ignore raw/intermediary data
+data/raw/
+data/processed/*.joblib
