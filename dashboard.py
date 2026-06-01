@@ -432,8 +432,8 @@ with tab4:
                 if "host_material" in disc.columns else []
         cats  = sorted(disc["co_catalyst"].dropna().unique().tolist()) \
                 if "co_catalyst"  in disc.columns else []
-        lights= sorted(disc["light_source_type"].dropna().unique().tolist()) \
-                if "light_source_type" in disc.columns else []
+        lights= sorted(disc["light_type"].dropna().unique().tolist()) \
+                if "light_type" in disc.columns else []
 
         sel_semi  = col_f1.multiselect("Semiconductor", semis,
                                         default=semis[:5] if semis else [])
@@ -448,8 +448,8 @@ with tab4:
             df_f = df_f[df_f["host_material"].isin(sel_semi)]
         if sel_cat   and "co_catalyst"   in df_f.columns:
             df_f = df_f[df_f["co_catalyst"].isin(sel_cat)]
-        if sel_light and "light_source_type" in df_f.columns:
-            df_f = df_f[df_f["light_source_type"].isin(sel_light)]
+        if sel_light and "light_type" in df_f.columns:
+            df_f = df_f[df_f["light_type"].isin(sel_light)]
         if only_ad   and "within_ad"     in df_f.columns:
             df_f = df_f[df_f["within_ad"] == True]
 
@@ -463,7 +463,7 @@ with tab4:
             y=df_top.head(20).apply(
                 lambda r: f"{r.get('host_material','?')}/"
                           f"{r.get('co_catalyst','?')} "
-                          f"({r.get('cocatalyst_wt_pct','?')}wt%)", axis=1),
+                          f"({r.get('co_catalyst_wt_pct','?')}wt%)", axis=1),
             orientation="h",
             color="host_material" if "host_material" in df_top.columns else None,
             error_x=df_top.head(20).apply(
@@ -483,7 +483,7 @@ with tab4:
             y="pred_her_umol_g_h",
             color="host_material" if "host_material" in df_f.columns else None,
             log_y=True,
-            hover_data=["co_catalyst", "cocatalyst_wt_pct"]
+            hover_data=["co_catalyst", "co_catalyst_wt_pct"]
                        if "co_catalyst" in df_f.columns else None,
             labels={"ad_score": "AD score (lower = safer prediction)",
                     "pred_her_umol_g_h": "Predicted HER (µmol/g/h, log)",
@@ -500,9 +500,9 @@ with tab4:
 
         st.subheader("Full filtered table (download below)")
         show_cols = [c for c in ["host_material","co_catalyst",
-                                  "cocatalyst_wt_pct",
+                                  "co_catalyst_wt_pct",
                                   "glycerol_concentration_std",
-                                  "light_source_type","pred_her_umol_g_h",
+                                  "light_type","pred_her_umol_g_h",
                                   "ad_score","ad_label","within_ad"]
                      if c in df_top.columns]
         st.dataframe(df_top[show_cols], use_container_width=True,

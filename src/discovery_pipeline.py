@@ -83,15 +83,15 @@ DOPANT_MAP = {
 CANDIDATE_GRID = {
     "host_material": HOST_MATERIALS_NOVEL,
     "co_catalyst": COCATALYSTS_NOVEL,
-    "cocatalyst_wt_pct": [0.1, 0.5, 1.0, 2.0, 3.0, 5.0],
-    "glycerol_vol_pct": [5.0, 10.0, 20.0, 30.0, 50.0],
-    "light_source_type": ["visible", "solar", "uv-vis"],
+    "co_catalyst_wt_pct": [0.1, 0.5, 1.0, 2.0, 3.0, 5.0],
+    "glycerol_concentration_v_pct": [5.0, 10.0, 20.0, 30.0, 50.0],
+    "light_type": ["visible", "uv"],
     "catalyst_loading_g_L": [0.5, 1.0, 1.5, 2.0],
 }
 
 # Numeric columns that require defaults from training medians
 NUMERIC_DEFAULTS_COLS = [
-    "cocatalyst_wt_pct", "glycerol_vol_pct", "catalyst_loading_g_L",
+    "co_catalyst_wt_pct", "glycerol_concentration_v_pct", "catalyst_loading_g_L",
     "reaction_time_h", "pH", "temperature_C",
     "light_intensity_mW_cm2", "wavelength_cutoff_nm",
     "BET_surface_area_m2_g",
@@ -428,7 +428,7 @@ def main():
     result_df["composition"] = (
         result_df["host_material"].astype(str) + "/" +
         result_df["co_catalyst"].astype(str) + " (" +
-        result_df["cocatalyst_wt_pct"].astype(str) + " wt%)"
+        result_df["co_catalyst_wt_pct"].astype(str) + " wt%)"
     )
 
     # Confidence based on CI width relative to prediction
@@ -456,7 +456,7 @@ def main():
         subset=["host_material", "co_catalyst"], keep="first"
     ).head(100).copy()
     top100_out = top100[[
-        "composition", "host_material", "co_catalyst", "cocatalyst_wt_pct",
+        "composition", "host_material", "co_catalyst", "co_catalyst_wt_pct",
         "pred_her_umol_g_h", "ucb_her_umol_g_h",
         "pred_median_log", "pred_p05_log", "pred_p95_log",
         "confidence", "novelty_score",
@@ -467,8 +467,8 @@ def main():
     # Print top 10 unique material combinations
     top10 = result_df.drop_duplicates(
         subset=["host_material", "co_catalyst"], keep="first"
-    ).head(10)[["host_material", "co_catalyst", "cocatalyst_wt_pct",
-                                 "glycerol_vol_pct", "light_source_type",
+    ).head(10)[["host_material", "co_catalyst", "co_catalyst_wt_pct",
+                                 "glycerol_concentration_v_pct", "light_type",
                                  "pred_her_umol_g_h", "ucb_her_umol_g_h",
                                  "novelty_score", "confidence"]]
     print("\n  TOP 10 NOVEL CANDIDATES (ranked by UCB):")
