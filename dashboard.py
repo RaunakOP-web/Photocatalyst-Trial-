@@ -180,13 +180,25 @@ with tab1:
     with col_r:
         st.subheader("HER distribution (log scale)")
         if "HER_std_umol_g_h" in df.columns:
+            df_hist = df.copy()
+            df_hist["log10_HER"] = np.log10(df_hist["HER_std_umol_g_h"])
             fig = px.histogram(
-                df, x="HER_std_umol_g_h", nbins=50,
-                log_x=True,
-                labels={"HER_std_umol_g_h": "HER (µmol/g/h)", "count": "Experiments"},
+                df_hist, x="log10_HER", nbins=30,
+                labels={"log10_HER": "HER (µmol/g/h)", "count": "Experiments"},
                 color_discrete_sequence=["#1D9E75"], height=420
             )
-            fig.update_layout(plot_bgcolor="rgba(0,0,0,0)")
+            # Custom ticks: 10^x
+            ticks = [-1, 0, 1, 2, 3, 4, 5]
+            ticktext = ["0.1", "1", "10", "100", "1,000", "10,000", "100,000"]
+            fig.update_layout(
+                xaxis=dict(
+                    tickmode="array",
+                    tickvals=ticks,
+                    ticktext=ticktext,
+                    title="HER (µmol/g/h)"
+                ),
+                plot_bgcolor="rgba(0,0,0,0)"
+            )
             st.plotly_chart(fig, use_container_width=True)
 
     st.subheader("HER by semiconductor — distribution")
