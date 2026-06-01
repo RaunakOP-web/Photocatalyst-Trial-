@@ -12,7 +12,11 @@ graphify-out/
 notebooks/
 tests/
 docs/
-src/
+# Ignore specific development/training files to disable python build
+requirements.txt
+dashboard.py
+src/**/*.py
+src/**/__pycache__/
 models/
 
 # Ignore specific development/training scripts
