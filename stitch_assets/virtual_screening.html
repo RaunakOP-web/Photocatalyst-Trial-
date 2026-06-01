@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Photocatalyst HER - Virtual Screening</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#273647",
+                    "error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ddb7ff",
+                    "inverse-primary": "#00668a",
+                    "surface-container": "#122131",
+                    "surface-dim": "#051424",
+                    "on-primary-fixed-variant": "#004c69",
+                    "on-error-container": "#ffdad6",
+                    "outline-variant": "#3e484f",
+                    "on-secondary-container": "#00311f",
+                    "surface-container-highest": "#273647",
+                    "tertiary": "#e1bfff",
+                    "on-secondary-fixed": "#002113",
+                    "error": "#ffb4ab",
+                    "on-primary-container": "#004965",
+                    "on-tertiary-fixed": "#2c0051",
+                    "primary-container": "#38bdf8",
+                    "on-error": "#690005",
+                    "on-surface": "#d4e4fa",
+                    "on-surface-variant": "#bdc8d1",
+                    "outline": "#87929a",
+                    "secondary-container": "#00a572",
+                    "on-tertiary-fixed-variant": "#6900b3",
+                    "secondary": "#4edea3",
+                    "on-secondary-fixed-variant": "#005236",
+                    "surface-container-high": "#1c2b3c",
+                    "surface": "#051424",
+                    "tertiary-container": "#ce9bff",
+                    "tertiary-fixed": "#f0dbff",
+                    "inverse-surface": "#d4e4fa",
+                    "on-primary-fixed": "#001e2c",
+                    "background": "#051424",
+                    "surface-tint": "#7bd0ff",
+                    "on-primary": "#00354a",
+                    "on-secondary": "#003824",
+                    "primary": "#8ed5ff",
+                    "primary-fixed-dim": "#7bd0ff",
+                    "on-background": "#d4e4fa",
+                    "primary-fixed": "#c4e7ff",
+                    "surface-container-low": "#0d1c2d",
+                    "surface-bright": "#2c3a4c",
+                    "on-tertiary": "#490080",
+                    "secondary-fixed": "#6ffbbe",
+                    "inverse-on-surface": "#233143",
+                    "on-tertiary-container": "#6400ac",
+                    "secondary-fixed-dim": "#4edea3",
+                    "surface-container-lowest": "#010f1f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "lg": "24px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "container-max": "1440px",
+                    "gutter": "16px",
+                    "md": "16px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "data-lg": ["JetBrains Mono"],
+                    "label-caps": ["JetBrains Mono"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "data-md": ["JetBrains Mono"],
+                    "headline-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "data-lg": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "data-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(21, 25, 33, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .micro-card-highlight {
+            border-top: 1px solid #38bdf8;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-20">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky border-b border-outline-variant dark:border-outline-variant bg-surface/80 backdrop-blur-md flex justify-between items-center px-lg py-sm z-50">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary font-headline-md text-headline-md" data-icon="science">science</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary">Photocatalyst HER</h1>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-label-caps text-label-caps text-secondary px-sm py-xs bg-secondary-container/20 rounded-lg">Backend Connected</span>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-lg py-xl flex flex-col gap-lg">
+<!-- Dashboard Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Virtual Screening</h2>
+<p class="text-on-surface-variant font-body-lg">High-throughput candidate selection via predictive modeling</p>
+</div>
+<button class="bg-primary text-on-primary-fixed px-lg py-md rounded-lg flex items-center gap-sm font-label-caps text-label-caps hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                Export Candidates (142 found)
+            </button>
+</div>
+<!-- Query Builder & Metrics Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Step Query Builder -->
+<section class="lg:col-span-8 flex flex-col gap-md">
+<div class="glass-panel p-lg rounded-xl flex flex-col gap-lg">
+<div class="flex items-center gap-sm border-b border-outline-variant pb-md">
+<span class="material-symbols-outlined text-primary" data-icon="filter_alt">filter_alt</span>
+<h3 class="font-headline-sm text-headline-sm uppercase tracking-wider">Multi-step Query Builder</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Semiconductor -->
+<div class="flex flex-col gap-sm">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Semiconductor</label>
+<div class="relative">
+<select class="w-full bg-surface-container border-none border-b-2 border-outline focus:border-primary focus:ring-0 text-on-surface p-md rounded-t-lg transition-all appearance-none">
+<option>Bismuth Vanadate (BiVO4)</option>
+<option>Titanium Dioxide (TiO2)</option>
+<option>Graphitic Carbon Nitride (g-C3N4)</option>
+<option>Strontium Titanate (SrTiO3)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Co-catalyst -->
+<div class="flex flex-col gap-sm">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Co-catalyst</label>
+<div class="relative">
+<select class="w-full bg-surface-container border-none border-b-2 border-outline focus:border-primary focus:ring-0 text-on-surface p-md rounded-t-lg transition-all appearance-none">
+<option>Rhodium (Rh)</option>
+<option>Platinum (Pt)</option>
+<option>Nickel Oxide (NiOx)</option>
+<option>Cobalt Phosphate (CoPi)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Light Type -->
+<div class="flex flex-col gap-sm">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Light Type</label>
+<div class="flex gap-xs">
+<button class="flex-1 bg-primary text-on-primary-fixed py-sm rounded-lg font-label-caps text-label-caps transition-all">Visible</button>
+<button class="flex-1 border border-outline text-on-surface-variant py-sm rounded-lg font-label-caps text-label-caps hover:border-primary transition-all">UV</button>
+<button class="flex-1 border border-outline text-on-surface-variant py-sm rounded-lg font-label-caps text-label-caps hover:border-primary transition-all">AM 1.5G</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Metrics -->
+<aside class="lg:col-span-4 grid grid-cols-2 gap-md">
+<div class="bg-surface-container micro-card-highlight p-md rounded-lg flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Search Space</span>
+<span class="font-data-lg text-data-lg text-primary">12,405</span>
+</div>
+<div class="bg-surface-container micro-card-highlight border-t-secondary p-md rounded-lg flex flex-col justify-between h-32" style="border-top-color: #4edea3;">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Potential Yield</span>
+<span class="font-data-lg text-data-lg text-secondary">84.2%</span>
+</div>
+<div class="bg-surface-container micro-card-highlight p-md rounded-lg flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Model Acc.</span>
+<span class="font-data-lg text-data-lg text-on-surface">91.4%</span>
+</div>
+<div class="bg-surface-container micro-card-highlight p-md rounded-lg flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Filtered</span>
+<span class="font-data-lg text-data-lg text-primary">142</span>
+</div>
+</aside>
+</div>
+<!-- Candidate Table -->
+<section class="w-full">
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-high/50 sticky top-0">
+<tr>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant">Structure</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant">HER Predicted (µmol/h)</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant">Confidence</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant">Bandgap (eV)</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<!-- Expanded Row: BiVO4/Rh -->
+<tr class="bg-secondary-container/5 hover:bg-surface-variant transition-colors group cursor-pointer" onclick="toggleRow('row-1')">
+<td class="p-md font-data-md text-data-md text-secondary">BiVO4 / Rh</td>
+<td class="p-md font-data-md text-data-md">245.8</td>
+<td class="p-md">
+<div class="w-24 bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 94%;"></div>
+</div>
+</td>
+<td class="p-md font-data-md text-data-md">2.41</td>
+<td class="p-md text-right">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="expand_less" id="icon-row-1">expand_less</span>
+</td>
+</tr>
+<tr class="bg-surface-container-low" id="row-1">
+<td class="p-lg" colspan="5">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-lg animate-in fade-in slide-in-from-top-2 duration-300">
+<div class="flex flex-col gap-md">
+<h4 class="font-label-caps text-label-caps text-primary border-b border-primary/20 pb-xs">Prediction Insights</h4>
+<div class="grid grid-cols-1 gap-sm">
+<div class="flex justify-between items-center glass-panel p-sm rounded">
+<span class="font-body-md text-on-surface-variant">Active Site Density</span>
+<span class="text-secondary font-data-md">+24.5%</span>
+</div>
+<div class="flex justify-between items-center glass-panel p-sm rounded">
+<span class="font-body-md text-on-surface-variant">Surface Area/Volume Ratio</span>
+<span class="text-secondary font-data-md">+12.1%</span>
+</div>
+<div class="flex justify-between items-center glass-panel p-sm rounded">
+<span class="font-body-md text-on-surface-variant">Carrier Recombination Risk</span>
+<span class="text-error font-data-md">-3.4%</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-body-md leading-relaxed">
+                                                The random forest model favored this heterojunction primarily due to the optimal band alignment between Rh nanoparticles and the (040) facet of BiVO4, which facilitates efficient hole scavenging.
+                                            </p>
+</div>
+<div class="h-48 rounded-lg overflow-hidden relative">
+<img alt="Microscopic crystal structure" class="w-full h-full object-cover opacity-60 grayscale hover:grayscale-0 transition-all" data-alt="A highly detailed 3D scientific visualization of a crystalline semiconductor structure with metallic co-catalyst nodes. The lighting is dramatic and clinical, utilizing deep obsidian shadows and vibrant ice blue glows to highlight molecular bonds and surface topography. The aesthetic is futuristic and precise, resembling high-resolution electron microscopy reimagined through an advanced technical UI lens." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF5ScAWsajqzVqppTeDZ_xtFfIIjw8c_w-DMwr7Bb9TL6AcaX1jgAkO983UraQKsNxv250_z_7xv0JpP7zwl9R_IXeKqyNzMsjcXmIpNSkbCmE4gZyCZVi1CQa4XIjgPKJ9Swck7kXozDG80CnheT4UWBm2J9HNyri8mv1NJlr44WxI97tzP6jUG2F-AUd3VnApvEyuYkRwIt7dO6lBZAtX_oPdfSmLZEaSy1au3aDdjMmS6B5RFBIUdt9c-c5tlpQnNbI5oCsJNTB"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+<span class="absolute bottom-2 left-2 font-label-caps text-[10px] bg-surface/80 px-xs py-1 rounded">Crystal Simulation (DFT)</span>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-variant transition-colors group cursor-pointer">
+<td class="p-md font-data-md text-data-md text-on-surface">TiO2 / Pt</td>
+<td class="p-md font-data-md text-data-md">182.1</td>
+<td class="p-md">
+<div class="w-24 bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 82%;"></div>
+</div>
+</td>
+<td class="p-md font-data-md text-data-md">3.20</td>
+<td class="p-md text-right">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="expand_more">expand_more</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-variant transition-colors group cursor-pointer">
+<td class="p-md font-data-md text-data-md text-on-surface">g-C3N4 / NiOx</td>
+<td class="p-md font-data-md text-data-md">156.4</td>
+<td class="p-md">
+<div class="w-24 bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 78%;"></div>
+</div>
+</td>
+<td class="p-md font-data-md text-data-md">2.70</td>
+<td class="p-md text-right">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="expand_more">expand_more</span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-variant transition-colors group cursor-pointer">
+<td class="p-md font-data-md text-data-md text-on-surface">SrTiO3 / CoPi</td>
+<td class="p-md font-data-md text-data-md">112.5</td>
+<td class="p-md">
+<div class="w-24 bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-error h-full" style="width: 45%;"></div>
+</div>
+</td>
+<td class="p-md font-data-md text-data-md">3.15</td>
+<td class="p-md text-right">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="expand_more">expand_more</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<!-- Navigation Shells -->
+<!-- SideNav for Desktop -->
+<nav class="hidden md:flex h-full w-64 fixed left-0 top-0 z-40 border-r border-outline-variant dark:border-outline-variant bg-surface-container-high/90 backdrop-blur-xl flex flex-col p-md gap-sm">
+<div class="mb-lg px-md pt-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="analytics">analytics</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Analysis</span>
+</div>
+<div class="flex flex-col gap-xs">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant transition-all duration-300 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="font-body-md text-body-md">Dataset</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant transition-all duration-300 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md">Model</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant transition-all duration-300 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-body-md text-body-md">SHAP</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container dark:bg-secondary-container dark:text-on-secondary-container rounded-lg flex items-center gap-md p-md transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
+<span class="font-body-md text-body-md">Screening</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant transition-all duration-300 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-body-md text-body-md">Figures</span>
+</a>
+</div>
+<div class="mt-auto pt-lg border-t border-outline-variant">
+<h5 class="px-md font-label-caps text-label-caps text-on-surface-variant opacity-50 mb-sm">Filter Presets</h5>
+<div class="flex flex-col gap-xs">
+<button class="p-md text-left text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all text-body-md flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> High Efficiency
+                </button>
+<button class="p-md text-left text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all text-body-md flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Earth Abundant
+                </button>
+</div>
+</div>
+</nav>
+<!-- BottomNavBar for Mobile -->
+<nav class="fixed bottom-0 w-full z-50 md:hidden bg-surface-container dark:bg-surface-container border-t border-outline-variant dark:border-outline-variant flex justify-around items-center h-16 px-md">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="font-label-caps text-label-caps">Dataset</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps">Model</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-label-caps text-label-caps">SHAP</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary font-bold transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
+<span class="font-label-caps text-label-caps">Screening</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-label-caps text-label-caps">Figures</span>
+</a>
+</nav>
+<script>
+        function toggleRow(id) {
+            const row = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            if (row.classList.contains('hidden')) {
+                row.classList.remove('hidden');
+                if(icon) icon.innerText = 'expand_less';
+            } else {
+                row.classList.add('hidden');
+                if(icon) icon.innerText = 'expand_more';
+            }
+        }
+        
+        // Adjust main content for SideNav on Desktop
+        function checkScreen() {
+            const main = document.querySelector('main');
+            const header = document.querySelector('header');
+            if (window.innerWidth >= 768) {
+                main.classList.add('ml-64');
+                header.classList.add('ml-64');
+            } else {
+                main.classList.remove('ml-64');
+                header.classList.remove('ml-64');
+            }
+        }
+        
+        window.addEventListener('resize', checkScreen);
+        window.addEventListener('load', checkScreen);
+    </script>
+</body></html>

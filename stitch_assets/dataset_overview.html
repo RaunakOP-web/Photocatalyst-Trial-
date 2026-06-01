@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Photocatalyst HER | Dataset Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#273647",
+                        "error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "inverse-primary": "#00668a",
+                        "surface-container": "#122131",
+                        "surface-dim": "#051424",
+                        "on-primary-fixed-variant": "#004c69",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#3e484f",
+                        "on-secondary-container": "#00311f",
+                        "surface-container-highest": "#273647",
+                        "tertiary": "#e1bfff",
+                        "on-secondary-fixed": "#002113",
+                        "error": "#ffb4ab",
+                        "on-primary-container": "#004965",
+                        "on-tertiary-fixed": "#2c0051",
+                        "primary-container": "#38bdf8",
+                        "on-error": "#690005",
+                        "on-surface": "#d4e4fa",
+                        "on-surface-variant": "#bdc8d1",
+                        "outline": "#87929a",
+                        "secondary-container": "#00a572",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "secondary": "#4edea3",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-container-high": "#1c2b3c",
+                        "surface": "#051424",
+                        "tertiary-container": "#ce9bff",
+                        "tertiary-fixed": "#f0dbff",
+                        "inverse-surface": "#d4e4fa",
+                        "on-primary-fixed": "#001e2c",
+                        "background": "#051424",
+                        "surface-tint": "#7bd0ff",
+                        "on-primary": "#00354a",
+                        "on-secondary": "#003824",
+                        "primary": "#8ed5ff",
+                        "primary-fixed-dim": "#7bd0ff",
+                        "on-background": "#d4e4fa",
+                        "primary-fixed": "#c4e7ff",
+                        "surface-container-low": "#0d1c2d",
+                        "surface-bright": "#2c3a4c",
+                        "on-tertiary": "#490080",
+                        "secondary-fixed": "#6ffbbe",
+                        "inverse-on-surface": "#233143",
+                        "on-tertiary-container": "#6400ac",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-container-lowest": "#010f1f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "container-max": "1440px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "data-lg": ["JetBrains Mono"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "data-md": ["JetBrains Mono"],
+                        "headline-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "data-lg": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "data-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #051424;
+            color: #d4e4fa;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(21, 25, 33, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.2s ease;
+        }
+        .glass-panel:hover {
+            border-color: rgba(142, 213, 255, 0.3);
+        }
+        .micro-card {
+            background: #151921;
+            border-top: 1px solid #4edea3;
+        }
+        .micro-card-alt {
+            background: #151921;
+            border-top: 1px solid #8ed5ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        /* Hide scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky border-b border-outline-variant bg-surface/80 backdrop-blur-md z-[60] flex justify-between items-center px-lg py-sm">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-headline-md" data-icon="science">science</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Photocatalyst HER</h1>
+</div>
+<div class="hidden md:flex gap-md">
+<button class="font-label-caps text-label-caps text-primary transition-colors duration-200 hover:bg-surface-container-high px-sm py-xs rounded">DATASET</button>
+<button class="font-label-caps text-label-caps text-on-surface-variant transition-colors duration-200 hover:bg-surface-container-high px-sm py-xs rounded">MODEL</button>
+<button class="font-label-caps text-label-caps text-on-surface-variant transition-colors duration-200 hover:bg-surface-container-high px-sm py-xs rounded">SHAP</button>
+<button class="font-label-caps text-label-caps text-on-surface-variant transition-colors duration-200 hover:bg-surface-container-high px-sm py-xs rounded">SCREENING</button>
+</div>
+<div class="flex items-center gap-xs">
+<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+<span class="font-label-caps text-label-caps text-secondary">Backend Connected</span>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-lg py-xl pb-32">
+<!-- Hero Metrics Bento -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg mb-xl">
+<div class="md:col-span-2 glass-panel p-lg rounded-xl flex flex-col justify-between">
+<div>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-xs">DATASET SYNCHRONIZATION</h2>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-md">Hydrogen Evolution Reaction Repository</p>
+</div>
+<div class="flex items-end justify-between">
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[300px]">
+                        Aggregated experimental data from peer-reviewed literature and high-throughput DFT calculations.
+                    </p>
+<span class="material-symbols-outlined text-secondary opacity-50 text-[48px]" data-icon="database">database</span>
+</div>
+</div>
+<!-- Micro-cards -->
+<div class="micro-card p-md rounded flex flex-col justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-xs">TOTAL EXPERIMENTS</span>
+<span class="font-data-lg text-[32px] text-secondary">838</span>
+<div class="mt-sm h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[85%]"></div>
+</div>
+</div>
+<div class="micro-card-alt p-md rounded flex flex-col justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-xs">UNIQUE SEMICONDUCTORS</span>
+<span class="font-data-lg text-[32px] text-primary">21</span>
+<div class="mt-sm h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[62%]"></div>
+</div>
+</div>
+</div>
+<!-- Charts Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Tree Map - Experiments by Semiconductor -->
+<div class="lg:col-span-2 glass-panel p-lg rounded-xl overflow-hidden relative min-h-[400px]">
+<div class="flex justify-between items-center mb-lg">
+<h3 class="font-headline-sm text-headline-sm flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+                        Experiments by Semiconductor
+                    </h3>
+<div class="flex gap-xs">
+<span class="bg-surface-variant px-xs py-1 rounded text-[10px] font-label-caps text-outline">FILTER: TiO2</span>
+<span class="bg-surface-variant px-xs py-1 rounded text-[10px] font-label-caps text-outline">SORT: COUNT</span>
+</div>
+</div>
+<!-- Simulated Treemap/Dense Bar Chart -->
+<div class="grid grid-cols-12 grid-rows-6 gap-xs h-[300px]">
+<div class="col-span-6 row-span-4 bg-secondary/20 border border-secondary/40 rounded p-sm relative group cursor-pointer hover:bg-secondary/30 transition-all">
+<span class="font-label-caps text-label-caps block">TiO2 (Anatase)</span>
+<span class="font-data-md text-secondary">245 Units</span>
+</div>
+<div class="col-span-3 row-span-4 bg-primary/20 border border-primary/40 rounded p-sm relative group cursor-pointer hover:bg-primary/30 transition-all">
+<span class="font-label-caps text-label-caps block">CdS</span>
+<span class="font-data-md text-primary">128 Units</span>
+</div>
+<div class="col-span-3 row-span-2 bg-surface-variant border border-outline-variant rounded p-sm relative group cursor-pointer hover:bg-surface-container-highest transition-all">
+<span class="font-label-caps text-label-caps block">g-C3N4</span>
+<span class="font-data-md">92</span>
+</div>
+<div class="col-span-3 row-span-2 bg-surface-variant border border-outline-variant rounded p-sm relative group cursor-pointer hover:bg-surface-container-highest transition-all">
+<span class="font-label-caps text-label-caps block">MoS2</span>
+<span class="font-data-md">76</span>
+</div>
+<div class="col-span-4 row-span-2 bg-surface-variant border border-outline-variant rounded p-sm relative group cursor-pointer hover:bg-surface-container-highest transition-all">
+<span class="font-label-caps text-label-caps block">ZnO</span>
+<span class="font-data-md">64</span>
+</div>
+<div class="col-span-4 row-span-2 bg-surface-variant border border-outline-variant rounded p-sm relative group cursor-pointer hover:bg-surface-container-highest transition-all">
+<span class="font-label-caps text-label-caps block">SrTiO3</span>
+<span class="font-data-md">51</span>
+</div>
+<div class="col-span-4 row-span-2 bg-surface-variant border border-outline-variant rounded p-sm relative group cursor-pointer hover:bg-surface-container-highest transition-all">
+<span class="font-label-caps text-label-caps block">Others (15)</span>
+<span class="font-data-md text-outline">182 Total</span>
+</div>
+</div>
+</div>
+<!-- Log Scale - HER Rate Distribution -->
+<div class="glass-panel p-lg rounded-xl flex flex-col">
+<div class="flex justify-between items-start mb-lg">
+<h3 class="font-headline-sm text-headline-sm flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+                        HER Rate Distribution
+                    </h3>
+<span class="material-symbols-outlined text-outline cursor-help" title="Distribution of H2 evolution rates across all experiments using a Log10 scale for normalization.">info</span>
+</div>
+<div class="flex-grow flex items-end justify-between gap-1 h-[240px] px-sm relative">
+<!-- Distribution Bars -->
+<div class="w-full h-[30%] bg-surface-variant/30 border-t border-secondary/20 rounded-t-sm"></div>
+<div class="w-full h-[50%] bg-surface-variant/40 border-t border-secondary/30 rounded-t-sm"></div>
+<div class="w-full h-[85%] bg-secondary/30 border-t border-secondary/60 rounded-t-sm relative group">
+<div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-surface-container-highest p-xs border border-outline-variant rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+<span class="font-label-caps text-[10px] whitespace-nowrap">Mode: 1.2 mmol/g/h</span>
+</div>
+</div>
+<div class="w-full h-[95%] bg-secondary/40 border-t border-secondary rounded-t-sm"></div>
+<div class="w-full h-[60%] bg-secondary/30 border-t border-secondary/60 rounded-t-sm"></div>
+<div class="w-full h-[40%] bg-surface-variant/40 border-t border-secondary/30 rounded-t-sm"></div>
+<div class="w-full h-[20%] bg-surface-variant/30 border-t border-secondary/20 rounded-t-sm"></div>
+<!-- Axis Labels -->
+<div class="absolute bottom-[-24px] left-0 right-0 flex justify-between font-label-caps text-[10px] text-outline">
+<span>10^-2</span>
+<span>10^0</span>
+<span>10^2</span>
+<span>10^4</span>
+</div>
+</div>
+<div class="mt-xl pt-lg border-t border-outline-variant">
+<div class="flex items-center gap-sm mb-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant">LOG-SCALE VARIANCE:</span>
+<span class="font-data-md text-primary">σ² = 1.42</span>
+</div>
+<p class="font-body-md text-body-md text-outline leading-relaxed">
+                        The majority of reported HER rates cluster between 1 and 100 mmol/g/h. Outliers above 10^3 signify catalyst-cocatalyst optimization peaks.
+                    </p>
+</div>
+</div>
+</div>
+<!-- Technical Metadata Footer (Within Main for visibility above Nav) -->
+<div class="mt-xl flex flex-wrap gap-lg justify-between items-center py-md border-t border-outline-variant">
+<div class="flex gap-lg">
+<div class="flex items-center gap-xs">
+<span class="font-label-caps text-label-caps text-outline">ENGINE:</span>
+<span class="font-data-md text-on-surface">HER-Optimizer-v2.1</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-label-caps text-label-caps text-outline">LATENCY:</span>
+<span class="font-data-md text-secondary">12ms</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-caps text-label-caps text-outline">LAST SYNC:</span>
+<span class="font-data-md text-on-surface">2023-10-24 14:22:10 UTC</span>
+</div>
+</div>
+</main>
+<!-- Navigation Shells -->
+<!-- Navigation Drawer (Desktop Only) -->
+<aside class="hidden lg:flex flex-col h-full w-64 fixed left-0 top-0 z-40 bg-surface-container-high/90 backdrop-blur-xl border-r border-outline-variant p-md gap-sm transition-all duration-300 ease-in-out">
+<div class="py-lg px-sm mb-md">
+<span class="font-headline-sm text-headline-sm text-on-surface">Filter Analysis</span>
+</div>
+<nav class="flex flex-col gap-xs">
+<a class="flex items-center gap-sm p-sm rounded-lg bg-secondary-container text-on-secondary-container font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+                Filters
+            </a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+                Parameters
+            </a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="variable_add">variable_add</span>
+                Variables
+            </a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="rule">rule</span>
+                Constraints
+            </a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                History
+            </a>
+</nav>
+</aside>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container border-t border-outline-variant flex justify-around items-center h-16 px-md">
+<button class="flex flex-col items-center justify-center text-secondary font-bold scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="database" style="font-variation-settings: 'FILL' 1;">database</span>
+<span class="font-label-caps text-[10px]">Dataset</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-[10px]">Model</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-label-caps text-[10px]">SHAP</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform">
+<span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
+<span class="font-label-caps text-[10px]">Screening</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-label-caps text-[10px]">Figures</span>
+</button>
+</nav>
+<script>
+        // Simple micro-interaction for charts
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body></html>
