@@ -1,0 +1,52 @@
+{
+  "XGBoost": {
+    "LOGO_CV_R2_mean": -0.1762,
+    "LOGO_CV_R2_std": 0.0,
+    "Test_R2_log": 0.5899,
+    "Test_R2_original": 0.2465,
+    "Test_MAE_log": 0.9889,
+    "Test_MAE_umol_g_h": 6530.4,
+    "Test_RMSE_umol_g_h": 24965.0,
+    "composite_score": 0.2069
+  },
+  "LightGBM": {
+    "LOGO_CV_R2_mean": -0.1487,
+    "LOGO_CV_R2_std": 0.0,
+    "Test_R2_log": 0.5513,
+    "Test_R2_original": 0.3287,
+    "Test_MAE_log": 1.0281,
+    "Test_MAE_umol_g_h": 6470.1,
+    "Test_RMSE_umol_g_h": 23563.3,
+    "composite_score": 0.2013
+  },
+  "CatBoost": {
+    "LOGO_CV_R2_mean": -0.1276,
+    "LOGO_CV_R2_std": 0.0,
+    "Test_R2_log": 0.5302,
+    "Test_R2_original": 0.5386,
+    "Test_MAE_log": 1.0376,
+    "Test_MAE_umol_g_h": 4796.0,
+    "Test_RMSE_umol_g_h": 19535.1,
+    "composite_score": 0.2013
+  },
+  "ExtraTrees": {
+    "LOGO_CV_R2_mean": -0.9457,
+    "LOGO_CV_R2_std": 0.0,
+    "Test_R2_log": 0.5489,
+    "Test_R2_original": 0.5251,
+    "Test_MAE_log": 1.019,
+    "Test_MAE_umol_g_h": 4869.1,
+    "Test_RMSE_umol_g_h": 19818.8,
+    "composite_score": -0.1984
+  },
+  "Ensemble": {
+    "LOGO_CV_R2_mean": -0.0931,
+    "LOGO_CV_R2_std": 0.0,
+    "Test_R2_log": 0.6152,
+    "Test_R2_original": 0.389,
+    "Test_MAE_log": 0.9027,
+    "Test_MAE_umol_g_h": 5655.0,
+    "Test_RMSE_umol_g_h": 22480.6,
+    "composite_score": 0.2611
+  }
+}

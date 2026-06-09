@@ -7,9 +7,10 @@ paths:
 data:
   target:            "HER_std_umol_g_h"
   hash_col:          "experiment_hash"
+  group_col:         "host_material"       # grouping key for LOGO-CV / GroupShuffleSplit
   random_state:      42
   test_size:         0.15
-  missing_threshold: 0.95
+  missing_threshold: 0.90                   # stricter: drop cols with ≥90% missing
 
   leakage_cols:
     - "AQY_pct"
@@ -64,13 +65,29 @@ data:
     - "confidence_wavelength"
 
 tuning:
-  n_trials:         60
-  cv_folds:         5
-  timeout_seconds:  600
+  n_trials:              60
+  cv_folds:              5
+  timeout_seconds:       600
+  logo_cv_splits:        null         # null = use LeaveOneGroupOut for final eval
+  repeated_seeds:        [42]         # single seed for speed; add more for final publication run
 
 models:
+  # Model pool for benchmarking (all evaluated)
+  pool:
+    - "XGBoost"
+    - "LightGBM"
+    - "CatBoost"
+    - "HistGBM"
+    - "ExtraTrees"
+    - "RandomForest"
+    - "Ridge"
+    - "Stacking"          # stacked ensemble of top-3
+
   xgboost:
     tree_method: "hist"
     verbosity:   0
   lightgbm:
     verbose: -1
+  catboost:
+    verbose: 0
+  histgbm: {}
