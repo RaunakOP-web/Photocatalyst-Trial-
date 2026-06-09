@@ -17,6 +17,16 @@ data:
     - "AQE_pct"
     - "STH_pct"
     - "HER_reported"
+    - "semi_bandgap_eV"
+    - "semi_electron_affinity_eV"
+    - "semi_dielectric"
+    - "semi_crystal"
+    - "semi_density"
+    - "cocat_work_function"
+    - "cocat_d_band_center"
+    - "cocat_atomic_radius"
+    - "cocat_electronegativity"
+    - "cocat_price"
 
   provenance_cols:
     - "DOI"
@@ -65,9 +75,9 @@ data:
     - "confidence_wavelength"
 
 tuning:
-  n_trials:              60
+  n_trials:              100
   cv_folds:              5
-  timeout_seconds:       600
+  timeout_seconds:       900
   logo_cv_splits:        null         # null = use LeaveOneGroupOut for final eval
   repeated_seeds:        [42]         # single seed for speed; add more for final publication run
 
