@@ -15,6 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import TargetEncoder
 from src.material_features import add_physical_features
 from src.outlier_removal import remove_training_outliers
+from src.matminer_features import add_matminer_descriptors
 
 # Load config
 with open("config.yaml") as f:
@@ -55,6 +56,7 @@ def main():
     # 2a. Load
     df = load_dataset(paths["raw_dir"])
     df = add_physical_features(df)
+    df = add_matminer_descriptors(df)
     
     # 2b. Year sanity check
     if "year" in df.columns:
