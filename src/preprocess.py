@@ -14,6 +14,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import TargetEncoder
 from src.material_features import add_physical_features
+from src.outlier_removal import remove_training_outliers
 
 # Load config
 with open("config.yaml") as f:
@@ -152,6 +153,7 @@ def main():
     # 2h. Log-transform target
     print("Step 2h: Log-transforming target...")
     df["log_HER"] = np.log1p(df[target_col])
+    df = remove_training_outliers(df, contamination=0.04)
     
     # 2i. Stratified split
     print("Step 2i: Creating stratified split on log_HER...")
