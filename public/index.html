@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photocatalyst Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-dt/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/datatables.net/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <h1>📊 Photocatalyst Dashboard</h1>
+  </header>
+  <nav class="tabs">
+    <button class="tab-btn active" data-target="dataset">📈 Dataset</button>
+    <button class="tab-btn" data-target="model-performance">🤖 Model Performance</button>
+    <button class="tab-btn" data-target="feature-importance">💡 Feature Importance</button>
+    <button class="tab-btn" data-target="virtual-screening">🔬 Virtual Screening</button>
+    <button class="tab-btn" data-target="publication-figures">📄 Publication Figures</button>
+    <button class="tab-btn" data-target="model-comparison">🧬 Model Comparison</button>
+  </nav>
+  <main class="content">
+    <section id="dataset" class="tab-section">
+      <h2>Dataset Overview</h2>
+      <p>Data description goes here.</p>
+    </section>
+    <section id="model-performance" class="tab-section hidden">
+      <h2>Top‑20 Photocatalyst Metrics</h2>
+      <canvas id="top20Chart" class="chart"></canvas>
+      <table id="top20Table" class="display" style="width:100%"></table>
+    </section>
+    <section id="feature-importance" class="tab-section hidden">
+      <h2>Feature Importance</h2>
+      <p>Feature plots will be added later.</p>
+    </section>
+    <section id="virtual-screening" class="tab-section hidden">
+      <h2>Virtual Screening Results</h2>
+      <p>Screening UI placeholder.</p>
+    </section>
+    <section id="publication-figures" class="tab-section hidden">
+      <h2>Publication Figures</h2>
+      <p>Figures from the paper.</p>
+    </section>
+    <section id="model-comparison" class="tab-section hidden">
+      <h2>Model Comparison (GNN Benchmark)</h2>
+      <canvas id="gnnChart" class="chart"></canvas>
+      <table id="gnnTable" class="display" style="width:100%"></table>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
