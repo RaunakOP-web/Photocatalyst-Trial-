@@ -1,1063 +1,1126 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Photocatalyst HER - Predictive Analytics & Screening Portal</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-              "surface-variant": "#273647",
-              "error-container": "#93000a",
-              "tertiary-fixed-dim": "#ddb7ff",
-              "inverse-primary": "#00668a",
-              "surface-container": "#122131",
-              "surface-dim": "#051424",
-              "on-primary-fixed-variant": "#004c69",
-              "on-error-container": "#ffdad6",
-              "outline-variant": "#3e484f",
-              "on-secondary-container": "#00311f",
-              "surface-container-highest": "#273647",
-              "tertiary": "#e1bfff",
-              "on-secondary-fixed": "#002113",
-              "error": "#ffb4ab",
-              "on-primary-container": "#004965",
-              "on-tertiary-fixed": "#2c0051",
-              "primary-container": "#38bdf8",
-              "on-error": "#690005",
-              "on-surface": "#d4e4fa",
-              "on-surface-variant": "#bdc8d1",
-              "outline": "#87929a",
-              "secondary-container": "#00a572",
-              "on-tertiary-fixed-variant": "#6900b3",
-              "secondary": "#4edea3",
-              "on-secondary-fixed-variant": "#005236",
-              "surface-container-high": "#1c2b3c",
-              "surface": "#051424",
-              "tertiary-container": "#ce9bff",
-              "tertiary-fixed": "#f0dbff",
-              "inverse-surface": "#d4e4fa",
-              "on-primary-fixed": "#001e2c",
-              "background": "#051424",
-              "surface-tint": "#7bd0ff",
-              "on-primary": "#00354a",
-              "on-secondary": "#003824",
-              "primary": "#8ed5ff",
-              "primary-fixed-dim": "#7bd0ff",
-              "on-background": "#d4e4fa",
-              "primary-fixed": "#c4e7ff",
-              "surface-container-low": "#0d1c2d",
-              "surface-bright": "#2c3a4c",
-              "on-tertiary": "#490080",
-              "secondary-fixed": "#6ffbbe",
-              "inverse-on-surface": "#233143",
-              "on-tertiary-container": "#6400ac",
-              "secondary-fixed-dim": "#4edea3",
-              "surface-container-lowest": "#010f1f"
-            },
-            "borderRadius": {
-              "DEFAULT": "0.125rem",
-              "lg": "0.25rem",
-              "xl": "0.5rem",
-              "full": "0.75rem"
-            },
-            "spacing": {
-              "xs": "4px",
-              "lg": "24px",
-              "base": "4px",
-              "xl": "32px",
-              "container-max": "1440px",
-              "gutter": "16px",
-              "md": "16px",
-              "sm": "8px"
-            },
-            "fontFamily": {
-              "data-lg": ["JetBrains Mono"],
-              "label-caps": ["JetBrains Mono"],
-              "headline-lg": ["Inter"],
-              "body-lg": ["Inter"],
-              "headline-md": ["Inter"],
-              "data-md": ["JetBrains Mono"],
-              "headline-sm": ["Inter"],
-              "body-md": ["Inter"]
-            },
-            "fontSize": {
-              "data-lg": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
-              "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
-              "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-              "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-              "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-              "data-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
-              "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
-              "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
-            }
-          },
-        },
-      }
-    </script>
-    
-    <style>
-        .scientific-grid {
-            background-color: #051424;
-            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-        .glass-panel {
-            background: rgba(21, 25, 33, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: border-color 0.2s ease;
-        }
-        .glass-panel:hover {
-            border-color: rgba(142, 213, 255, 0.2);
-        }
-        .micro-card-highlight {
-            border-top: 1px solid #38bdf8;
-            background: #151921;
-        }
-        .micro-card-highlight-secondary {
-            border-top: 1px solid #4edea3;
-            background: #151921;
-        }
-        .metric-glow-emerald {
-            border-top: 2px solid #4edea3;
-            box-shadow: 0 -4px 20px -10px rgba(78, 222, 163, 0.3);
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        /* Custom scrollbar for desktop */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #051424;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1c2b3c;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #273647;
-        }
-        .active-nav {
-            background-color: rgba(56, 189, 248, 0.15) !important;
-            color: #8ed5ff !important;
-            border-left: 3px solid #8ed5ff;
-        }
-        .active-mobile-nav {
-            color: #8ed5ff !important;
-        }
-        .active-top-nav {
-            color: #8ed5ff !important;
-            border-bottom: 2px solid #8ed5ff;
-        }
-        .markdown-container h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-            color: #8ed5ff;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 0.5rem;
-        }
-        .markdown-container h2 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-top: 1.25rem;
-            margin-bottom: 0.75rem;
-            color: #4edea3;
-        }
-        .markdown-container h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            color: #d4e4fa;
-        }
-        .markdown-container p {
-            margin-bottom: 1rem;
-            line-height: 1.6;
-            color: #bdc8d1;
-        }
-        .markdown-container ul {
-            list-style-type: disc;
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
-            color: #bdc8d1;
-        }
-        .markdown-container li {
-            margin-bottom: 0.25rem;
-        }
-        .markdown-container code {
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.1rem 0.3rem;
-            border-radius: 4px;
-            font-size: 0.9em;
-            color: #e1bfff;
-        }
-        .markdown-container pre {
-            background: #0d1c2d;
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin-bottom: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .markdown-container pre code {
-            background: none;
-            padding: 0;
-            color: #d4e4fa;
-        }
-    </style>
-    <!-- Chart.js and PapaParse (CSV parser) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhotoCat ML — Photocatalyst Discovery Dashboard</title>
+  <meta name="description" content="Machine learning dashboard for photocatalytic hydrogen evolution reaction (HER) catalyst discovery and screening." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:        #050811;
+      --surface:   #0d1526;
+      --surface2:  #121d35;
+      --border:    rgba(255,255,255,0.07);
+      --accent:    #3b82f6;
+      --accent2:   #8b5cf6;
+      --accent3:   #06b6d4;
+      --green:     #10b981;
+      --amber:     #f59e0b;
+      --red:       #ef4444;
+      --text:      #f1f5f9;
+      --muted:     #64748b;
+      --glow:      rgba(59,130,246,0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ───────────── ANIMATED BACKGROUND ───────────── */
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .bg-orbs {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-orbs span {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.15;
+      animation: drift 20s ease-in-out infinite alternate;
+    }
+    .bg-orbs span:nth-child(1) { width: 600px; height: 600px; background: #3b82f6; top: -200px; left: -100px; animation-duration: 18s; }
+    .bg-orbs span:nth-child(2) { width: 400px; height: 400px; background: #8b5cf6; bottom: 0; right: -100px; animation-duration: 22s; animation-delay: -8s; }
+    .bg-orbs span:nth-child(3) { width: 300px; height: 300px; background: #06b6d4; top: 50%; left: 50%; animation-duration: 15s; animation-delay: -4s; }
+
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(60px, 40px) scale(1.15); }
+    }
+
+    /* ───────────── LAYOUT ───────────── */
+    .wrapper {
+      position: relative; z-index: 1;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    /* ───────────── HEADER ───────────── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 0 20px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .logo-icon {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: grid; place-items: center;
+      font-size: 20px;
+      box-shadow: 0 0 24px var(--glow);
+    }
+    .logo h1 {
+      font-size: 1.4rem; font-weight: 800;
+      background: linear-gradient(90deg, #fff, #94a3b8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .logo p { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+
+    .header-badges { display: flex; gap: 8px; }
+    .badge {
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 600;
+      border: 1px solid var(--border);
+    }
+    .badge-green  { background: rgba(16,185,129,0.12); color: #34d399; border-color: rgba(16,185,129,0.25); }
+    .badge-blue   { background: rgba(59,130,246,0.12); color: #93c5fd; border-color: rgba(59,130,246,0.25); }
+    .badge-purple { background: rgba(139,92,246,0.12); color: #c4b5fd; border-color: rgba(139,92,246,0.25); }
+
+    /* ───────────── SECTION TITLE ───────────── */
+    .section-title {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 36px 0 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* ───────────── KPI CARDS ───────────── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      animation: fadeUp 0.5s ease both;
+    }
+    .kpi:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.2);
+      border-color: rgba(59,130,246,0.3);
+    }
+    .kpi::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--c1, #3b82f6), var(--c2, #8b5cf6));
+    }
+    .kpi-icon {
+      font-size: 1.4rem; margin-bottom: 10px;
+      display: inline-block;
+      animation: pulse-icon 3s ease-in-out infinite;
+    }
+    @keyframes pulse-icon {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+    .kpi-label { font-size: 0.72rem; color: var(--muted); font-weight: 500; }
+    .kpi-value {
+      font-size: 2rem; font-weight: 800; line-height: 1.1; margin: 4px 0;
+      background: linear-gradient(90deg, #fff, #cbd5e1);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-sub { font-size: 0.7rem; color: var(--muted); }
+    .kpi-trend {
+      position: absolute; top: 18px; right: 18px;
+      font-size: 0.72rem; font-weight: 600; padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .trend-up   { background: rgba(16,185,129,0.15); color: #34d399; }
+    .trend-down { background: rgba(239,68,68,0.15); color: #f87171; }
+    .trend-neu  { background: rgba(245,158,11,0.15); color: #fcd34d; }
+
+    /* ───────────── CHARTS GRID ───────────── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+      animation: fadeUp 0.5s ease both;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+    }
+
+    .card-title {
+      font-size: 0.85rem; font-weight: 600; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      display: inline-block;
+    }
+
+    .col-4  { grid-column: span 4; }
+    .col-5  { grid-column: span 5; }
+    .col-6  { grid-column: span 6; }
+    .col-7  { grid-column: span 7; }
+    .col-8  { grid-column: span 8; }
+    .col-12 { grid-column: span 12; }
+
+    @media (max-width: 1024px) {
+      .col-4, .col-5, .col-6, .col-7, .col-8 { grid-column: span 12; }
+    }
+
+    .chart-wrap { position: relative; width: 100%; }
+
+    /* ───────────── MODEL COMPARISON TABLE ───────────── */
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    thead th {
+      padding: 8px 14px; text-align: left;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); border-bottom: 1px solid var(--border);
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.03); }
+    tbody td {
+      padding: 10px 14px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+    }
+    .rank-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 50%;
+      font-weight: 700; font-size: 0.75rem;
+    }
+    .rank-1 { background: rgba(245,158,11,0.2); color: #fbbf24; }
+    .rank-2 { background: rgba(148,163,184,0.15); color: #94a3b8; }
+    .rank-3 { background: rgba(180,83,9,0.2); color: #d97706; }
+
+    /* ───────────── CANDIDATE LEADERBOARD ───────────── */
+    .leaderboard { display: flex; flex-direction: column; gap: 10px; }
+    .lb-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: default;
+    }
+    .lb-item:hover {
+      transform: translateX(4px);
+      box-shadow: -3px 0 0 var(--accent), 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .lb-rank {
+      font-size: 0.78rem; font-weight: 800; color: var(--muted);
+      min-width: 20px;
+    }
+    .lb-info { flex: 1; min-width: 0; }
+    .lb-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .lb-meta { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+    .lb-bar-wrap { flex: 1; min-width: 80px; }
+    .lb-bar-bg {
+      height: 4px; background: rgba(255,255,255,0.06);
+      border-radius: 2px; overflow: hidden;
+    }
+    .lb-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .lb-her {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem; font-weight: 600; color: var(--accent3);
+      min-width: 90px; text-align: right;
+    }
+
+    /* ───────────── SHAP IMPORTANCE ───────────── */
+    .shap-list { display: flex; flex-direction: column; gap: 8px; }
+    .shap-item { display: flex; align-items: center; gap: 10px; }
+    .shap-label {
+      font-size: 0.72rem; font-family: 'JetBrains Mono', monospace;
+      color: var(--muted); min-width: 160px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .shap-bar-bg {
+      flex: 1; height: 8px; background: rgba(255,255,255,0.06);
+      border-radius: 4px; overflow: hidden;
+    }
+    .shap-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .shap-val {
+      font-size: 0.72rem; font-family: 'JetBrains Mono', monospace;
+      color: var(--text); min-width: 44px; text-align: right;
+    }
+
+    /* ───────────── THERMODYNAMIC FILTER ───────────── */
+    .filter-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    }
+    .filter-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .filter-item h4 { font-size: 0.72rem; color: var(--muted); margin-bottom: 6px; }
+    .filter-item p {
+      font-size: 1.1rem; font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ───────────── FOOTER ───────────── */
+    footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.72rem; color: var(--muted);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    /* ───────────── ANIMATIONS ───────────── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* stagger children */
+    .kpi:nth-child(1) { animation-delay: 0.05s; }
+    .kpi:nth-child(2) { animation-delay: 0.10s; }
+    .kpi:nth-child(3) { animation-delay: 0.15s; }
+    .kpi:nth-child(4) { animation-delay: 0.20s; }
+    .kpi:nth-child(5) { animation-delay: 0.25s; }
+    .kpi:nth-child(6) { animation-delay: 0.30s; }
+
+    .card:nth-child(1) { animation-delay: 0.10s; }
+    .card:nth-child(2) { animation-delay: 0.18s; }
+    .card:nth-child(3) { animation-delay: 0.26s; }
+    .card:nth-child(4) { animation-delay: 0.34s; }
+    .card:nth-child(5) { animation-delay: 0.42s; }
+
+    /* live pulse dot */
+    .live-dot {
+      display: inline-block;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green);
+      margin-right: 6px;
+      animation: live-pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes live-pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); }
+      50%      { box-shadow: 0 0 0 5px rgba(16,185,129,0); }
+    }
+
+    /* number counter animation */
+    .count-up { display: inline-block; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+  </style>
 </head>
-<body class="bg-background text-on-surface font-body-md selection:bg-primary/30 scientific-grid min-h-screen pb-20 md:pb-0">
+<body>
 
-    <!-- Top App Bar -->
-    <header id="top-bar" class="w-full top-0 sticky border-b border-outline-variant bg-surface/80 backdrop-blur-md flex justify-between items-center px-lg py-sm z-50 md:pl-72 transition-all duration-300">
-        <div class="flex items-center gap-sm">
-            <span class="material-symbols-outlined text-primary font-headline-md text-headline-md" data-icon="science">science</span>
-            <h1 class="font-headline-md text-headline-md font-bold text-primary">Photocatalyst HER</h1>
-        </div>
-        
-        <!-- Desktop Header Tab Bar -->
-        <div class="hidden lg:flex gap-md">
-            <button onclick="switchTab('dataset')" class="top-nav-btn font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" id="top-nav-dataset">DATASET</button>
-            <button onclick="switchTab('model')" class="top-nav-btn font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" id="top-nav-model">MODEL</button>
-            <button onclick="switchTab('shap')" class="top-nav-btn font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" id="top-nav-shap">SHAP</button>
-            <button onclick="switchTab('screening')" class="top-nav-btn font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" id="top-nav-screening">SCREENING</button>
-            <button onclick="switchTab('figures')" class="top-nav-btn font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" id="top-nav-figures">FIGURES</button>
-        </div>
+<div class="bg-grid"></div>
+<div class="bg-orbs">
+  <span></span><span></span><span></span>
+</div>
 
-        <div class="flex items-center gap-md">
-            <span class="font-label-caps text-label-caps text-secondary px-sm py-xs bg-secondary-container/20 rounded-lg flex items-center gap-sm">
-                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                Backend Connected
-            </span>
-        </div>
-    </header>
+<div class="wrapper">
 
-    <!-- Sidebar / SideNav (Desktop Only) -->
-    <aside class="hidden md:flex h-full w-64 fixed left-0 top-0 z-40 border-r border-outline-variant bg-surface-container-high/90 backdrop-blur-xl flex flex-col p-md gap-sm">
-        <div class="mb-lg px-md pt-lg flex items-center gap-sm">
-            <span class="material-symbols-outlined text-primary" data-icon="analytics">analytics</span>
-            <span class="font-headline-sm text-headline-sm text-on-surface font-bold">Analysis Portal</span>
-        </div>
-        
-        <!-- Sidebar Navigation Links -->
-        <div class="flex flex-col gap-xs flex-grow overflow-y-auto no-scrollbar">
-            <a onclick="switchTab('dataset')" id="side-nav-dataset" class="side-nav-btn flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all duration-300 rounded-lg cursor-pointer">
-                <span class="material-symbols-outlined" data-icon="database">database</span>
-                <span class="font-body-md text-body-md">Dataset Overview</span>
-            </a>
-            <a onclick="switchTab('model')" id="side-nav-model" class="side-nav-btn flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all duration-300 rounded-lg cursor-pointer">
-                <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-                <span class="font-body-md text-body-md">Model Performance</span>
-            </a>
-            <a onclick="switchTab('shap')" id="side-nav-shap" class="side-nav-btn flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all duration-300 rounded-lg cursor-pointer">
-                <span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
-                <span class="font-body-md text-body-md">SHAP Analysis</span>
-            </a>
-            <a onclick="switchTab('screening')" id="side-nav-screening" class="side-nav-btn flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all duration-300 rounded-lg cursor-pointer">
-                <span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
-                <span class="font-body-md text-body-md">Virtual Screening</span>
-            </a>
-            <a onclick="switchTab('figures')" id="side-nav-figures" class="side-nav-btn flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all duration-300 rounded-lg cursor-pointer">
-                <span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
-                <span class="font-body-md text-body-md">Manuscript Figures</span>
-            </a>
-            
-            <div class="my-sm border-t border-outline-variant/30"></div>
-            
-            <a onclick="switchTab('prd')" id="side-nav-prd" class="side-nav-btn flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all duration-300 rounded-lg cursor-pointer">
-                <span class="material-symbols-outlined" data-icon="description">description</span>
-                <span class="font-body-md text-body-md">Technical PRD</span>
-            </a>
-            <a onclick="switchTab('design')" id="side-nav-design" class="side-nav-btn flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all duration-300 rounded-lg cursor-pointer">
-                <span class="material-symbols-outlined" data-icon="palette">palette</span>
-                <span class="font-body-md text-body-md">Design System</span>
-            </a>
-        </div>
-        
-        <!-- Filter Presets Section at bottom -->
-        <div class="mt-auto pt-lg border-t border-outline-variant">
-            <h5 class="px-md font-label-caps text-label-caps text-on-surface-variant opacity-50 mb-sm">Quick Presets</h5>
-            <div class="flex flex-col gap-xs">
-                <button onclick="applyPreset('high_efficiency')" class="p-md text-left text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-lg transition-all text-body-md flex items-center gap-sm">
-                    <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span> High Efficiency
-                </button>
-                <button onclick="applyPreset('earth_abundant')" class="p-md text-left text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-lg transition-all text-body-md flex items-center gap-sm">
-                    <span class="w-2 h-2 rounded-full bg-primary"></span> Earth Abundant
-                </button>
-            </div>
-        </div>
-    </aside>
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">⚗️</div>
+      <div>
+        <h1>PhotoCat ML</h1>
+        <p>Photocatalytic HER Discovery Platform</p>
+      </div>
+    </div>
+    <div class="header-badges">
+      <span class="badge badge-green"><span class="live-dot"></span>Live</span>
+      <span class="badge badge-blue">Ensemble Model</span>
+      <span class="badge badge-purple">5,000+ Candidates</span>
+    </div>
+  </header>
 
-    <!-- Bottom Navigation Bar (Mobile Only) -->
-    <nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container/95 backdrop-blur-xl border-t border-outline-variant/80 flex justify-around items-center h-16 px-md">
-        <a onclick="switchTab('dataset')" id="mobile-nav-dataset" class="mobile-nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-90 cursor-pointer">
-            <span class="material-symbols-outlined" data-icon="database">database</span>
-            <span class="font-label-caps text-[10px]">Dataset</span>
-        </a>
-        <a onclick="switchTab('model')" id="mobile-nav-model" class="mobile-nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-90 cursor-pointer">
-            <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-            <span class="font-label-caps text-[10px]">Model</span>
-        </a>
-        <a onclick="switchTab('shap')" id="mobile-nav-shap" class="mobile-nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-90 cursor-pointer">
-            <span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
-            <span class="font-label-caps text-[10px]">SHAP</span>
-        </a>
-        <a onclick="switchTab('screening')" id="mobile-nav-screening" class="mobile-nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-90 cursor-pointer">
-            <span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
-            <span class="font-label-caps text-[10px]">Screening</span>
-        </a>
-        <a onclick="switchTab('figures')" id="mobile-nav-figures" class="mobile-nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform scale-95 active:scale-90 cursor-pointer">
-            <span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
-            <span class="font-label-caps text-[10px]">Figures</span>
-        </a>
-    </nav>
+  <!-- KPI SECTION -->
+  <div class="section-title">🎯 Key Performance Indicators</div>
+  <div class="kpi-grid">
 
-    <!-- Main Content Container -->
-    <main class="md:ml-64 mx-auto p-md md:p-lg lg:p-xl transition-all duration-300 max-w-container-max">
-        
-        <!-- ====================================================== -->
-        <!-- TAB 1: DATASET OVERVIEW -->
-        <!-- ====================================================== -->
-        <div id="tab-dataset" class="tab-content flex flex-col gap-lg">
-            <div>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Dataset Overview</h2>
-                <p class="text-on-surface-variant font-body-lg">Cleaned experimental dataset profile and target HER distribution metrics</p>
-            </div>
-            
-            <!-- Bento Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-lg">
-                <div class="md:col-span-2 glass-panel p-lg rounded-xl flex flex-col justify-between">
-                    <div>
-                        <h2 class="font-label-caps text-label-caps text-primary mb-xs">DATASET SYNCHRONIZATION</h2>
-                        <p class="font-headline-sm text-headline-sm text-on-surface mb-md">Hydrogen Evolution Reaction Repository</p>
-                    </div>
-                    <div class="flex items-end justify-between">
-                        <p class="font-body-md text-body-md text-on-surface-variant max-w-[320px]">
-                            Aggregated experimental data from peer-reviewed literature and high-throughput DFT calculations.
-                        </p>
-                        <span class="material-symbols-outlined text-secondary opacity-50 text-[48px]" data-icon="database">database</span>
-                    </div>
-                </div>
-                <!-- Bento micro-cards -->
-                <div class="micro-card-highlight-secondary p-lg rounded-xl flex flex-col justify-center min-h-[140px]">
-                    <span class="font-label-caps text-label-caps text-on-surface-variant mb-xs">TOTAL EXPERIMENTS</span>
-                    <span class="font-data-lg text-[36px] text-secondary font-bold" id="metric-total-experiments">838</span>
-                    <div class="mt-sm h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
-                        <div class="h-full bg-secondary w-full"></div>
-                    </div>
-                </div>
-                <div class="micro-card-highlight p-lg rounded-xl flex flex-col justify-center min-h-[140px]">
-                    <span class="font-label-caps text-label-caps text-on-surface-variant mb-xs">UNIQUE SEMICONDUCTORS</span>
-                    <span class="font-data-lg text-[36px] text-primary font-bold" id="metric-unique-semiconductors">21</span>
-                    <div class="mt-sm h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
-                        <div class="h-full bg-primary w-[75%]"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Charts Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-                <!-- Semiconductor Distribution Chart -->
-                <div class="lg:col-span-2 glass-panel p-lg rounded-xl flex flex-col justify-between min-h-[460px]">
-                    <div class="flex justify-between items-center mb-md">
-                        <h3 class="font-headline-sm text-headline-sm flex items-center gap-xs">
-                            <span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
-                            Experiments by Semiconductor
-                        </h3>
-                        <div class="flex gap-xs text-[10px]">
-                            <span class="bg-surface-variant px-xs py-1 rounded font-label-caps text-outline uppercase">SOURCE: df_clean.csv</span>
-                        </div>
-                    </div>
-                    <div class="flex-grow w-full relative h-[320px]">
-                        <canvas id="chart-semiconductor-dist"></canvas>
-                    </div>
-                </div>
-                
-                <!-- HER Rate log distribution -->
-                <div class="glass-panel p-lg rounded-xl flex flex-col justify-between min-h-[460px]">
-                    <div class="flex justify-between items-start mb-md">
-                        <h3 class="font-headline-sm text-headline-sm flex items-center gap-xs">
-                            <span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
-                            HER Rate Distribution
-                        </h3>
-                        <span class="material-symbols-outlined text-outline cursor-help text-sm" title="Log10 normalized distribution of experimental Hydrogen Evolution Rates.">info</span>
-                    </div>
-                    <div class="flex-grow w-full relative h-[240px]">
-                        <canvas id="chart-her-dist"></canvas>
-                    </div>
-                    <div class="mt-md pt-md border-t border-outline-variant/40">
-                        <div class="flex items-center gap-sm mb-sm text-sm">
-                            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">HER Max:</span>
-                            <span class="font-data-md text-secondary font-bold" id="val-her-max">269,120 μmol/g/h</span>
-                        </div>
-                        <p class="font-body-md text-body-md text-outline leading-relaxed">
-                            HER rates span 5 orders of magnitude. The log-normal scaling helps mitigate target skewness for stable model training.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Metadata Footer -->
-            <div class="flex flex-wrap gap-lg justify-between items-center py-md border-t border-outline-variant/30 mt-lg">
-                <div class="flex gap-lg text-xs">
-                    <div class="flex items-center gap-xs">
-                        <span class="font-label-caps text-label-caps text-outline">ENGINE:</span>
-                        <span class="font-data-md text-on-surface font-semibold">LightGBM/XGBoost Regressor</span>
-                    </div>
-                    <div class="flex items-center gap-xs">
-                        <span class="font-label-caps text-label-caps text-outline">FEATURES:</span>
-                        <span class="font-data-md text-secondary font-semibold">40 physical & process features</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-sm text-xs">
-                    <span class="font-label-caps text-label-caps text-outline">LAST PIPELINE COMPILE:</span>
-                    <span class="font-data-md text-on-surface" id="sync-timestamp">2026-06-01 11:11 UTC</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ====================================================== -->
-        <!-- TAB 2: MODEL PERFORMANCE -->
-        <!-- ====================================================== -->
-        <div id="tab-model" class="tab-content hidden flex flex-col gap-lg animate-in fade-in duration-200">
-            <div>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Model Performance Analysis</h2>
-                <p class="font-body-lg text-body-lg text-on-surface-variant">Validation statistics under LOMO-CV (Leave-One-Material-Out Cross-Validation) and test projections</p>
-            </div>
-            
-            <!-- Model Performance Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-                <div class="bg-surface-container border border-outline-variant p-md metric-glow-emerald rounded-lg flex flex-col justify-between min-h-[100px]">
-                    <div class="flex justify-between items-start mb-sm">
-                        <span class="font-label-caps text-label-caps text-on-surface-variant">LOMO-CV R² (Best Model)</span>
-                        <span class="material-symbols-outlined text-sm text-on-surface-variant cursor-help" title="LOMO-CV assesses model generalization performance on host materials completely omitted during model training.">info</span>
-                    </div>
-                    <div class="flex items-baseline gap-sm">
-                        <span class="font-data-lg text-[28px] text-secondary font-bold" id="model-lomo-r2">0.7739</span>
-                        <span class="font-label-caps text-[10px] text-secondary/70">XGBOOST</span>
-                    </div>
-                </div>
-                <div class="bg-surface-container border border-outline-variant p-md metric-glow-emerald rounded-lg flex flex-col justify-between min-h-[100px]">
-                    <div class="flex justify-between items-start mb-sm">
-                        <span class="font-label-caps text-label-caps text-on-surface-variant">Test Set Spearman RHO</span>
-                        <span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="query_stats">query_stats</span>
-                    </div>
-                    <div class="flex items-baseline gap-sm">
-                        <span class="font-data-lg text-[28px] text-secondary font-bold" id="model-spearman">0.9162</span>
-                        <span class="font-label-caps text-[10px] text-on-surface-variant">RANK CORRELATION</span>
-                    </div>
-                </div>
-                <div class="bg-surface-container border border-outline-variant p-md metric-glow-emerald rounded-lg flex flex-col justify-between min-h-[100px]">
-                    <div class="flex justify-between items-start mb-sm">
-                        <span class="font-label-caps text-label-caps text-on-surface-variant">Conformal Coverage (90% Target)</span>
-                        <span class="material-symbols-outlined text-sm text-on-surface-variant cursor-help" title="Empirical coverage percentage of the calibrated split conformal prediction intervals at a 90% confidence level.">verified_user</span>
-                    </div>
-                    <div class="flex items-baseline gap-sm">
-                        <span class="font-data-lg text-[28px] text-secondary font-bold" id="model-conformal-cov">91.3%</span>
-                        <span class="font-label-caps text-[10px] text-on-surface-variant">empirical</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Scatter and Residual Analysis -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
-                <!-- Predicted vs Actual Scatter Plot -->
-                <div class="lg:col-span-8 glass-panel rounded-xl p-lg flex flex-col justify-between min-h-[480px]">
-                    <div class="flex justify-between items-center mb-md">
-                        <div>
-                            <h3 class="font-headline-sm text-headline-sm text-on-surface">Test Predictions vs Ground Truth</h3>
-                            <p class="font-body-md text-body-md text-on-surface-variant">Model prediction calibration in logarithmic space</p>
-                        </div>
-                        <div class="flex bg-surface-container-lowest p-xs rounded-full border border-outline-variant">
-                            <button id="scale-btn-log" onclick="toggleScatterScale('log')" class="px-md py-xs rounded-full font-label-caps text-label-caps bg-primary text-on-primary transition-colors">Log Scale</button>
-                            <button id="scale-btn-orig" onclick="toggleScatterScale('orig')" class="px-md py-xs rounded-full font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-variant transition-colors">Original</button>
-                        </div>
-                    </div>
-                    <div class="flex-grow w-full relative h-[360px]">
-                        <canvas id="chart-actual-vs-predicted"></canvas>
-                    </div>
-                </div>
-                
-                <!-- Residual Histogram -->
-                <div class="lg:col-span-4 glass-panel rounded-xl p-lg flex flex-col justify-between min-h-[480px]">
-                    <div>
-                        <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Residual Distribution</h3>
-                        <p class="font-body-md text-body-md text-on-surface-variant">Log-space residual error frequency (Actual - Predicted)</p>
-                    </div>
-                    <div class="flex-grow w-full relative h-[240px]">
-                        <canvas id="chart-residuals"></canvas>
-                    </div>
-                    <div class="mt-md pt-md border-t border-outline-variant/40">
-                        <h4 class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Semiconductor Error Rates</h4>
-                        <div class="grid grid-cols-3 gap-xs text-[11px] text-center">
-                            <div class="p-xs bg-surface-container rounded border border-outline-variant/20">
-                                <span class="block text-outline uppercase font-label-caps text-[9px]">Oxides</span>
-                                <span class="text-secondary font-bold font-data-md">±0.45</span>
-                            </div>
-                            <div class="p-xs bg-surface-container rounded border border-outline-variant/20">
-                                <span class="block text-outline uppercase font-label-caps text-[9px]">Sulfide</span>
-                                <span class="text-secondary font-bold font-data-md">±0.72</span>
-                            </div>
-                            <div class="p-xs bg-surface-container rounded border border-outline-variant/20">
-                                <span class="block text-outline uppercase font-label-caps text-[9px]">Nitride</span>
-                                <span class="text-secondary font-bold font-data-md">±0.68</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Reference Section -->
-            <section class="grid grid-cols-1 md:grid-cols-2 gap-lg mt-md">
-                <div class="p-lg rounded-xl border border-outline-variant bg-surface-container-low flex flex-col justify-between">
-                    <div class="flex items-center gap-md mb-md">
-                        <div class="p-sm bg-primary/10 rounded-full">
-                            <span class="material-symbols-outlined text-primary" data-icon="query_stats">query_stats</span>
-                        </div>
-                        <h4 class="font-headline-sm text-headline-sm">Material Domain Coverage</h4>
-                    </div>
-                    <p class="font-body-md text-body-md text-on-surface-variant mb-md leading-relaxed">
-                        The physical feature embedding successfully maps 21 distinct semiconductor classes. Predictive errors are well-contained within the applicability domain, with higher accuracy in oxide-metal junctions.
-                    </p>
-                    <div class="h-36 rounded-lg overflow-hidden border border-outline-variant bg-surface-container-highest relative">
-                        <img src="data/results/figures/fig9_applicability_domain.png" alt="Applicability Domain" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"/>
-                        <span class="absolute bottom-2 left-2 font-label-caps text-[10px] bg-surface/80 px-xs py-1 rounded">Applicability Domain Bounds</span>
-                    </div>
-                </div>
-                
-                <div class="p-lg rounded-xl border border-outline-variant bg-surface-container-low flex flex-col justify-between">
-                    <div class="flex items-center gap-md mb-md">
-                        <div class="p-sm bg-secondary/10 rounded-full">
-                            <span class="material-symbols-outlined text-secondary" data-icon="history">history</span>
-                        </div>
-                        <h4 class="font-headline-sm text-headline-sm">Algorithm Benchmarks</h4>
-                    </div>
-                    <div class="flex-grow overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
-                            <thead>
-                                <tr class="border-b border-outline-variant">
-                                    <th class="py-sm font-label-caps text-outline uppercase">Algorithm</th>
-                                    <th class="py-sm font-label-caps text-outline uppercase">LOMO-CV R²</th>
-                                    <th class="py-sm font-label-caps text-outline uppercase">Test R² Log</th>
-                                    <th class="py-sm font-label-caps text-outline uppercase">Test MAE</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-outline-variant/30 text-on-surface-variant">
-                                <tr>
-                                    <td class="py-sm font-semibold text-on-surface">LightGBM</td>
-                                    <td class="py-sm font-data-md">0.7738</td>
-                                    <td class="py-sm font-data-md">0.7830</td>
-                                    <td class="py-sm font-data-md">6,562</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-sm font-semibold text-on-surface">XGBoost</td>
-                                    <td class="py-sm font-data-md">0.7739</td>
-                                    <td class="py-sm font-data-md">0.7831</td>
-                                    <td class="py-sm font-data-md">6,327</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-sm font-semibold text-on-surface">Ridge</td>
-                                    <td class="py-sm font-data-md">0.4192</td>
-                                    <td class="py-sm font-data-md">0.3973</td>
-                                    <td class="py-sm font-data-md">10,315</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="font-body-md text-[11px] text-outline mt-md leading-relaxed">
-                        XGBoost and LightGBM models exhibit high alignment and rank preservation (Spearman rho = 0.92) across all testing sets.
-                    </p>
-                </div>
-            </section>
-        </div>
-
-        <!-- ====================================================== -->
-        <!-- TAB 3: SHAP ANALYSIS -->
-        <!-- ====================================================== -->
-        <div id="tab-shap" class="tab-content hidden flex flex-col gap-lg animate-in fade-in duration-200">
-            <div>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">SHAP Explanations (XAI)</h2>
-                <p class="font-body-lg text-body-lg text-on-surface-variant">Global feature attribution and physical driving forces computed via SHAP TreeExplainer</p>
-            </div>
-            
-            <section class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-                <div class="lg:col-span-2 glass-panel p-lg rounded-xl flex flex-col justify-center">
-                    <h2 class="font-label-caps text-label-caps text-primary mb-sm uppercase">Explainable AI Insight</h2>
-                    <p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
-                        The model identifies <span class="text-secondary font-bold">Light Source Type</span>, <span class="text-secondary font-bold">Secondary Semiconductor</span>, and <span class="text-secondary font-bold">Preparation Method</span> as the primary driving factors for H₂ yield. Physical descriptors like <span class="text-tertiary font-semibold">d-band center</span> and <span class="text-tertiary font-semibold">bandgap energy</span> show strong non-linear relationships.
-                    </p>
-                </div>
-                <div class="bg-surface-container-high p-lg rounded-xl border-t border-primary/20 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-md">
-                            <span class="font-label-caps text-label-caps text-on-surface-variant">Global Consistency</span>
-                            <span class="font-data-lg text-data-lg text-secondary">94.2%</span>
-                        </div>
-                        <div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
-                            <div class="h-full bg-secondary" style="width: 94.2%"></div>
-                        </div>
-                    </div>
-                    <p class="mt-md font-body-md text-xs text-on-surface-variant leading-relaxed">
-                        Features demonstrate highly stable attribution profiles across LOMO cross-validation folds.
-                    </p>
-                </div>
-            </section>
-            
-            <!-- SHAP Charts -->
-            <section class="grid grid-cols-1 xl:grid-cols-12 gap-lg">
-                <!-- Beeswarm Canvas Plot -->
-                <div class="xl:col-span-8 glass-panel rounded-xl p-lg flex flex-col justify-between min-h-[460px]">
-                    <div class="flex items-center justify-between mb-md">
-                        <h3 class="font-headline-sm text-headline-sm text-on-surface">SHAP Beeswarm Distribution</h3>
-                        <div class="flex items-center gap-md text-xs">
-                            <div class="flex items-center gap-xs">
-                                <span class="w-3 h-3 rounded-full bg-[#ffb4ab]"></span>
-                                <span class="font-label-caps text-label-caps text-on-surface-variant">High Feature Value</span>
-                            </div>
-                            <div class="flex items-center gap-xs">
-                                <span class="w-3 h-3 rounded-full bg-[#8ed5ff]"></span>
-                                <span class="font-label-caps text-label-caps text-on-surface-variant">Low Feature Value</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Beeswarm Chart JS canvas -->
-                    <div class="flex-grow w-full relative h-[360px]">
-                        <canvas id="chart-shap-beeswarm"></canvas>
-                    </div>
-                    <div class="mt-md flex items-center gap-sm bg-surface-container/30 p-sm rounded border border-outline-variant/20 text-xs">
-                        <span class="material-symbols-outlined text-primary text-sm" data-icon="info">info</span>
-                        <p class="font-body-md text-on-surface-variant">Each dot represents a test sample. A positive SHAP value indicates a positive influence on predicting the Hydrogen Evolution rate.</p>
-                    </div>
-                </div>
-                
-                <!-- SHAP Feature Importance List -->
-                <div class="xl:col-span-4 flex flex-col gap-lg">
-                    <div class="glass-panel rounded-xl p-lg flex-grow flex flex-col justify-between">
-                        <h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Attribution Rankings</h3>
-                        <div class="flex-grow overflow-y-auto no-scrollbar max-h-[300px] pr-2" id="shap-rankings-list">
-                            <!-- Populated by JS -->
-                            <div class="space-y-sm">
-                                <div class="space-y-xs">
-                                    <div class="flex justify-between items-end">
-                                        <span class="font-label-caps text-label-caps text-on-surface uppercase text-xs">Loading...</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-surface-container-low p-lg rounded-xl border border-outline-variant/30 flex flex-col gap-sm">
-                        <h4 class="font-label-caps text-label-caps text-on-surface-variant uppercase">Key Physical Insight</h4>
-                        <div class="bg-surface/50 p-md rounded space-y-2 text-xs">
-                            <div class="flex justify-between">
-                                <span class="text-outline uppercase font-label-caps">Work Function Effect</span>
-                                <span class="text-primary font-bold">Non-linear</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-outline uppercase font-label-caps">Recombination Peak</span>
-                                <span class="text-secondary font-bold">> 2.0 wt% loading</span>
-                            </div>
-                        </div>
-                        <p class="font-body-md text-[11px] text-outline leading-relaxed">
-                            SHAP waterfall analyses confirm co-catalysts yield maximal gains at intermediate concentrations before shadowing effects dominate.
-                        </p>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- ====================================================== -->
-        <!-- TAB 4: VIRTUAL SCREENING -->
-        <!-- ====================================================== -->
-        <div id="tab-screening" class="tab-content hidden flex flex-col gap-lg animate-in fade-in duration-200">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
-                <div>
-                    <h2 class="font-headline-lg text-headline-lg text-on-surface">Virtual Screening</h2>
-                    <p class="text-on-surface-variant font-body-lg">High-throughput library candidate selection and model projections</p>
-                </div>
-                <button onclick="exportCandidates()" class="bg-primary text-on-primary-fixed px-lg py-md rounded-lg flex items-center gap-sm font-label-caps text-label-caps hover:bg-primary-container transition-colors shadow-lg">
-                    <span class="material-symbols-outlined" data-icon="download">download</span>
-                    Export Candidates (<span id="btn-export-count">20</span> found)
-                </button>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
-                <!-- Query Builder Panel -->
-                <section class="lg:col-span-8 flex flex-col gap-md">
-                    <div class="glass-panel p-lg rounded-xl flex flex-col gap-md">
-                        <div class="flex items-center gap-sm border-b border-outline-variant/40 pb-sm">
-                            <span class="material-symbols-outlined text-primary" data-icon="filter_alt">filter_alt</span>
-                            <h3 class="font-headline-sm text-headline-sm uppercase tracking-wider text-xs">Multi-step Query Builder</h3>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
-                            <!-- Semiconductor Filter -->
-                            <div class="flex flex-col gap-xs">
-                                <label class="font-label-caps text-label-caps text-on-surface-variant text-[11px]">Semiconductor</label>
-                                <div class="relative">
-                                    <select id="filter-semiconductor" onchange="runFilters()" class="w-full bg-surface-container border-none border-b-2 border-outline focus:border-primary focus:ring-0 text-on-surface p-sm pr-lg rounded-t-lg transition-all appearance-none text-sm">
-                                        <option value="all">All Semiconductors</option>
-                                        <option value="bivo4">Bismuth Vanadate (BiVO4)</option>
-                                        <option value="srtio3">Strontium Titanate (SrTiO3)</option>
-                                        <option value="fe2o3">Iron Oxide (Fe2O3)</option>
-                                        <option value="wo3">Tungsten Trioxide (WO3)</option>
-                                        <option value="in2o3">Indium Oxide (In2O3)</option>
-                                    </select>
-                                    <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-sm" data-icon="expand_more">expand_more</span>
-                                </div>
-                            </div>
-                            <!-- Co-catalyst Filter -->
-                            <div class="flex flex-col gap-xs">
-                                <label class="font-label-caps text-label-caps text-on-surface-variant text-[11px]">Co-catalyst</label>
-                                <div class="relative">
-                                    <select id="filter-cocatalyst" onchange="runFilters()" class="w-full bg-surface-container border-none border-b-2 border-outline focus:border-primary focus:ring-0 text-on-surface p-sm pr-lg rounded-t-lg transition-all appearance-none text-sm">
-                                        <option value="all">All Co-catalysts</option>
-                                        <option value="rh">Rhodium (Rh)</option>
-                                        <option value="pt">Platinum (Pt)</option>
-                                        <option value="wc">Tungsten Carbide (WC)</option>
-                                        <option value="ru">Ruthenium (Ru)</option>
-                                        <option value="pd">Palladium (Pd)</option>
-                                        <option value="ir">Iridium (Ir)</option>
-                                    </select>
-                                    <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-sm" data-icon="expand_more">expand_more</span>
-                                </div>
-                            </div>
-                            <!-- Light Type Filter -->
-                            <div class="flex flex-col gap-xs">
-                                <label class="font-label-caps text-label-caps text-on-surface-variant text-[11px]">Light Source Type</label>
-                                <div class="flex gap-1" id="filter-light-container">
-                                    <button onclick="toggleLightFilter('all', this)" class="filter-light-btn flex-1 bg-primary text-on-primary-fixed py-2 rounded-lg font-label-caps text-[10px] transition-all">All</button>
-                                    <button onclick="toggleLightFilter('visible', this)" class="filter-light-btn flex-1 border border-outline text-on-surface-variant py-2 rounded-lg font-label-caps text-[10px] hover:border-primary transition-all">Visible</button>
-                                    <button onclick="toggleLightFilter('solar', this)" class="filter-light-btn flex-1 border border-outline text-on-surface-variant py-2 rounded-lg font-label-caps text-[10px] hover:border-primary transition-all">Solar</button>
-                                    <button onclick="toggleLightFilter('uv-vis', this)" class="filter-light-btn flex-1 border border-outline text-on-surface-variant py-2 rounded-lg font-label-caps text-[10px] hover:border-primary transition-all">UV-Vis</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                
-                <!-- Quick Screen metrics -->
-                <aside class="lg:col-span-4 grid grid-cols-2 gap-md">
-                    <div class="bg-surface-container micro-card-highlight p-md rounded-lg flex flex-col justify-between h-28">
-                        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Screen Space</span>
-                        <span class="font-data-lg text-lg text-primary font-bold">61,200</span>
-                    </div>
-                    <div class="bg-surface-container micro-card-highlight-secondary p-md rounded-lg flex flex-col justify-between h-28">
-                        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Potential Yield</span>
-                        <span class="font-data-lg text-lg text-secondary font-bold">84.2%</span>
-                    </div>
-                    <div class="bg-surface-container micro-card-highlight p-md rounded-lg flex flex-col justify-between h-28">
-                        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Model Acc. (Test)</span>
-                        <span class="font-data-lg text-lg text-on-surface font-bold">91.4%</span>
-                    </div>
-                    <div class="bg-surface-container micro-card-highlight p-md rounded-lg flex flex-col justify-between h-28">
-                        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Filtered Matches</span>
-                        <span class="font-data-lg text-lg text-primary font-bold id-filtered-count" id="metric-filtered-count">20</span>
-                    </div>
-                </aside>
-            </div>
-            
-            <!-- Candidate Table -->
-            <section class="w-full">
-                <div class="glass-panel rounded-xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse" id="screening-table">
-                            <thead class="bg-surface-container-high/50 sticky top-0">
-                                <tr>
-                                    <th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant text-[11px]">Material Composition</th>
-                                    <th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant text-[11px]">Predicted HER (μmol/g/h)</th>
-                                    <th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant text-[11px]">Confidence Band</th>
-                                    <th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant text-[11px]">Bandgap (eV)</th>
-                                    <th class="p-md font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-outline-variant text-[11px] text-right">Attribution</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-outline-variant/30 text-xs" id="candidates-table-body">
-                                <!-- Populated dynamically by JS -->
-                                <tr>
-                                    <td colspan="5" class="p-md text-center text-outline">Loading candidate predictions...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- ====================================================== -->
-        <!-- TAB 5: PUBLICATION FIGURES -->
-        <!-- ====================================================== -->
-        <div id="tab-figures" class="tab-content hidden flex flex-col gap-lg animate-in fade-in duration-200">
-            <div>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Manuscript Figures</h2>
-                <p class="text-on-surface-variant font-body-lg">High-resolution (300 DPI) publication-ready figures available for download</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg" id="figures-grid">
-                <!-- Figure Cards -->
-                <!-- Figure 1 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/fig1_dataset_overview.png" alt="Dataset Overview" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 1</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Dataset Overview Analysis</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">Profile of host semiconductors and corresponding H₂ yield densities</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/fig1_dataset_overview.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/fig1_dataset_overview.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/fig1_dataset_overview.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Figure 2 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/fig2_model_comparison.png" alt="Model Comparison" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 2</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Cross-Validation Benchmark</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">Cross-validation R² and MAE comparison across LightGBM, XGBoost, and Ridge</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/fig2_model_comparison.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/fig2_model_comparison.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/fig2_model_comparison.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Figure 3 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/fig3_actual_vs_predicted.png" alt="Actual vs Predicted" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 3</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Predicted vs Actual Parity</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">Parity scatter plot showing prediction error bounds in log scale</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/fig3_actual_vs_predicted.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/fig3_actual_vs_predicted.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/fig3_actual_vs_predicted.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Figure 4 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/fig4_shap_analysis.png" alt="SHAP Analysis" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 4</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Global SHAP Attribution</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">SHAP feature rankings and local beeswarm scatter distributions</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/fig4_shap_analysis.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/fig4_shap_analysis.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/fig4_shap_analysis.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Figure 5 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/fig5_per_material_performance.png" alt="Material Error" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 5</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Material-Specific Performance</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">Attribution profiles broken down by semiconductor families</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/fig5_per_material_performance.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/fig5_per_material_performance.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/fig5_per_material_performance.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Figure 6 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/fig6_discovery_candidates.png" alt="Discovery Predictions" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 6</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Screened Candidates Profiling</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">Top discovery candidates categorized by energy yields and novelty scores</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/fig6_discovery_candidates.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/fig6_discovery_candidates.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/fig6_discovery_candidates.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Figure 7 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/fig7_calibration_curve.png" alt="Calibration Curve" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 7</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Conformal Calibration</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">Conformal prediction error calibration curves against empirical confidence bounds</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/fig7_calibration_curve.png" download class="flex-grow bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Figure 8 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/fig8_ablation.png" alt="Ablation Study" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 8</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Feature Ablation Study</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">Influence of individual descriptor groups on LOMO-CV R² predictions</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/fig8_ablation.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/fig8_ablation.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/fig8_ablation.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Figure 9 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/fig9_applicability_domain.png" alt="Applicability Domain" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 9</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Applicability Domain Bounds</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">k-NN Euclidean distance checks between training space and query points</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/fig9_applicability_domain.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/fig9_applicability_domain.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/fig9_applicability_domain.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Figure 10 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/shap_material_family.png" alt="SHAP Family" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 10</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">SHAP Material-Family Breakdown</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">Driver ranking differentials across TiO₂, ZnO, CdS, and g-C3N4 families</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/shap_material_family.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/shap_material_family.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/shap_material_family.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Figure 11 -->
-                <div class="glass-panel rounded-xl overflow-hidden flex flex-col justify-between group">
-                    <div class="h-48 overflow-hidden relative bg-surface-container flex items-center justify-center p-sm">
-                        <img src="data/results/figures/shap_local_top20.png" alt="SHAP Local Top 20" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
-                        <span class="absolute top-2 left-2 font-label-caps text-[9px] bg-surface-container-high/80 px-xs py-1 rounded">Figure 11</span>
-                    </div>
-                    <div class="p-md border-t border-outline-variant/30 flex-grow flex flex-col justify-between gap-sm">
-                        <div>
-                            <h4 class="font-headline-sm text-sm text-on-surface font-semibold">Local attribution waterfalls</h4>
-                            <p class="font-body-md text-xs text-on-surface-variant">Local SHAP explanations for top-performing test examples</p>
-                        </div>
-                        <div class="flex gap-xs border-t border-outline-variant/10 pt-sm">
-                            <a href="data/results/figures/shap_local_top20.png" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PNG</a>
-                            <a href="data/results/figures/shap_local_top20.pdf" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">PDF</a>
-                            <a href="data/results/figures/shap_local_top20.svg" download class="flex-1 bg-surface-container-high hover:bg-surface-variant text-[10px] font-label-caps py-1 rounded text-center transition-colors">SVG</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ====================================================== -->
-        <!-- TAB 6: TECHNICAL PRD -->
-        <!-- ====================================================== -->
-        <div id="tab-prd" class="tab-content hidden glass-panel p-lg md:p-xl rounded-xl markdown-container animate-in fade-in duration-200 max-h-[85vh] overflow-y-auto">
-            <h2 class="font-headline-lg text-headline-lg text-primary mb-md border-b border-outline-variant/30 pb-xs">Photocatalyst HER PRD</h2>
-            <div id="prd-content-rendered">
-                <!-- Loaded from prd.md -->
-            </div>
-        </div>
-
-        <!-- ====================================================== -->
-        <!-- TAB 7: DESIGN SYSTEM -->
-        <!-- ====================================================== -->
-        <div id="tab-design" class="tab-content hidden glass-panel p-lg md:p-xl rounded-xl markdown-container animate-in fade-in duration-200 max-h-[85vh] overflow-y-auto">
-            <h2 class="font-headline-lg text-headline-lg text-primary mb-md border-b border-outline-variant/30 pb-xs">Design System Guidelines</h2>
-            <div id="design-content-rendered">
-                <!-- Loaded from design_system.md -->
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Global Figure View Modal -->
-    <div id="figure-modal" class="fixed inset-0 z-[100] hidden bg-black/90 flex items-center justify-center p-md">
-        <button onclick="closeFigureModal()" class="absolute top-4 right-4 text-outline hover:text-on-surface bg-surface-container-high p-sm rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined" data-icon="close">close</span>
-        </button>
-        <div class="max-w-4xl max-h-[90vh] flex flex-col gap-md items-center">
-            <img id="modal-img" src="" alt="Zoomed Figure" class="max-h-[80vh] object-contain rounded-lg border border-outline-variant/40"/>
-            <span id="modal-caption" class="text-sm font-semibold text-on-surface">Figure Caption</span>
-        </div>
+    <div class="kpi" style="--c1:#3b82f6;--c2:#06b6d4">
+      <div class="kpi-icon">🤖</div>
+      <div class="kpi-label">Best Model CV R²</div>
+      <div class="kpi-value count-up" data-target="0.797" data-decimals="3">0.000</div>
+      <div class="kpi-sub">LightGBM · 5-fold CV</div>
+      <span class="kpi-trend trend-up">↑ Best</span>
     </div>
 
-    <!-- SPA Application Script -->
-    <script src="src/app.js"></script>
+    <div class="kpi" style="--c1:#8b5cf6;--c2:#ec4899">
+      <div class="kpi-icon">🏆</div>
+      <div class="kpi-label">Top HER Rate Predicted</div>
+      <div class="kpi-value count-up" data-target="8730" data-decimals="0">0</div>
+      <div class="kpi-sub">μmol·g⁻¹·h⁻¹ · NiS/g-C₃N₄</div>
+      <span class="kpi-trend trend-up">↑ #1</span>
+    </div>
+
+    <div class="kpi" style="--c1:#06b6d4;--c2:#10b981">
+      <div class="kpi-icon">📡</div>
+      <div class="kpi-label">Spearman ρ</div>
+      <div class="kpi-value count-up" data-target="0.922" data-decimals="3">0.000</div>
+      <div class="kpi-sub">LightGBM · log-scale</div>
+      <span class="kpi-trend trend-up">↑ Strong</span>
+    </div>
+
+    <div class="kpi" style="--c1:#f59e0b;--c2:#ef4444">
+      <div class="kpi-icon">📊</div>
+      <div class="kpi-label">Test MAE</div>
+      <div class="kpi-value count-up" data-target="6562" data-decimals="0">0</div>
+      <div class="kpi-sub">μmol·g⁻¹·h⁻¹ · LightGBM</div>
+      <span class="kpi-trend trend-neu">~ MAE</span>
+    </div>
+
+    <div class="kpi" style="--c1:#10b981;--c2:#06b6d4">
+      <div class="kpi-icon">🔬</div>
+      <div class="kpi-label">In2S3 Best STH</div>
+      <div class="kpi-value count-up" data-target="20.42" data-decimals="2">0.00</div>
+      <div class="kpi-sub">% · Ni(2.69wt%)/In₂S₃</div>
+      <span class="kpi-trend trend-up">↑ Rank 1</span>
+    </div>
+
+    <div class="kpi" style="--c1:#ec4899;--c2:#8b5cf6">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-label">Screened Candidates</div>
+      <div class="kpi-value count-up" data-target="5000" data-decimals="0">0</div>
+      <div class="kpi-sub">Virtual library · screen_candidates.py</div>
+      <span class="kpi-trend trend-up">↑ All</span>
+    </div>
+
+  </div>
+
+  <!-- CHARTS ROW 1 -->
+  <div class="section-title">📈 Model Performance</div>
+  <div class="charts-grid">
+
+    <!-- Model Comparison Radar -->
+    <div class="card col-5">
+      <div class="card-title">
+        <span class="card-dot" style="background:#3b82f6"></span>
+        Model Comparison · CV R²
+      </div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartModelBar"></canvas>
+      </div>
+    </div>
+
+    <!-- R² Gauge -->
+    <div class="card col-4">
+      <div class="card-title">
+        <span class="card-dot" style="background:#10b981"></span>
+        Ensemble R² (Test, Log-Scale)
+      </div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartGauge"></canvas>
+      </div>
+    </div>
+
+    <!-- LOMO CV -->
+    <div class="card col-3">
+      <div class="card-title">
+        <span class="card-dot" style="background:#f59e0b"></span>
+        LOMO CV R²
+      </div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartLomo"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHARTS ROW 2 -->
+  <div class="section-title">🧪 Candidate Discovery</div>
+  <div class="charts-grid">
+
+    <!-- Leaderboard -->
+    <div class="card col-6">
+      <div class="card-title">
+        <span class="card-dot" style="background:#8b5cf6"></span>
+        Top Candidates · Predicted HER (μmol·g⁻¹·h⁻¹)
+      </div>
+      <div class="leaderboard" id="leaderboard"></div>
+    </div>
+
+    <!-- HER by host -->
+    <div class="card col-6">
+      <div class="card-title">
+        <span class="card-dot" style="background:#06b6d4"></span>
+        HER Distribution by Host Material
+      </div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chartHerHost"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHARTS ROW 3 -->
+  <div class="section-title">🧠 SHAP Feature Importance</div>
+  <div class="charts-grid">
+
+    <div class="card col-7">
+      <div class="card-title">
+        <span class="card-dot" style="background:#ec4899"></span>
+        Top Features · Mean |SHAP|
+      </div>
+      <div class="shap-list" id="shapList"></div>
+    </div>
+
+    <div class="card col-5">
+      <div class="card-title">
+        <span class="card-dot" style="background:#3b82f6"></span>
+        Feature Category Breakdown
+      </div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chartShapPie"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHARTS ROW 4 -->
+  <div class="section-title">🏅 Multi-Objective Screening</div>
+  <div class="charts-grid">
+
+    <div class="card col-6">
+      <div class="card-title">
+        <span class="card-dot" style="background:#10b981"></span>
+        Pred HER vs Pred AQY · Top Candidates
+      </div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartScatter"></canvas>
+      </div>
+    </div>
+
+    <div class="card col-6">
+      <div class="card-title">
+        <span class="card-dot" style="background:#f59e0b"></span>
+        STH Efficiency · Top Multi-Objective Candidates (%)
+      </div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartSth"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODEL DETAILS TABLE -->
+  <div class="section-title">📋 Detailed Model Metrics</div>
+  <div class="charts-grid">
+    <div class="card col-12">
+      <div class="card-title">
+        <span class="card-dot" style="background:#3b82f6"></span>
+        Full Model Benchmark Table
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Model</th>
+              <th>CV R² (mean)</th>
+              <th>CV R² (std)</th>
+              <th>LOMO R²</th>
+              <th>Test R² (log)</th>
+              <th>Spearman ρ</th>
+              <th>Test MAE (μmol·g⁻¹·h⁻¹)</th>
+              <th>Test RMSE</th>
+              <th>Composite Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="rank-badge rank-2">2</span></td>
+              <td>XGBoost</td>
+              <td>0.7930</td>
+              <td>±0.0245</td>
+              <td>0.7739</td>
+              <td>0.7831</td>
+              <td>0.9162</td>
+              <td>6,327</td>
+              <td>18,704</td>
+              <td>0.6751</td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge rank-1">1</span></td>
+              <td>LightGBM</td>
+              <td>0.7969</td>
+              <td>±0.0254</td>
+              <td>0.7738</td>
+              <td>0.7830</td>
+              <td>0.9220</td>
+              <td>6,562</td>
+              <td>20,448</td>
+              <td>0.6381</td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge rank-3">3</span></td>
+              <td>Ridge</td>
+              <td>0.4090</td>
+              <td>±0.0394</td>
+              <td>0.4192</td>
+              <td>0.3973</td>
+              <td>0.6558</td>
+              <td>10,315</td>
+              <td>28,341</td>
+              <td>0.2515</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHYSICS FILTER -->
+  <div class="section-title">⚡ Thermodynamic Filters Applied</div>
+  <div class="charts-grid">
+    <div class="card col-12">
+      <div class="card-title">
+        <span class="card-dot" style="background:#06b6d4"></span>
+        Multi-Objective Screening Criteria
+      </div>
+      <div class="filter-grid">
+        <div class="filter-item">
+          <h4>CB Position (vs NHE)</h4>
+          <p style="color:#06b6d4">≤ 0 V (H⁺ reduction thermodynamics)</p>
+        </div>
+        <div class="filter-item">
+          <h4>VB Overpotential</h4>
+          <p style="color:#10b981">≥ 0.6 V above H₂O oxidation</p>
+        </div>
+        <div class="filter-item">
+          <h4>Bandgap Range</h4>
+          <p style="color:#f59e0b">1.7 – 3.2 eV (visible light active)</p>
+        </div>
+        <div class="filter-item">
+          <h4>Glycerol Reforming Filter</h4>
+          <p style="color:#ec4899">Sacrificial agent: 10 vol% glycerol</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>PhotoCat ML · Photocatalytic HER Discovery · <span style="font-family:'JetBrains Mono',monospace">v2.0</span></div>
+    <div>Models: XGBoost · LightGBM · Ridge Ensemble · Dataset: 173 entries</div>
+  </footer>
+
+</div>
+
+<script>
+/* ── Chart.js global defaults ── */
+Chart.defaults.color = '#64748b';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = "'Inter', sans-serif";
+
+const accent  = '#3b82f6';
+const accent2 = '#8b5cf6';
+const accent3 = '#06b6d4';
+const green   = '#10b981';
+const amber   = '#f59e0b';
+const red     = '#ef4444';
+const pink    = '#ec4899';
+
+/* ── 1. Model Comparison Bar ── */
+(function() {
+  const ctx = document.getElementById('chartModelBar').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['XGBoost', 'LightGBM', 'Ridge'],
+      datasets: [{
+        label: 'CV R² (mean)',
+        data: [0.7930, 0.7969, 0.4090],
+        backgroundColor: [
+          'rgba(59,130,246,0.7)',
+          'rgba(139,92,246,0.7)',
+          'rgba(100,116,139,0.5)',
+        ],
+        borderColor: [accent, accent2, '#475569'],
+        borderWidth: 2,
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` R² = ${ctx.parsed.y.toFixed(4)}`
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 0.3, max: 0.85,
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { font: { size: 11 } }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 12, weight: '600' } }
+        }
+      },
+      animation: {
+        duration: 1200,
+        easing: 'easeOutQuart'
+      }
+    }
+  });
+})();
+
+/* ── 2. Doughnut Gauge ── */
+(function() {
+  const ctx = document.getElementById('chartGauge').getContext('2d');
+  const val = 0.783;
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [val, 1 - val],
+        backgroundColor: [
+          { colorStops: [
+            { offset: 0,   color: accent },
+            { offset: 1,   color: green  }
+          ], type: 'linear' },
+          'rgba(255,255,255,0.05)'
+        ],
+        borderWidth: 0,
+        circumference: 240,
+        rotation: -120,
+      }]
+    },
+    plugins: [{
+      id: 'center-text',
+      afterDraw(chart) {
+        const { ctx, chartArea: { top, bottom, left, right } } = chart;
+        const cx = (left + right) / 2;
+        const cy = (top + bottom) / 2 + 20;
+        ctx.save();
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 26px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText('0.783', cx, cy);
+        ctx.fillStyle = '#64748b';
+        ctx.font = '12px Inter';
+        ctx.fillText('Test R² (log)', cx, cy + 22);
+        ctx.restore();
+      }
+    }],
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '78%',
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: { duration: 1600, easing: 'easeOutQuart' }
+    }
+  });
+})();
+
+/* ── 3. LOMO CV bar ── */
+(function() {
+  const ctx = document.getElementById('chartLomo').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['XGB', 'LGBM', 'Ridge'],
+      datasets: [{
+        label: 'LOMO R²',
+        data: [0.7739, 0.7738, 0.4192],
+        backgroundColor: ['rgba(6,182,212,0.7)', 'rgba(16,185,129,0.7)', 'rgba(100,116,139,0.4)'],
+        borderColor: [accent3, green, '#475569'],
+        borderWidth: 2,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { min: 0.3, max: 0.85, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 10 } } },
+        y: { grid: { display: false }, ticks: { font: { size: 11, weight: '600' } } }
+      },
+      animation: { duration: 1400, easing: 'easeOutQuart' }
+    }
+  });
+})();
+
+/* ── 4. Leaderboard ── */
+(function() {
+  const candidates = [
+    { rank:1,  name:'Ni(2.69wt%)/In₂S₃',    host:'In₂S₃',    her: 5721, cocatalyst:'Ni', bg: 1.817 },
+    { rank:2,  name:'Ni(2.21wt%)/In₂S₃',    host:'In₂S₃',    her: 5209, cocatalyst:'Ni', bg: 1.837 },
+    { rank:3,  name:'Ni(2.85wt%)/In₂S₃',    host:'In₂S₃',    her: 5256, cocatalyst:'Ni', bg: 1.878 },
+    { rank:4,  name:'Ni(2.89wt%)/ZnIn₂S₄',  host:'ZnIn₂S₄',  her: 4980, cocatalyst:'Ni', bg: 2.156 },
+    { rank:5,  name:'Ni(2.18wt%)/ZnIn₂S₄',  host:'ZnIn₂S₄',  her: 4704, cocatalyst:'Ni', bg: 2.123 },
+    { rank:6,  name:'Ni(1.29wt%)/ZnIn₂S₄',  host:'ZnIn₂S₄',  her: 4902, cocatalyst:'Ni', bg: 2.177 },
+    { rank:7,  name:'Rh(3.0wt%)/BiVO₄',     host:'BiVO₄',    her: 2571, cocatalyst:'Rh', bg: 2.45 },
+    { rank:8,  name:'Rh(0.5wt%)/SrTiO₃',    host:'SrTiO₃',   her: 2569, cocatalyst:'Rh', bg: 3.20 },
+    { rank:9,  name:'WC(5.0wt%)/SrTiO₃',    host:'SrTiO₃',   her: 2543, cocatalyst:'WC', bg: 3.20 },
+    { rank:10, name:'WC(2.0wt%)/BiVO₄',     host:'BiVO₄',    her: 2542, cocatalyst:'WC', bg: 2.45 },
+  ];
+  const maxHer = candidates[0].her;
+  const el = document.getElementById('leaderboard');
+  candidates.forEach(c => {
+    const pct = (c.her / maxHer * 100).toFixed(1);
+    const div = document.createElement('div');
+    div.className = 'lb-item';
+    div.innerHTML = `
+      <span class="lb-rank">#${c.rank}</span>
+      <div class="lb-info">
+        <div class="lb-name">${c.name}</div>
+        <div class="lb-meta">${c.host} · ${c.cocatalyst} · Eg ${c.bg.toFixed(2)} eV</div>
+      </div>
+      <div class="lb-bar-wrap">
+        <div class="lb-bar-bg"><div class="lb-bar" style="width:0%" data-pct="${pct}%"></div></div>
+      </div>
+      <span class="lb-her">${c.her.toLocaleString()} μmol·g⁻¹·h⁻¹</span>
+    `;
+    el.appendChild(div);
+  });
+  // animate bars after render
+  setTimeout(() => {
+    document.querySelectorAll('.lb-bar').forEach(b => {
+      b.style.width = b.dataset.pct;
+    });
+  }, 400);
+})();
+
+/* ── 5. HER by host ── */
+(function() {
+  const ctx = document.getElementById('chartHerHost').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['In₂S₃', 'ZnIn₂S₄', 'BiVO₄', 'SrTiO₃', 'Fe₂O₃', 'WO₃', 'In₂O₃'],
+      datasets: [
+        {
+          label: 'Predicted HER (μmol·g⁻¹·h⁻¹)',
+          data: [5395, 4862, 2543, 2540, 2336, 1852, 1825],
+          backgroundColor: [
+            'rgba(59,130,246,0.8)',
+            'rgba(139,92,246,0.8)',
+            'rgba(6,182,212,0.8)',
+            'rgba(16,185,129,0.8)',
+            'rgba(245,158,11,0.8)',
+            'rgba(236,72,153,0.8)',
+            'rgba(100,116,139,0.6)',
+          ],
+          borderRadius: 8,
+          borderWidth: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.parsed.y.toLocaleString()} μmol·g⁻¹·h⁻¹`
+          }
+        }
+      },
+      scales: {
+        y: {
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { font: { size: 11 }, callback: v => v >= 1000 ? (v/1000).toFixed(1)+'k' : v }
+        },
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      },
+      animation: { duration: 1400, easing: 'easeOutQuart' }
+    }
+  });
+})();
+
+/* ── 6. SHAP list ── */
+(function() {
+  const features = [
+    { name: 'light_source_type',     val: 0.5068, cat:'light'  },
+    { name: 'semiconductor_2',       val: 0.2993, cat:'material'},
+    { name: 'preparation_photo',     val: 0.2256, cat:'process' },
+    { name: 'reaction_volume_mL',    val: 0.2074, cat:'reactor' },
+    { name: 'cocat_d_band_center',   val: 0.1774, cat:'cocat'  },
+    { name: 'co_catalyst_wt_pct',    val: 0.1699, cat:'cocat'  },
+    { name: 'catalyst_loading_g_L',  val: 0.1631, cat:'reactor' },
+    { name: 'semiconductor_1_pct',   val: 0.1315, cat:'material'},
+    { name: 'bandgap_eV',            val: 0.1272, cat:'material'},
+    { name: 'light_power_W',         val: 0.1178, cat:'light'  },
+  ];
+  const catColors = {
+    light:    ['#f59e0b','#fcd34d'],
+    material: ['#3b82f6','#93c5fd'],
+    process:  ['#8b5cf6','#c4b5fd'],
+    reactor:  ['#06b6d4','#67e8f9'],
+    cocat:    ['#10b981','#6ee7b7'],
+  };
+  const maxVal = features[0].val;
+  const el = document.getElementById('shapList');
+  features.forEach(f => {
+    const pct = (f.val / maxVal * 100).toFixed(1);
+    const [c1, c2] = catColors[f.cat];
+    const div = document.createElement('div');
+    div.className = 'shap-item';
+    div.innerHTML = `
+      <span class="shap-label">${f.name}</span>
+      <div class="shap-bar-bg">
+        <div class="shap-bar" style="width:0%;background:linear-gradient(90deg,${c1},${c2})" data-pct="${pct}%"></div>
+      </div>
+      <span class="shap-val">${f.val.toFixed(3)}</span>
+    `;
+    el.appendChild(div);
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.shap-bar').forEach(b => {
+      b.style.width = b.dataset.pct;
+    });
+  }, 500);
+})();
+
+/* ── 7. SHAP Pie ── */
+(function() {
+  const ctx = document.getElementById('chartShapPie').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Light Source', 'Material Props', 'Process Params', 'Reactor Conditions', 'Co-catalyst'],
+      datasets: [{
+        data: [0.62, 0.58, 0.22, 0.37, 0.35],
+        backgroundColor: [
+          'rgba(245,158,11,0.8)',
+          'rgba(59,130,246,0.8)',
+          'rgba(139,92,246,0.8)',
+          'rgba(6,182,212,0.8)',
+          'rgba(16,185,129,0.8)',
+        ],
+        borderColor: ['#050811'],
+        borderWidth: 3,
+        hoverOffset: 10,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: 11 }, padding: 12 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${ctx.parsed.toFixed(2)} SHAP`
+          }
+        }
+      },
+      animation: { duration: 1400, easing: 'easeOutQuart' }
+    }
+  });
+})();
+
+/* ── 8. Scatter HER vs AQY ── */
+(function() {
+  const ctx = document.getElementById('chartScatter').getContext('2d');
+  const data = [
+    { x: 5721, y: 63.9,  r: 10, label:'Ni/In₂S₃ #1' },
+    { x: 5209, y: 68.3,  r: 9,  label:'Ni/In₂S₃ #2' },
+    { x: 5256, y: 72.0,  r: 9,  label:'Ni/In₂S₃ #3' },
+    { x: 4980, y: 69.6,  r: 8,  label:'Ni/ZnIn₂S₄ #1' },
+    { x: 4704, y: 70.1,  r: 8,  label:'Ni/ZnIn₂S₄ #2' },
+    { x: 4902, y: 69.2,  r: 7,  label:'Ni/ZnIn₂S₄ #3' },
+    { x: 2571, y: 58.0,  r: 6,  label:'Rh/BiVO₄' },
+    { x: 2569, y: 55.0,  r: 6,  label:'Rh/SrTiO₃' },
+    { x: 2543, y: 54.0,  r: 5,  label:'WC/SrTiO₃' },
+    { x: 2332, y: 52.0,  r: 5,  label:'WC/Fe₂O₃' },
+  ];
+  new Chart(ctx, {
+    type: 'bubble',
+    data: {
+      datasets: [{
+        label: 'Candidates',
+        data: data,
+        backgroundColor: data.map((_, i) =>
+          `hsla(${220 - i*15}, 80%, 65%, 0.7)`
+        ),
+        borderColor: 'rgba(255,255,255,0.2)',
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return `${data[ctx.dataIndex].label}: HER=${d.x.toLocaleString()}, AQY=${d.y}%`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Predicted HER (μmol·g⁻¹·h⁻¹)', font: { size: 11 } },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { font: { size: 10 }, callback: v => (v/1000).toFixed(1)+'k' }
+        },
+        y: {
+          title: { display: true, text: 'Predicted AQY (%)', font: { size: 11 } },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        }
+      },
+      animation: { duration: 1400 }
+    }
+  });
+})();
+
+/* ── 9. STH Bar ── */
+(function() {
+  const ctx = document.getElementById('chartSth').getContext('2d');
+  const labels = ['Ni/In₂S₃ #1','Ni/In₂S₃ #2','Ni/In₂S₃ #3','Ni/ZnIn₂S₄ #1','Ni/ZnIn₂S₄ #2','Ni/ZnIn₂S₄ #3'];
+  const sth    = [20.42, 19.83, 18.63, 11.91, 12.62, 11.48];
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'STH (%)',
+        data: sth,
+        backgroundColor: sth.map((v, i) =>
+          `hsla(${160 - i * 8}, 80%, 60%, 0.8)`
+        ),
+        borderRadius: 8,
+        borderWidth: 0,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: ctx => ` STH = ${ctx.parsed.y.toFixed(2)} %` }
+        }
+      },
+      scales: {
+        y: {
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          title: { display: true, text: 'STH Efficiency (%)', font: { size: 11 } }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 10 }, maxRotation: 30 }
+        }
+      },
+      animation: { duration: 1400, easing: 'easeOutQuart' }
+    }
+  });
+})();
+
+/* ── Count-up animation ── */
+function animateCounter(el) {
+  const target   = parseFloat(el.dataset.target);
+  const decimals = parseInt(el.dataset.decimals);
+  const duration = 1800;
+  const start    = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 4);
+    el.textContent = (ease * target).toFixed(decimals);
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      animateCounter(e.target);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.count-up').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
