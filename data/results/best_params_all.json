@@ -1,0 +1,51 @@
+{
+  "XGBoost": {
+    "n_estimators": 639,
+    "max_depth": 5,
+    "learning_rate": 0.019684269794538724,
+    "subsample": 0.7012107022268497,
+    "colsample_bytree": 0.7876463826705684,
+    "min_child_weight": 2,
+    "gamma": 0.11814061792711905,
+    "reg_alpha": 1.4386751914300148e-07,
+    "reg_lambda": 0.001591008643154524
+  },
+  "LightGBM": {
+    "n_estimators": 787,
+    "num_leaves": 69,
+    "max_depth": 7,
+    "learning_rate": 0.025088331229577182,
+    "subsample": 0.8346772957651615,
+    "colsample_bytree": 0.7716331288024624,
+    "min_child_samples": 27,
+    "min_split_gain": 0.006558026245040607,
+    "reg_alpha": 4.5840788955551206e-07,
+    "reg_lambda": 0.0002703214600193829
+  },
+  "CatBoost": {
+    "iterations": 527,
+    "depth": 5,
+    "learning_rate": 0.03197136667433169,
+    "l2_leaf_reg": 0.3846048219395071,
+    "subsample": 0.8393856249404383,
+    "min_data_in_leaf": 6
+  },
+  "HistGBM": {
+    "max_iter": 549,
+    "max_leaf_nodes": 123,
+    "max_depth": 10,
+    "learning_rate": 0.28010622372222455,
+    "l2_regularization": 2.039799063987739,
+    "min_samples_leaf": 32
+  },
+  "ExtraTrees": {
+    "n_estimators": 221,
+    "max_depth": 5,
+    "min_samples_split": 11,
+    "min_samples_leaf": 1,
+    "max_features": 0.7
+  },
+  "Ridge": {
+    "alpha": 997.4225002794299
+  }
+}

@@ -1,0 +1,41 @@
+band_edges:
+  - name: cb_potential_nhe
+    source: Materials Project API (fallback to electronegativity approximation)
+    uncertainty: false
+  - name: vb_potential_nhe
+    source: Materials Project API (fallback)
+    uncertainty: false
+  - name: cb_overpotential_h2
+    source: derived from cb_potential_nhe
+    uncertainty: false
+  - name: vb_overpotential_glycerol
+    source: derived from vb_potential_nhe
+    uncertainty: false
+hydrogen_adsorption:
+  - name: cocat_dg_h_proxy
+    source: Nørskov et al. 2005 dataset
+    uncertainty: false
+  - name: cocat_h_binding_strength
+    source: derived from cocat_dg_h_proxy
+    uncertainty: false
+carrier_mobility:
+  - name: electron_effective_mass
+    source: literature lookup table (placeholder)
+    uncertainty: false
+  - name: hole_effective_mass
+    source: literature lookup table (placeholder)
+    uncertainty: false
+  - name: carrier_mobility_score
+    source: derived from effective masses
+    uncertainty: false
+exciton_binding:
+  - name: exciton_binding_proxy
+    source: simplified proxy based on effective mass and dielectric constant
+    uncertainty: false
+surface:
+  - name: surface_area_est
+    source: morphology heuristic mapping
+    uncertainty: true
+  - name: surface_area_normalized_HER
+    source: derived from HER and surface_area_est
+    uncertainty: true

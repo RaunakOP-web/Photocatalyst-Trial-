@@ -112,8 +112,15 @@ with st.sidebar:
         st.metric("Test R² (log)", f"{m.get('Test_R2_log', 0):.4f}")
         st.metric("Spearman ρ",
                   f"{m.get('Spearman_rho_log', m.get('Spearman_rho', 0)):.4f}")
-
-    conf = load_conformal()
+        # New metrics for top 20 photocatalysts
+        disc = load_candidates()
+        if not disc.empty:
+            top20 = disc.sort_values("pred_her_umol_g_h", ascending=False).head(20)
+            avg_her = top20["pred_her_umol_g_h"].mean()
+            max_her = top20["pred_her_umol_g_h"].max()
+            st.metric("Top 20 avg HER", f"{avg_her:,.0f} µmol/g/h")
+            st.metric("Top 20 max HER", f"{max_her:,.0f} µmol/g/h")
+        conf = load_conformal()
     if conf:
         cov = conf.get("empirical_coverage", 0)
         color = "normal" if cov >= 0.90 else "inverse"
@@ -127,12 +134,13 @@ with st.sidebar:
 
 # ── TABS ───────────────────────────────────────────────────────────
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📊 Dataset",
     "🤖 Model performance",
     "🔍 Feature importance",
     "🧪 Virtual screening",
     "📄 Publication figures",
+    "📈 Model comparison",
 ])
 
 # ══════════════════════════════════════════════════════════════════
@@ -566,3 +574,29 @@ with tab5:
                                 mime="image/png",
                                 key=f"dl_{fname}",
                             )
+
+with tab6:
+    st.header("Model comparison")
+    st.caption("Benchmark results for GNN models vs descriptor‑only approach.")
+    csv_path = os.path.join(RESULTS_DIR, "publication_gnn_benchmark_table.csv")
+    if not os.path.exists(csv_path):
+        st.warning("Benchmark CSV not found.")
+    else:
+        df = pd.read_csv(csv_path)
+        # Display the raw table
+        st.subheader("Benchmark table")
+        st.dataframe(df, use_container_width=True, hide_index=True)
+        # Bar chart for LOGO‑CV R²
+        fig_logo = px.bar(df, x="Model", y="LOGO_CV_R2", color="Model",
+                         color_discrete_sequence=px.colors.qualitative.Plotly,
+                         labels={"LOGO_CV_R2": "LOGO‑CV R²"})
+        fig_logo.update_layout(yaxis=dict(range=[df["LOGO_CV_R2"].min()-0.1, df["LOGO_CV_R2"].max()+0.1]),
+                               plot_bgcolor="rgba(0,0,0,0)")
+        st.plotly_chart(fig_logo, use_container_width=True)
+        # Bar chart for Test R²
+        fig_test = px.bar(df, x="Model", y="Test_R2", color="Model",
+                         color_discrete_sequence=px.colors.qualitative.Plotly,
+                         labels={"Test_R2": "Test R²"})
+        fig_test.update_layout(yaxis=dict(range=[df["Test_R2"].min()-0.1, df["Test_R2"].max()+0.1]),
+                               plot_bgcolor="rgba(0,0,0,0)")
+        st.plotly_chart(fig_test, use_container_width=True)

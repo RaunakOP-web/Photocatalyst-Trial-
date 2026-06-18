@@ -1,0 +1,16 @@
+import logging
+import sys
+
+def setup_logger(name="photocatalyst_pipeline"):
+    logger = logging.getLogger(name)
+    if not logger.handlers:
+        logger.setLevel(logging.INFO)
+        
+        # Configure stdout handler with utf-8 encoding compatibility
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(logging.Formatter(
+            '[%(asctime)s] %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        ))
+        logger.addHandler(handler)
+    return logger

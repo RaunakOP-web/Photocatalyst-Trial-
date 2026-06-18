@@ -1,0 +1,20 @@
+paths:
+  raw_dir:     "data/raw"
+  proc_dir:    "data/processed"
+  models_dir:  "models"
+  results_dir: "data/results"
+
+data:
+  target:            "HER_std_umol_g_h"
+  hash_col:          "experiment_hash"
+  group_col:         "host_material"
+  random_state:      42
+  test_size:         0.15
+  missing_threshold: 0.90
+
+tuning:
+  n_trials:              80
+  cv_folds:              5
+  timeout_seconds:       900
+  logo_cv_splits:        null
+  repeated_seeds:        [42]

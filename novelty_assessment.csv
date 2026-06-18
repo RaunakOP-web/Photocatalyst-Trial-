@@ -1,0 +1,51 @@
+host_material,co_catalyst,pred_her_umol_g_h,pred_her_lower_umol_g_h,pred_her_upper_umol_g_h,ad_label,novelty_class,novelty_score,reasoning
+zns,au,4133.886342307325,820.6590217170478,20807.24844845115,Moderate Confidence,Similar to Reported,0.388,Host 'zns' and cocatalyst 'au' both exist in dataset but not in this specific combination
+cu2o,pd,4080.250229278713,810.0007853082564,20537.33206543256,Moderate Confidence,Potentially Novel,0.774,Host 'cu2o' is not in the training dataset
+ga2o3,pd,4080.250229278713,810.0007853082564,20537.33206543256,Moderate Confidence,Potentially Novel,0.774,Host 'ga2o3' is not in the training dataset
+v2o5,pd,4080.250229278713,810.0007853082564,20537.33206543256,Moderate Confidence,Potentially Novel,0.774,Host 'v2o5' is not in the training dataset
+v2o5,au,3921.811761311263,778.5168735836503,19740.012204055423,Moderate Confidence,Potentially Novel,0.772,Host 'v2o5' is not in the training dataset
+cu2o,au,3921.811761311263,778.5168735836503,19740.012204055423,Moderate Confidence,Potentially Novel,0.772,Host 'cu2o' is not in the training dataset
+ga2o3,au,3921.811761311263,778.5168735836503,19740.012204055423,Moderate Confidence,Potentially Novel,0.772,Host 'ga2o3' is not in the training dataset
+zns,wc,3905.7178617339496,775.3187934702975,19659.0218615924,Moderate Confidence,Potentially Novel,0.624,"Host 'zns' exists, but cocatalyst 'wc' is novel for this system"
+zns,pd,3852.704216800188,764.7842500686467,19392.23796389423,Moderate Confidence,Similar to Reported,0.369,Host 'zns' and cocatalyst 'pd' both exist in dataset but not in this specific combination
+v2o5,wc,3786.799512908404,751.6880752180319,19060.581579903606,Moderate Confidence,Potentially Novel,0.771,Host 'v2o5' is not in the training dataset
+cu2o,wc,3786.799512908404,751.6880752180319,19060.581579903606,Moderate Confidence,Potentially Novel,0.771,Host 'cu2o' is not in the training dataset
+ga2o3,wc,3786.799512908404,751.6880752180319,19060.581579903606,Moderate Confidence,Potentially Novel,0.771,Host 'ga2o3' is not in the training dataset
+zns,ir,3669.814400531132,728.4415177473057,18471.87004551161,Moderate Confidence,Potentially Novel,0.615,"Host 'zns' exists, but cocatalyst 'ir' is novel for this system"
+zns,pt,3624.268571205272,719.3909324423914,18242.666905704293,Moderate Confidence,Similar to Reported,0.371,Host 'zns' and cocatalyst 'pt' both exist in dataset but not in this specific combination
+zns,rh,3569.716363207755,708.5506553114044,17968.140400390366,Moderate Confidence,Potentially Novel,0.631,"Host 'zns' exists, but cocatalyst 'rh' is novel for this system"
+cu2o,rh,3566.2048570781767,707.8528705472476,17950.469227370468,Moderate Confidence,Potentially Novel,0.774,Host 'cu2o' is not in the training dataset
+ga2o3,rh,3566.2048570781767,707.8528705472476,17950.469227370468,Moderate Confidence,Potentially Novel,0.774,Host 'ga2o3' is not in the training dataset
+v2o5,rh,3566.2048570781767,707.8528705472476,17950.469227370468,Moderate Confidence,Potentially Novel,0.774,Host 'v2o5' is not in the training dataset
+ga2o3,ir,3487.782956849066,692.26935591369,17555.821769453545,Moderate Confidence,Potentially Novel,0.757,Host 'ga2o3' is not in the training dataset
+v2o5,ir,3487.782956849066,692.26935591369,17555.821769453545,Moderate Confidence,Potentially Novel,0.757,Host 'v2o5' is not in the training dataset
+cu2o,ir,3487.782956849066,692.26935591369,17555.821769453545,Moderate Confidence,Potentially Novel,0.757,Host 'cu2o' is not in the training dataset
+v2o5,pt,3403.4136810082664,675.5040156089203,17131.244959409567,Moderate Confidence,Potentially Novel,0.757,Host 'v2o5' is not in the training dataset
+cu2o,pt,3403.4136810082664,675.5040156089203,17131.244959409567,Moderate Confidence,Potentially Novel,0.757,Host 'cu2o' is not in the training dataset
+ga2o3,pt,3403.4136810082664,675.5040156089203,17131.244959409567,Moderate Confidence,Potentially Novel,0.757,Host 'ga2o3' is not in the training dataset
+ga2o3,ru,3348.5960978648955,664.6110047714467,16855.382990068374,Moderate Confidence,Potentially Novel,0.771,Host 'ga2o3' is not in the training dataset
+v2o5,ru,3348.5960978648955,664.6110047714467,16855.382990068374,Moderate Confidence,Potentially Novel,0.771,Host 'v2o5' is not in the training dataset
+cu2o,ru,3348.5960978648955,664.6110047714467,16855.382990068374,Moderate Confidence,Potentially Novel,0.771,Host 'cu2o' is not in the training dataset
+zns,cos2,3337.026589005437,662.3119835785437,16797.161023406086,Moderate Confidence,Potentially Novel,0.623,"Host 'zns' exists, but cocatalyst 'cos2' is novel for this system"
+v2o5,ni2p,3329.750256982183,660.8660759145912,16760.543880394413,Moderate Confidence,Potentially Novel,0.77,Host 'v2o5' is not in the training dataset
+cu2o,ni2p,3329.750256982183,660.8660759145912,16760.543880394413,Moderate Confidence,Potentially Novel,0.77,Host 'cu2o' is not in the training dataset
+ga2o3,ni2p,3329.750256982183,660.8660759145912,16760.543880394413,Moderate Confidence,Potentially Novel,0.77,Host 'ga2o3' is not in the training dataset
+zns,fes2,3329.0056211235847,660.7181064855765,16756.79660255734,Moderate Confidence,Potentially Novel,0.624,"Host 'zns' exists, but cocatalyst 'fes2' is novel for this system"
+zns,ni2p,3328.7735526880524,660.6719912824185,16755.628749982,Moderate Confidence,Potentially Novel,0.623,"Host 'zns' exists, but cocatalyst 'ni2p' is novel for this system"
+v2o5,mos2,3326.322136288013,660.1848609880575,16743.292333142508,Moderate Confidence,Potentially Novel,0.77,Host 'v2o5' is not in the training dataset
+cu2o,mos2,3326.322136288013,660.1848609880575,16743.292333142508,Moderate Confidence,Potentially Novel,0.77,Host 'cu2o' is not in the training dataset
+ga2o3,mos2,3326.322136288013,660.1848609880575,16743.292333142508,Moderate Confidence,Potentially Novel,0.77,Host 'ga2o3' is not in the training dataset
+zns,ru,3276.8700824361176,650.3580549222894,16494.43165411784,Moderate Confidence,Potentially Novel,0.629,"Host 'zns' exists, but cocatalyst 'ru' is novel for this system"
+zns,mos2,3250.1898220162548,645.0563187049144,16360.166902556111,Moderate Confidence,Potentially Novel,0.623,"Host 'zns' exists, but cocatalyst 'mos2' is novel for this system"
+v2o5,cos2,3244.2468648519666,643.8753710402221,16330.25978565964,Moderate Confidence,Potentially Novel,0.77,Host 'v2o5' is not in the training dataset
+cu2o,cos2,3244.2468648519666,643.8753710402221,16330.25978565964,Moderate Confidence,Potentially Novel,0.77,Host 'cu2o' is not in the training dataset
+ga2o3,cos2,3244.2468648519666,643.8753710402221,16330.25978565964,Moderate Confidence,Potentially Novel,0.77,Host 'ga2o3' is not in the training dataset
+cu2o,fes2,3237.2134264195843,642.477729687296,16294.864971332958,Moderate Confidence,Potentially Novel,0.771,Host 'cu2o' is not in the training dataset
+ga2o3,fes2,3237.2134264195843,642.477729687296,16294.864971332958,Moderate Confidence,Potentially Novel,0.771,Host 'ga2o3' is not in the training dataset
+v2o5,fes2,3237.2134264195843,642.477729687296,16294.864971332958,Moderate Confidence,Potentially Novel,0.771,Host 'v2o5' is not in the training dataset
+moo3,au,3158.1624246593046,626.7692038911894,15897.05164623707,Moderate Confidence,Similar to Reported,0.462,Host 'moo3' and cocatalyst 'au' both exist in dataset but not in this specific combination
+fe2o3,au,2994.466500952703,594.2405631022914,15073.274359873994,Moderate Confidence,Potentially Novel,0.836,Host 'fe2o3' is not in the training dataset
+in2o3,au,2983.8343220352717,592.1278023140123,15019.769377597058,Moderate Confidence,Potentially Novel,0.817,Host 'in2o3' is not in the training dataset
+wo3,au,2983.2519575709525,592.0120784521158,15016.838708297371,Moderate Confidence,Similar to Reported,0.416,Host 'wo3' and cocatalyst 'au' both exist in dataset but not in this specific combination
+moo3,pt,2975.957957285485,590.562659860451,14980.13265217918,Moderate Confidence,Previously Reported,0.136,Exact host-cocatalyst pair exists in dataset
+wo3,pd,2975.261390776026,590.4242424749798,14976.627276749306,Moderate Confidence,Similar to Reported,0.389,Host 'wo3' and cocatalyst 'pd' both exist in dataset but not in this specific combination

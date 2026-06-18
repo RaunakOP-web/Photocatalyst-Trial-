@@ -1,0 +1,6 @@
+{
+  "random_kfold_r2": 0.784,
+  "logo_cv_r2": -0.1762,
+  "optimism_gap": 0.9602,
+  "model": "Ensemble"
+}

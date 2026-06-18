@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "photocatalyst_her_pipeline"
+version = "1.0.0"
+description = "Machine learning pipeline for Hydrogen Evolution Rate (HER) prediction"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "xgboost",
+    "lightgbm",
+    "catboost",
+    "shap",
+    "optuna",
+    "pyyaml",
+    "scipy",
+    "matplotlib"
+]

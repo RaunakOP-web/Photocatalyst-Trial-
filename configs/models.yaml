@@ -1,0 +1,17 @@
+pool:
+  - "XGBoost"
+  - "LightGBM"
+  - "CatBoost"
+  - "ExtraTrees"
+
+xgboost:
+  tree_method: "hist"
+  verbosity:   0
+lightgbm:
+  verbose: -1
+catboost:
+  verbose: 0
+  allow_writing_files: false
+extratrees:
+  bootstrap: true
+  n_jobs: -1
