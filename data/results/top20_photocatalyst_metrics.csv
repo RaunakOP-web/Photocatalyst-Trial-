@@ -1,0 +1,4 @@
+Model,Test_R2
+XGBoost,0.7864
+LightGBM,0.8029
+CatBoost,0.8071

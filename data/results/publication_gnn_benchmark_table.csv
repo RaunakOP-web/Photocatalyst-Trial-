@@ -3,3 +3,5 @@ Descriptor-Only (CatBoost),-0.1055,0.3873,0.8071,0.9052
 CGCNN (GNN),-2.3427,-0.0618,-0.2152,0.173
 MEGNet (GNN),-2.051,0.5772,-10.5169,0.6057
 Hybrid (GNN + Descriptors),0.229,0.5795,0.7932,0.8989
+XGBoost,,,0.7864,
+LightGBM,,,0.8029,
