@@ -11,7 +11,7 @@
 
 ## Abstract
 
-Photocatalytic hydrogen production from glycerol represents a highly promising route to simultaneously valorise biodiesel-derived bio-waste and generate renewable fuel. However, the vast compositional and operational parameter space makes systematic experimental screening prohibitively expensive. Here we present a machine learning framework trained on a curated database of 838 photocatalytic glycerol reforming experiments spanning 21 host material families to predict hydrogen evolution rate (HER). To resolve prediction degeneracy for novel materials, we introduce a physically-informed embedding strategy that represents semiconductors and co-catalysts via fundamental physical and electronic descriptors (such as bandgap, electron affinity, work function, and d-band center) instead of target encoding. Our LightGBM ensemble achieves a host-grouped 5-fold cross-validation R² of 0.784 ± 0.122, with a Spearman rank correlation of ρ = 0.919 (p < 10⁻⁵¹) confirming accurate catalyst ranking. Split conformal prediction provides mathematically guaranteed 90% prediction intervals with an empirical coverage of 94.4% on the hold-out test set. SHAP analysis identifies co-catalyst work function, semiconductor bandgap, and glycerol concentration as dominant drivers. A combinatorial screening of 91,800 candidate systems identifies SrTiO₃/Ru as the top-ranked candidate (predicted HER = 1,466.7 µmol g⁻¹ h⁻¹), validated as lying within the model's applicability domain (AD score = 7.11 < threshold 88.14). This framework provides a data-driven roadmap for accelerating photocatalyst discovery beyond the TiO₂-dominated literature.
+Photocatalytic hydrogen production from glycerol represents a highly promising route to simultaneously valorise biodiesel-derived bio-waste and generate renewable fuel. However, the vast compositional and operational parameter space makes systematic experimental screening prohibitively expensive. Here we present a machine learning framework trained on a curated database of 838 photocatalytic glycerol reforming experiments spanning 21 host material families to predict hydrogen evolution rate (HER). To reduce prediction degeneracy for novel materials, we introduce a physically-informed embedding strategy that represents semiconductors and co-catalysts via fundamental physical and electronic descriptors (such as bandgap, electron affinity, work function, and d-band center) instead of target encoding. Our LightGBM ensemble achieves a host-grouped 5-fold cross-validation R² of 0.784 ± 0.122, with a Spearman rank correlation of ρ = 0.919 (p < 10⁻⁵¹) confirming accurate catalyst ranking. Split conformal prediction provides mathematically guaranteed 90% prediction intervals with an empirical coverage of 94.4% on the hold-out test set. SHAP analysis identifies co-catalyst work function, semiconductor bandgap, and glycerol concentration as dominant drivers. A combinatorial screening of 91,800 candidate systems identifies SrTiO₃/Ru as the top-ranked candidate (predicted HER = 1,466.7 µmol g⁻¹ h⁻¹), validated as lying within the model's applicability domain (AD score = 7.11 < threshold 88.14). This framework provides a data-driven roadmap for accelerating photocatalyst discovery beyond the TiO₂-dominated literature.
 
 **Keywords:** photocatalysis; glycerol photoreforming; hydrogen evolution; machine learning; materials informatics; virtual screening; conformal prediction
 
@@ -42,7 +42,7 @@ However, prior applications of machine learning in heterogeneous photocatalysis 
 ### 1.5. Scope and Major Contributions of This Study
 This study addresses these limitations by introducing a physically-informed machine learning framework for accelerating photocatalytic glycerol reforming discovery. Our work makes four major contributions:
 1. **Curated Multi-Material Dataset**: We compile and clean an 838-entry dataset of glycerol photoreforming experiments spanning 21 host semiconductor families, extracted from over 90 peer-reviewed articles published between 2000 and 2026.
-2. **Physical Embedding Representation**: We replace target encoding with a novel, physically-informed embedding strategy. Host semiconductors and co-catalysts are represented by fundamental physical and electronic descriptors (bandgap, electron affinity, work function, atomic radius, d-band center, and price index), enabling the model to make distinct, physically meaningful predictions for novel materials.
+2. **Physical Embedding Representation**: We replace target encoding with a novel, physically-informed embedding strategy. Host semiconductors and co-catalysts are represented by fundamental physical and electronic descriptors (bandgap, electron affinity, work function, atomic radius, d-band center, and price index), so that novel materials are no longer all mapped to the same encoded value.
 3. **Host-Grouped Validation**: We train LightGBM and XGBoost models using Optuna tuning and evaluate them with cross-validation grouped by host material, achieving an R² of 0.784 ± 0.122, which represents a substantial improvement over linear baselines.
 4. **Calibrated Conformal UQ and AD screening**: We apply split conformal prediction to construct prediction intervals with finite-sample coverage guarantees (empirical coverage 94.4% at 90% nominal level), replacing uncalibrated bootstrap intervals. We then execute a virtual screening of 91,800 candidate systems, identifying SrTiO₃/Ru as a highly active, reliable candidate within the model's applicability domain.
 
@@ -102,7 +102,7 @@ $$C(X) = [\hat{y}(X) - \hat{q}, \hat{y}(X) + \hat{q}]$$
 Under the assumption of exchangeability, these intervals are mathematically guaranteed to contain the true value with a probability of at least 90%.
 
 ### 2.6. Candidate Library Design and UCB Scoring
-We constructed a virtual screening candidate library containing 91,800 combinatorial catalysts. The host materials selected for screening were restricted to 14 non-TiO₂ and non-ZnO semiconductors (including $\text{g-C}_3\text{N}_4$, $\text{BiVO}_4$, $\text{SrTiO}_3$, $\text{WO}_3$, etc.) to prioritize true novelty. Co-catalysts included 17 transition metals, alloys, and metal phosphides (such as $\text{Pt}$, $\text{Pd}$, $\text{Ru}$, $\text{MoS}_2$, etc.). The candidate library also varied catalyst loading (0.5 to 2.0 g/L), co-catalyst loading (0.1 to 5.0 wt%), and glycerol concentration (5 to 50 vol%) under solar, UV-vis, and visible light conditions.
+We constructed a virtual screening candidate library containing 91,800 combinatorial catalysts. The host materials selected for screening were restricted to 15 non-TiO₂ and non-ZnO semiconductors (including $\text{g-C}_3\text{N}_4$, $\text{BiVO}_4$, $\text{SrTiO}_3$, $\text{WO}_3$, etc.) to prioritize true novelty. Co-catalysts included 17 transition metals, alloys, and metal phosphides (such as $\text{Pt}$, $\text{Pd}$, $\text{Ru}$, $\text{MoS}_2$, etc.). The candidate library also varied catalyst loading (0.5 to 2.0 g/L), co-catalyst loading (0.1 to 5.0 wt%), and glycerol concentration (5 to 50 vol%) under solar, UV-vis, and visible light conditions.
 
 To evaluate whether candidate predictions represented safe interpolations or risky extrapolations, we implemented a k-nearest-neighbour (k = 5) applicability domain (AD) check. For each candidate, we calculated its average Euclidean distance to the 5 nearest training samples in the 40-dimensional feature space. The AD threshold was defined as:
 $$\text{AD\_threshold} = \mu_{\text{train\_dist}} + 1 \times \sigma_{\text{train\_dist}}$$
@@ -112,72 +112,26 @@ where $\mu$ and $\sigma$ are the mean and standard deviation of leave-one-out k-
 
 
 
-### 2.9. Apparent Quantum Yield and Photon Efficiency Formulations
+### 2.7. Apparent Quantum Yield and Photon Efficiency Formulations
 To bridge the gap between experimental reports and fundamental photon-to-chemical conversion efficiency, we relate the physical properties of the materials to the Apparent Quantum Yield (AQY). The AQY represents the efficiency of utilizing photogenerated carriers and is mathematically defined as:
 $$\text{AQY } (\%) = \frac{2 \times \text{Number of } \text{H}_2 \text{ molecules evolved}}{\text{Number of incident photons}} \times 100$$
 In our dataset, AQY is infrequently reported due to the complexity of calibrating monochromatic light sources and measuring absolute photon flux across heterogeneous reactor geometries. To account for this missingness without discarding valuable activity records, our model relies on physical proxies: light intensity (mW/cm²), light power (W), and wavelength cutoff (nm). For instance, the wavelength cutoff indicates the threshold wavelength below which the semiconductor can absorb photons:
 $$\lambda_{\text{cutoff}} = \frac{1240}{E_g}$$
 where $E_g$ is the bandgap energy (eV). By combining the bandgap and electron affinity from our physical embeddings with the light source characteristics, the LightGBM model implicitly constructs a photon absorption profile for each catalyst, allowing it to predict the HER under solar, UV-vis, and visible light regimes.
 
-### 2.10. Material Preparation and Crystallographic Variations
+### 2.8. Material Preparation and Crystallographic Variations
 Synthesis parameters play a decisive role in defining the surface area, crystallinity, facet exposure, and defect density of photocatalysts. In our feature representation, we capture these effects through discrete and continuous variables:
 - **Preparation Method**: Categorized into sol-gel, hydrothermal, co-precipitation, combustion, microwave-assisted, solid-state reaction, and impregnation. Hydrothermal synthesis, for example, typically yields highly crystalline nanoparticles with exposed high-energy facets, enhancing charge transfer.
 - **Calcination Temperature (°C) and Calcination Time (h)**: Crucial parameters determining crystallite size and phase transitions. For example, calcining amorphous titania at 450°C yields the photoactive anatase phase, while temperatures above 600°C promote transition to the less active rutile phase.
 By capturing these synthesis conditions in conjunction with the host density and crystal structure class, the model is able to predict how crystallite size growth and phase boundaries alter the charge transport resistance, providing a more detailed physical representation of the catalyst than composition alone.
 
-### 3.7. Mechanisms of Catalyst Deactivation and Operational Stability
-A critical aspect of heterogeneous photocatalysis in biomass reforming is the long-term stability of the catalyst. Over extended reaction cycles, several deactivation pathways can occur:
-1. **Photocorrosion**: Particularly prevalent in metal sulfides like CdS. Under illumination, photogenerated holes can oxidize the sulfide lattice ($S^{2-} + 2h^+ \rightarrow S^0$), leading to dissolution of the semiconductor and rapid deactivation.
-2. **Co-catalyst Leaching/Aggregation**: Under acidic or highly basic conditions, co-catalyst nanoparticles (like Ni or Cu) can leach into the solution or undergo ostwald ripening, reducing the density of active reduction sites.
-3. **Surface Coking**: Glycerol photoreforming involves highly reactive intermediates (such as glyceraldehyde, formic acid, and formaldehyde). These intermediates can polymerize or deposit carbonaceous residues on the catalyst surface, blocking active sites and reducing light penetration.
-While our database primarily contains short-term activity reports (typically 3 to 5 hours), the applicability domain analysis helps select candidates that are thermodynamically stable against photocorrosion. Perovskites like $\text{SrTiO}_3$ and stable oxides like $\text{WO}_3$ are highly resistant to photocorrosion, making them preferred targets for long-term industrial operations compared to unstable sulfides.
-
-### 3.8. Structural Analysis of the k-NN Applicability Domain Projection
-The k-NN applicability domain score ($ad\_score$) distribution in the 40-dimensional feature space reveals that 97.6% of the hold-out test set is within the domain, showing that the random train/test split is well-representative. For the 91,800 virtual screening candidates, the AD check yields 100% within-domain coverage. This is a highly positive result, showing that the combinatorial library was designed with realistic boundary conditions that avoid extreme extrapolations. 
-In the 2D PCA projection (Fig. 8), we observe that the training points (grey) form a dense cluster reflecting the dominant $\text{TiO}_2$-based systems. However, the physical embedding representation maps all novel semiconductors (such as $\text{BiVO}_4$, $	ext{WO}_3$, and $	ext{SrTiO}_3$) close to the main training envelope because their bandgap, electron affinity, and mass density are in similar numeric ranges. The top-20 candidates (red diamonds) are positioned along the periphery of the training cluster, representing a targeted expansion into the most promising regions of the design space. This validates the virtual screening strategy: it successfully identifies high-performance catalysts that represent minor, safe extrapolations (interpolations) in the electronic feature space, reducing the risk of experimental failure.
-
-
-
-### 2.9. Apparent Quantum Yield and Photon Efficiency Formulations
-To bridge the gap between experimental reports and fundamental photon-to-chemical conversion efficiency, we relate the physical properties of the materials to the Apparent Quantum Yield (AQY). The AQY represents the efficiency of utilizing photogenerated carriers and is mathematically defined as:
-$$\text{AQY } (\%) = \frac{2 \times \text{Number of } \text{H}_2 \text{ molecules evolved}}{\text{Number of incident photons}} \times 100$$
-In our dataset, AQY is infrequently reported due to the complexity of calibrating monochromatic light sources and measuring absolute photon flux across heterogeneous reactor geometries. To account for this missingness without discarding valuable activity records, our model relies on physical proxies: light intensity (mW/cm²), light power (W), and wavelength cutoff (nm). For instance, the wavelength cutoff indicates the threshold wavelength below which the semiconductor can absorb photons:
-$$\lambda_{\text{cutoff}} = \frac{1240}{E_g}$$
-where $E_g$ is the bandgap energy (eV). By combining the bandgap and electron affinity from our physical embeddings with the light source characteristics, the LightGBM model implicitly constructs a photon absorption profile for each catalyst, allowing it to predict the HER under solar, UV-vis, and visible light regimes.
-
-### 2.10. Material Preparation and Crystallographic Variations
-Synthesis parameters play a decisive role in defining the surface area, crystallinity, facet exposure, and defect density of photocatalysts. In our feature representation, we capture these effects through discrete and continuous variables:
-- **Preparation Method**: Categorized into sol-gel, hydrothermal, co-precipitation, combustion, microwave-assisted, solid-state reaction, and impregnation. Hydrothermal synthesis, for example, typically yields highly crystalline nanoparticles with exposed high-energy facets, enhancing charge transfer.
-- **Calcination Temperature (°C) and Calcination Time (h)**: Crucial parameters determining crystallite size and phase transitions. For example, calcining amorphous titania at 450°C yields the photoactive anatase phase, while temperatures above 600°C promote transition to the less active rutile phase.
-By capturing these synthesis conditions in conjunction with the host density and crystal structure class, the model is able to predict how crystallite size growth and phase boundaries alter the charge transport resistance, providing a more detailed physical representation of the catalyst than composition alone.
-
-### 3.7. Mechanisms of Catalyst Deactivation and Operational Stability
-A critical aspect of heterogeneous photocatalysis in biomass reforming is the long-term stability of the catalyst. Over extended reaction cycles, several deactivation pathways can occur:
-1. **Photocorrosion**: Particularly prevalent in metal sulfides like CdS. Under illumination, photogenerated holes can oxidize the sulfide lattice ($S^{2-} + 2h^+ \rightarrow S^0$), leading to dissolution of the semiconductor and rapid deactivation.
-2. **Co-catalyst Leaching/Aggregation**: Under acidic or highly basic conditions, co-catalyst nanoparticles (like Ni or Cu) can leach into the solution or undergo ostwald ripening, reducing the density of active reduction sites.
-3. **Surface Coking**: Glycerol photoreforming involves highly reactive intermediates (such as glyceraldehyde, formic acid, and formaldehyde). These intermediates can polymerize or deposit carbonaceous residues on the catalyst surface, blocking active sites and reducing light penetration.
-While our database primarily contains short-term activity reports (typically 3 to 5 hours), the applicability domain analysis helps select candidates that are thermodynamically stable against photocorrosion. Perovskites like $\text{SrTiO}_3$ and stable oxides like $\text{WO}_3$ are highly resistant to photocorrosion, making them preferred targets for long-term industrial operations compared to unstable sulfides.
-
-### 3.8. Structural Analysis of the k-NN Applicability Domain Projection
-The k-NN applicability domain score ($ad\_score$) distribution in the 40-dimensional feature space reveals that 97.6% of the hold-out test set is within the domain, showing that the random train/test split is well-representative. For the 91,800 virtual screening candidates, the AD check yields 100% within-domain coverage. This is a highly positive result, showing that the combinatorial library was designed with realistic boundary conditions that avoid extreme extrapolations. 
-In the 2D PCA projection (Fig. 8), we observe that the training points (grey) form a dense cluster reflecting the dominant $\text{TiO}_2$-based systems. However, the physical embedding representation maps all novel semiconductors (such as $\text{BiVO}_4$, $\text{WO}_3$, and $	ext{SrTiO}_3$) close to the main training envelope because their bandgap, electron affinity, and mass density are in similar numeric ranges. The top-20 candidates (red diamonds) are positioned along the periphery of the training cluster, representing a targeted expansion into the most promising regions of the design space. This validates the virtual screening strategy: it successfully identifies high-performance catalysts that represent minor, safe extrapolations (interpolations) in the electronic feature space, reducing the risk of experimental failure.
-
-### 3.9. Methodological Challenges in Literature Data Extraction
-Heterogeneous catalysis literature is notoriously complex due to the lack of reporting standards. In compiling this database, we observed major variations in how light intensity and spectrum are reported (e.g., reported as power in Watts, power density in mW/cm², or lamp type with filter details). Similarly, catalyst loading was reported both in absolute mass (mg) and concentration (g/L), which required manual conversion. Furthermore, crucial surface descriptors like the Brunauer-Emmett-Teller (BET) surface area were missing for more than 95% of the entries, forcing their exclusion from our feature list to avoid bias. These issues highlight the critical need for standardizing experimental reporting in the catalysis community (e.g., through unified JSON/XML templates) to facilitate the construction of larger and more complete databases, which will ultimately unlock the full potential of advanced deep learning models for materials discovery.
-
-### 3.10. Computational Scaling and Modeling Complexity Analysis
-From a computational standpoint, training tree-based models like LightGBM is highly efficient compared to deep neural networks, making them ideal for tabular informatics. In our pipeline, training a single LightGBM model on 712 samples across 40 features takes less than 0.1 seconds on a standard dual-core processor. This computational speed is crucial for executing our validation and uncertainty quantification routines:
-- **Grouped CV**: Involves training the model 5 times (once per fold), taking less than 2 seconds total.
-- **Conformal UQ**: Requires refitting the model on the proper train set and performing inference on the calibration set.
-- **Virtual Screening**: Running predictions on 91,800 candidates takes approximately 1.5 seconds in batches of 5,000.
-This low computational overhead enables rapid iterations, allowing researchers to retrain and update predictions as new experimental data is generated, representing a scalable approach for active learning.
 
 ## 3. Results and discussion
 
 ### 3.1. Dataset characteristics and representation biases
-The curated database contains 838 records spanning over two decades of experimental research. The distribution of host materials in the dataset is highly unbalanced, with $\text{TiO}_2$-based systems accounting for 72% of all records. The remaining 28% of the dataset includes other semiconductor families such as $\text{ZnO}$ (8%), $\text{CdS}$ (6%), $\text{g-C}_3\text{N}_4$ (5%), and smaller contributions from $\text{SrTiO}_3$, $\text{WO}_3$, $\text{BiVO}_4$, and $\text{Bi}_2\text{WO}_6$. This heavy dominance of titanium dioxide reflects the historical focus of the photocatalysis community, but it highlights the risk of model bias. Without grouped CV and physical embeddings, models trained on this dataset tend to overfit to $\text{TiO}_2$ characteristics and perform poorly when predicting other material classes.
+The curated database contains 838 records spanning over two decades of experimental research. The distribution of host materials in the dataset is highly unbalanced, with $\text{TiO}_2$-based systems accounting for 72% of all records. The remaining 28% of the dataset spans 20 other host families, including $\text{ZnO}$ (8.8%), La-doped $\text{NaTaO}_3$ (3.2%), $\text{CdS}$ (2.6%), $\text{g-C}_3\text{N}_4$ (2.5%), and smaller contributions (1.7% or less each) from $\text{SrAl}_2\text{O}_4$, CuO, $\text{PbTiO}_3$, $\text{CeO}_2$, $\text{WO}_3$ and $\text{MoO}_3$, among others. This heavy dominance of titanium dioxide reflects the historical focus of the photocatalysis community, but it highlights the risk of model bias. Without grouped CV and physical embeddings, models trained on this dataset tend to overfit to $\text{TiO}_2$ characteristics and perform poorly when predicting other material classes.
 
-The target variable (HER) ranges from 0.1 to 269,120 µmol g⁻¹ h⁻¹, with a median of 1,719 µmol g⁻¹ h⁻¹ and a mean of 6,854 µmol g⁻¹ h⁻¹. This wide distribution is characteristic of heterogeneous photocatalysis literature, where differences in light source geometry, reactor design, and catalyst surface area can lead to orders-of-magnitude changes in reported rates for similar compositions. The log-transformation successfully compressed this range, enabling robust optimization.
+The target variable (HER) ranges from 0.1 to 269,120 µmol g⁻¹ h⁻¹, with a median of 1,719 µmol g⁻¹ h⁻¹ and a mean of 11,300 µmol g⁻¹ h⁻¹. This wide distribution is characteristic of heterogeneous photocatalysis literature, where differences in light source geometry, reactor design, and catalyst surface area can lead to orders-of-magnitude changes in reported rates for similar compositions. The log-transformation successfully compressed this range, enabling robust optimization.
 
 ### 3.2. Detailed Analysis of Model Performance
 Table 1 compares the performance of the three models trained on the new physical embedding features.
@@ -201,8 +155,8 @@ To place our results in context, Table 2 compares our model with established lit
 | Study | Dataset Size (N) | Target Variable | R² (Primary Metric) | Validation Strategy |
 | :--- | :--- | :--- | :--- | :--- |
 | **This work** | 838 | log(HER + 1) | **0.784** | Host-grouped 5-fold CV |
-| Goldsmith et al. (2018) [12] | ~600 | log(TOF) | 0.71 | Standard K-Fold CV |
-| Li et al. (2021) [13] | ~500 | log(activity) | 0.74 | Standard K-Fold CV |
+| Goldsmith et al. (2018) [5] | ~600 | log(TOF) | 0.71 | Standard K-Fold CV |
+| Li et al. (2021) [12] | ~500 | log(activity) | 0.74 | Standard K-Fold CV |
 | Zhong et al. (2020) [7] | ~3,000 | log(HER) | 0.89 | Standard K-Fold CV |
 
 Our model's grouped CV R² of 0.784 is highly competitive with literature benchmarks, particularly considering that grouped CV is stricter than random K-fold cross-validation. While Zhong et al. achieved a higher R² of 0.89, their model was trained on a dataset of over 3,000 records, highlighting the value of dataset size.
@@ -221,7 +175,7 @@ The physical embedding model allows us to evaluate the predicted activity of dif
 This behavior aligns with d-band theory and Schottky barrier model predictions. For wide-bandgap semiconductors under UV light, the high energy of photogenerated carriers allows them to easily overcome the Schottky barrier, making the work function of the metal the dominant factor for electron collection. Under visible light, the photogenerated carrier energy is lower, and charge collection kinetics are more sensitive to interface defects and d-band alignment, enabling tailored co-catalysts like $\text{NiSe}_2$ and $\text{MoS}_2$ to perform competitively with precious metals.
 
 ### 3.5. Analysis of Virtual Screening and k-NN Applicability Domain
-The virtual screening pipeline evaluated 91,800 combinatorial candidate catalysts. By representing host materials and co-catalysts using physical descriptors, the model generated distinct, physically meaningful predictions for each candidate composition. Table 3 lists the top 10 unique candidates ranked by their Upper Confidence Bound (UCB).
+The virtual screening pipeline evaluated 91,800 combinatorial candidate catalysts. Representing host materials and co-catalysts by physical descriptors reduces, but does not remove, prediction degeneracy: candidates 7–10 in Table 3 (CoS₂, WC, Mn and FeS₂ on SrTiO₃, under different conditions) receive identical predictions. Table 3 lists the top 10 unique candidates ranked by their Upper Confidence Bound (UCB).
 
 **Table 3.** Top 10 unique virtual screening candidates ranked by UCB.
 
@@ -249,11 +203,32 @@ We validated the split conformal prediction method on the 126 hold-out test samp
 
 The empirical coverage on the test set was **94.44%**, exceeding our nominal target of 90.0%. In comparison, standard bootstrap ensemble methods only achieved an empirical coverage of 64.3% due to their inability to account for out-of-fold calibration errors. While a 90% confidence interval spanning several thousand units is wide, it reflects the true experimental scatter in literature-extracted heterogeneous datasets. The conformal framework guarantees that future experimental results will fall within these intervals at least 90% of the time, providing a mathematically sound UQ metric for decision-making.
 
+### 3.7. Mechanisms of Catalyst Deactivation and Operational Stability
+A critical aspect of heterogeneous photocatalysis in biomass reforming is the long-term stability of the catalyst. Over extended reaction cycles, several deactivation pathways can occur:
+1. **Photocorrosion**: Particularly prevalent in metal sulfides like CdS. Under illumination, photogenerated holes can oxidize the sulfide lattice ($S^{2-} + 2h^+ \rightarrow S^0$), leading to dissolution of the semiconductor and rapid deactivation.
+2. **Co-catalyst Leaching/Aggregation**: Under acidic or highly basic conditions, co-catalyst nanoparticles (like Ni or Cu) can leach into the solution or undergo ostwald ripening, reducing the density of active reduction sites.
+3. **Surface Coking**: Glycerol photoreforming involves highly reactive intermediates (such as glyceraldehyde, formic acid, and formaldehyde). These intermediates can polymerize or deposit carbonaceous residues on the catalyst surface, blocking active sites and reducing light penetration.
+While our database primarily contains short-term activity reports (typically 3 to 5 hours), the applicability domain analysis helps select candidates that are thermodynamically stable against photocorrosion. Perovskites like $\text{SrTiO}_3$ and stable oxides like $\text{WO}_3$ are highly resistant to photocorrosion, making them preferred targets for long-term industrial operations compared to unstable sulfides.
+
+### 3.8. Structural Analysis of the k-NN Applicability Domain Projection
+The k-NN applicability domain score ($ad\_score$) distribution in the 40-dimensional feature space reveals that 97.6% of the hold-out test set is within the domain, showing that the random train/test split is well-representative. For the 91,800 virtual screening candidates, the AD check yields 100% within-domain coverage. This is a highly positive result, showing that the combinatorial library was designed with realistic boundary conditions that avoid extreme extrapolations. 
+In the 2D PCA projection (Fig. 8), we observe that the training points (grey) form a dense cluster reflecting the dominant $\text{TiO}_2$-based systems. However, the physical embedding representation maps all novel semiconductors (such as $\text{BiVO}_4$, $\text{WO}_3$, and $\text{SrTiO}_3$) close to the main training envelope because their bandgap, electron affinity, and mass density are in similar numeric ranges. The top-20 candidates (red diamonds) are positioned along the periphery of the training cluster, representing a targeted expansion into the most promising regions of the design space. This validates the virtual screening strategy: it successfully identifies high-performance catalysts that represent minor, safe extrapolations (interpolations) in the electronic feature space, reducing the risk of experimental failure.
+
+### 3.9. Methodological Challenges in Literature Data Extraction
+Heterogeneous catalysis literature is notoriously complex due to the lack of reporting standards. In compiling this database, we observed major variations in how light intensity and spectrum are reported (e.g., reported as power in Watts, power density in mW/cm², or lamp type with filter details). Similarly, catalyst loading was reported both in absolute mass (mg) and concentration (g/L), which required manual conversion. Furthermore, crucial surface descriptors like the Brunauer-Emmett-Teller (BET) surface area were missing for more than 95% of the entries, forcing their exclusion from our feature list to avoid bias. These issues highlight the critical need for standardizing experimental reporting in the catalysis community (e.g., through unified JSON/XML templates) to facilitate the construction of larger and more complete databases, which will ultimately unlock the full potential of advanced deep learning models for materials discovery.
+
+### 3.10. Computational Scaling and Modeling Complexity Analysis
+From a computational standpoint, training tree-based models like LightGBM is highly efficient compared to deep neural networks, making them ideal for tabular informatics. In our pipeline, training a single LightGBM model on 712 samples across 40 features takes less than 0.1 seconds on a standard dual-core processor. This computational speed is crucial for executing our validation and uncertainty quantification routines:
+- **Grouped CV**: Involves training the model 5 times (once per fold), taking less than 2 seconds total.
+- **Conformal UQ**: Requires refitting the model on the proper train set and performing inference on the calibration set.
+- **Virtual Screening**: Running predictions on 91,800 candidates takes approximately 1.5 seconds in batches of 5,000.
+This low computational overhead enables rapid iterations, allowing researchers to retrain and update predictions as new experimental data is generated, representing a scalable approach for active learning.
+
 ---
 
 ## 4. Conclusions
 
-This study introduces a physically-informed machine learning framework for predicting hydrogen evolution rates in photocatalytic glycerol reforming. By replacing target encoding with a physical property embedding strategy, we resolved the degenerate prediction bug for novel materials during virtual screening. Our LightGBM model achieved a grouped CV R² of 0.784 ± 0.122 and a Spearman rank correlation coefficient of 0.919, outperforming the linear baseline.
+This study introduces a physically-informed machine learning framework for predicting hydrogen evolution rates in photocatalytic glycerol reforming. Replacing target encoding with a physical property embedding strategy reduced degenerate predictions for novel materials during virtual screening, although some co-catalysts still receive identical predictions (Table 3). Our LightGBM model achieved a grouped CV R² of 0.784 ± 0.122 and a Spearman rank correlation coefficient of 0.919, outperforming the linear baseline.
 
 SHAP analysis identified co-catalyst work function and semiconductor bandgap as the primary physical drivers of activity, which matches charge carrier separation and Schottky barrier models. Combinatorial virtual screening of 91,800 candidate systems identified SrTiO₃/Ru and SrTiO₃/Pt as highly active catalysts. These candidates lie within the model's applicability domain, verifying them as reliable interpolation targets. Conformal prediction successfully constructed prediction intervals with 94.4% empirical coverage.
 
@@ -303,41 +278,27 @@ Supplementary data associated with this article can be found in the online versi
 
 [11] A.N. Angelopoulos, S. Bates, Conformal prediction: A gentle introduction, Found. Trends Mach. Learn. 16 (2023) 494–591.
 
-[12] B.R. Goldsmith, J. Esterhuizen, J.-X. Liu, C.J. Bartel, C. Sutton, Machine learning for heterogeneous catalyst design and discovery, ACS Cent. Sci. 4 (2018) 1350.
 
-[13] W. Li, K. Gu, L. Luo, Q. Wang, S. Hu, N. Cheng, Data-driven machine learning for understanding surface structures of heterogeneous catalysts, Angew. Chem. Int. Ed. 62 (2023) e202216383.
-[14] J. Low, B. Yu, W. Ho, J. Yu, S. Liu, G-C3N4-based heterostructured photocatalysts, Adv. Mater. 29 (2017) 1601694.
-[15] K. Villa, M. Pumera, Semisynthetic micro/nanostructured materials for photocatalytic water splitting, Chem. Soc. Rev. 48 (2019) 4966-4983.
-[16] Z. Wang, C. Li, K. Domen, Recent developments in heterogeneous photocatalysts for solar-driven overall water splitting, Chem. Soc. Rev. 48 (2019) 2109-2125.
-[17] Y. Shiraishi, S. Ichikawa, Y. Sugano, M. Mori, H. Sakamoto, T. Hirai, Selective hydrogen peroxide production by water oxidation on a polymer semiconductor, ACS Catal. 7 (2017) 7558-7562.
-[18] S. Cao, J. Low, J. Yu, Appl. Catal. B: Environ. 162 (2015) 551-557.
-[19] D. Jing, L. Guo, A novel method for preparing highly active titanium dioxide photocatalysts, Sol. Energy 81 (2007) 1279-1284.
-[20] H. Yu, S. Cao, J. Yu, G-C3N4-based metal-free photocatalysts, Chem. Commun. 50 (2014) 2109-2111.
-[21] G. Zhang, M. Lan, S. Cao, J. Yu, Enhanced photocatalytic H2 evolution on g-C3N4, Chem. Commun. 46 (2010) 5698-5700.
-[22] T. Takata, J. Jiang, Y. Sakata, M. Domen, Photocatalytic overall water splitting on a perovskite-type oxide, Electrochim. Acta 179 (2015) 244-248.
-[23] Y. Ma, X. Wang, Y. Jia, X. Chen, H. Han, C. Li, Photocatalytic overall water splitting on semiconductor catalysts, Chem. Rev. 114 (2014) 9987-10043.
-[24] A. Kudo, Y. Miseki, Heterogeneous photocatalyst materials for water splitting, Chem. Soc. Rev. 38 (2009) 253-278.
-
-[14] J. Low, B. Yu, W. Ho, J. Yu, S. Liu, G-C3N4-based heterostructured photocatalysts, Adv. Mater. 29 (2017) 1601694.
-[15] K. Villa, M. Pumera, Semisynthetic micro/nanostructured materials for photocatalytic water splitting, Chem. Soc. Rev. 48 (2019) 4966-4983.
-[16] Z. Wang, C. Li, K. Domen, Recent developments in heterogeneous photocatalysts for solar-driven overall water splitting, Chem. Soc. Rev. 48 (2019) 2109-2125.
-[17] Y. Shiraishi, S. Ichikawa, Y. Sugano, M. Mori, H. Sakamoto, T. Hirai, Selective hydrogen peroxide production by water oxidation on a polymer semiconductor, ACS Catal. 7 (2017) 7558-7562.
-[18] S. Cao, J. Low, J. Yu, Appl. Catal. B: Environ. 162 (2015) 551-557.
-[19] D. Jing, L. Guo, A novel method for preparing highly active titanium dioxide photocatalysts, Sol. Energy 81 (2007) 1279-1284.
-[20] H. Yu, S. Cao, J. Yu, G-C3N4-based metal-free photocatalysts, Chem. Commun. 50 (2014) 2109-2111.
-[21] G. Zhang, M. Lan, S. Cao, J. Yu, Enhanced photocatalytic H2 evolution on g-C3N4, Chem. Commun. 46 (2010) 5698-5700.
-[22] T. Takata, J. Jiang, Y. Sakata, M. Domen, Photocatalytic overall water splitting on a perovskite-type oxide, Electrochim. Acta 179 (2015) 244-248.
-[23] Y. Ma, X. Wang, Y. Jia, X. Chen, H. Han, C. Li, Photocatalytic overall water splitting on semiconductor catalysts, Chem. Rev. 114 (2014) 9987-10043.
-[24] A. Kudo, Y. Miseki, Heterogeneous photocatalyst materials for water splitting, Chem. Soc. Rev. 38 (2009) 253-278.
-
+[12] W. Li, K. Gu, L. Luo, Q. Wang, S. Hu, N. Cheng, Data-driven machine learning for understanding surface structures of heterogeneous catalysts, Angew. Chem. Int. Ed. 62 (2023) e202216383.
+[13] J. Low, B. Yu, W. Ho, J. Yu, S. Liu, G-C3N4-based heterostructured photocatalysts, Adv. Mater. 29 (2017) 1601694.
+[14] K. Villa, M. Pumera, Semisynthetic micro/nanostructured materials for photocatalytic water splitting, Chem. Soc. Rev. 48 (2019) 4966-4983.
+[15] Z. Wang, C. Li, K. Domen, Recent developments in heterogeneous photocatalysts for solar-driven overall water splitting, Chem. Soc. Rev. 48 (2019) 2109-2125.
+[16] Y. Shiraishi, S. Ichikawa, Y. Sugano, M. Mori, H. Sakamoto, T. Hirai, Selective hydrogen peroxide production by water oxidation on a polymer semiconductor, ACS Catal. 7 (2017) 7558-7562.
+[17] S. Cao, J. Low, J. Yu, Appl. Catal. B: Environ. 162 (2015) 551-557.
+[18] D. Jing, L. Guo, A novel method for preparing highly active titanium dioxide photocatalysts, Sol. Energy 81 (2007) 1279-1284.
+[19] H. Yu, S. Cao, J. Yu, G-C3N4-based metal-free photocatalysts, Chem. Commun. 50 (2014) 2109-2111.
+[20] G. Zhang, M. Lan, S. Cao, J. Yu, Enhanced photocatalytic H2 evolution on g-C3N4, Chem. Commun. 46 (2010) 5698-5700.
+[21] T. Takata, J. Jiang, Y. Sakata, M. Domen, Photocatalytic overall water splitting on a perovskite-type oxide, Electrochim. Acta 179 (2015) 244-248.
+[22] Y. Ma, X. Wang, Y. Jia, X. Chen, H. Han, C. Li, Photocatalytic overall water splitting on semiconductor catalysts, Chem. Rev. 114 (2014) 9987-10043.
+[23] A. Kudo, Y. Miseki, Heterogeneous photocatalyst materials for water splitting, Chem. Soc. Rev. 38 (2009) 253-278.
 
 ---
 
 ## Data and code availability
 
-All data, code, and trained models are available at: https://github.com/RaunakOP-web/Photocatalyst-Trial-
+Code is available at: https://github.com/RaunakOP-web/Photocatalyst-Trial-
 
-The dataset (`glycerol_photocatalyst_fixed.json`) is included in the repository under `data/raw/`. The full pipeline is reproducible with: `python run_all_publication.py`. Exact package versions are specified in `requirements.txt`.
+The cleaned modelling dataset (838 records) is included in the repository as `data/processed/df_clean.csv`. [AUTHORS: the raw literature dataset (`glycerol_photocatalyst_fixed.json`) and the trained model files are not in the public repository. Deposit them (for example on Zenodo) and cite the DOI here, or state that they are available from the corresponding author on request.] The pipeline is run with `python run_all_publication.py`; dependencies are listed in `requirements.txt`.
 
 ---
 

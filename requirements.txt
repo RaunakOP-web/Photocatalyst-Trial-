@@ -1,4 +1,31 @@
-streamlit
-pandas
+# Core pipeline (preprocess, train, evaluate, discover, SHAP)
 numpy
+pandas
+scipy
+scikit-learn
+xgboost
+lightgbm
+catboost
+optuna
+shap
+joblib
+pyyaml
+openpyxl
+matplotlib
+seaborn
+
+# Materials descriptors and crystal structures
+pymatgen
+matminer
+requests
+
+# GNN benchmark (run_gnn_benchmark.py)
+torch
+torch-geometric
+
+# Streamlit dashboard (dashboard.py)
+streamlit
 plotly
+
+# Before submission: pin the exact versions used for the reported results,
+# e.g. with `pip freeze > requirements-lock.txt` in the environment that ran them.

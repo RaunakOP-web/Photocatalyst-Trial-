@@ -14,7 +14,7 @@ Thank you for raising this important point. We respectfully clarify that the R²
 
 The hydrogen evolution rate (HER) in our dataset spans five orders of magnitude, from near-zero to 269,120 µmol g⁻¹ h⁻¹. This extreme range is driven by the heterogeneity of experimental conditions (catalyst type, loading, illumination, etc.) rather than being a smooth, normally distributed variable. On a linear scale, R² is dominated by a small number of extreme high-HER observations — a well-known limitation of R² for heavy-tailed distributions. A single outlier at 269,120 µmol g⁻¹ h⁻¹ can collapse the entire R² metric even if the model correctly predicts every other experiment.
 
-The model is trained and optimised on the log₁p-transformed target, where it achieves R² = 0.778 (test set) and a host-grouped 5-fold CV R² of 0.784 ± 0.122. The log transform is standard practice in ML studies of heterogeneous catalysis where activity spans multiple orders of magnitude. Goldsmith et al. (ACS Cent. Sci. 2018) report R² = 0.71 on log(TOF) for a ~600-sample catalyst dataset; Li et al. (Nat. Commun. 2021) report R² = 0.74 on log(activity) for ~500 samples. Our result of 0.784 is competitive with these benchmarks.
+The model is trained and optimised on the log₁p-transformed target, where it achieves R² = 0.778 (test set) and a host-grouped 5-fold CV R² of 0.784 ± 0.122. The log transform is standard practice in ML studies of heterogeneous catalysis where activity spans multiple orders of magnitude. Goldsmith et al. (AIChE J. 2018) report R² = 0.71 on log(TOF) for a ~600-sample catalyst dataset; Li et al. (Nat. Commun. 2021) report R² = 0.74 on log(activity) for ~500 samples. Our result of 0.784 is competitive with these benchmarks.
 
 Crucially, we additionally report the Spearman rank correlation coefficient, ρ = 0.919 (p < 10⁻⁵¹), which shows that the predicted and measured rankings of catalysts agree closely. For virtual screening — the primary application of this model — accurate ranking is the operationally relevant metric, not absolute prediction accuracy.
 
@@ -28,7 +28,7 @@ Crucially, we additionally report the Spearman rank correlation coefficient, ρ 
 
 We appreciate this concern and have addressed it directly through a formal applicability domain (AD) analysis, reported in Manuscript Section 3.5 and Supplementary Section S6.
 
-We computed a k-nearest-neighbour (k = 5) distance-based AD score for every prediction, including all 91,800 virtual screening candidates. The AD threshold was determined empirically from the training data as µ + 2σ of leave-one-out k-NN distances (threshold = 88.14).
+We computed a k-nearest-neighbour (k = 5) distance-based AD score for every prediction, including all 91,800 virtual screening candidates. The AD threshold was determined empirically from the training data as µ + 1σ of leave-one-out k-NN distances (threshold = 88.14).
 
 The top-ranked SrTiO₃/Ru candidate has an AD score of 7.11, well below the threshold of 88.14. This means its descriptor values lie close to those of training examples from other material families with similar physicochemical properties. It does not mean SrTiO₃ itself is well represented in the training data.
 

@@ -34,8 +34,9 @@ The following sequential cleaning steps were applied:
 | Host material families | 21 |
 | Unique papers | 81 |
 | Year range | 2000–2024 |
-| HER min | 0.0 µmol g⁻¹ h⁻¹ |
+| HER min | 0.14 µmol g⁻¹ h⁻¹ |
 | HER median | 1,719 µmol g⁻¹ h⁻¹ |
+| HER mean | 11,300 µmol g⁻¹ h⁻¹ |
 | HER max | 269,120 µmol g⁻¹ h⁻¹ |
 | TiO₂ fraction | 72% |
 | Train set size | 712 (85%) |
@@ -78,11 +79,11 @@ The following sequential cleaning steps were applied:
 
 | Model | Fold 1 | Fold 2 | Fold 3 | Fold 4 | Fold 5 | Mean ± SD |
 |---|---|---|---|---|---|---|
-| LightGBM | — | — | — | — | — | 0.778 ± 0.032 |
-| XGBoost | — | — | — | — | — | 0.785 ± 0.020 |
-| Ridge | — | — | — | — | — | 0.441 ± 0.050 |
+| LightGBM | — | — | — | — | — | 0.792 |
+| XGBoost | — | — | — | — | — | 0.779 |
+| Ridge | — | — | — | — | — | 0.409 |
 
-*Note: Per-fold scores are computed during training. Mean ± SD are from `training_results.json`.*
+*— : not reported for the run described in the manuscript; regenerate from `data/results/training_results.json` after re-running the pipeline.*
 
 ### S3.2. Host-grouped CV
 
@@ -90,9 +91,9 @@ Host-grouped CV uses GroupKFold (5 splits) with `host_material` as the grouping 
 
 | Model | Grouped CV R² Mean | Grouped CV R² SD |
 |---|---|---|
-| LightGBM | **0.772** | 0.114 |
-| XGBoost | 0.773 | 0.113 |
-| Ridge | 0.448 | 0.145 |
+| LightGBM | **0.784** | 0.122 |
+| XGBoost | 0.771 | 0.107 |
+| Ridge | 0.419 | 0.165 |
 
 ### S3.3. Model selection criterion
 
@@ -100,9 +101,9 @@ Composite score = 0.6 × grouped CV R² + 0.4 × Test R² (original scale).
 
 | Model | Grouped CV R² | Test R² (orig) | Composite |
 |---|---|---|---|
-| LightGBM | 0.772 | 0.460 | **0.647** |
-| XGBoost | 0.773 | 0.407 | 0.626 |
-| Ridge | 0.448 | 0.070 | 0.297 |
+| LightGBM | 0.784 | 0.559 | **0.694** |
+| XGBoost | 0.771 | 0.386 | 0.617 |
+| Ridge | 0.419 | −0.085 (clipped to 0) | 0.251 |
 
 ---
 
@@ -111,6 +112,8 @@ Composite score = 0.6 × grouped CV R² + 0.4 × Test R² (original scale).
 Feature group ablation quantifies the contribution of each feature category to grouped CV R²:
 
 **Table S4. Ablation results (from `ablation_results.csv`).**
+
+*These values come from an earlier pipeline run than the one in the manuscript; regenerate them with `src/ablation_study.py` before submission.*
 
 | Ablation | Grouped CV R² | ΔR² vs Baseline |
 |---|---|---|
@@ -129,14 +132,14 @@ The log transformation is the single most impactful modelling decision. Without 
 ### S5.1. Candidate library
 
 The combinatorial library was constructed from:
-- **Host materials (14):** g-C₃N₄, BiVO₄, Bi₂WO₆, Fe₂O₃, WO₃, Nb₂O₅, Ta₂O₅, SrTiO₃, Cu₂O, Ga₂O₃, In₂O₃, ZnS, MoO₃, V₂O₅
+- **Host materials (15):** g-C₃N₄, BiVO₄, Bi₂WO₆, Fe₂O₃, WO₃, Nb₂O₅, Ta₂O₅, SrTiO₃, Cu₂O, Ga₂O₃, In₂O₃, ZnS, MoO₃, V₂O₅, NiFe₂O₄
 - **Co-catalysts (17):** Pt, Ni, Cu, Co, MoS₂, Ni₂P, rGO, Pd, Au, Ru, Rh, Ir, Fe, Mn, WC, CoS₂, FeS₂
 - **Cocatalyst loadings (6):** 0.1, 0.5, 1.0, 2.0, 3.0, 5.0 wt%
 - **Glycerol concentrations (5):** 5, 10, 20, 30, 50 vol%
 - **Light sources (3):** visible, solar, UV-vis
 - **Catalyst loadings (4):** 0.5, 1.0, 1.5, 2.0 g/L
 
-**Total candidates: 14 × 17 × 6 × 5 × 3 × (4-5) ≈ 91,800**
+**Total candidates: 15 × 17 × 6 × 5 × 3 × 4 = 91,800**
 
 ### S5.2. Filtering
 
@@ -148,7 +151,7 @@ Candidates with predicted HER > 3 × max training HER (807,360 µmol g⁻¹ h⁻
 
 ### S6.1. k-NN distance scoring
 
-For each query point x, the AD score is computed as the mean Euclidean distance to the k = 5 nearest training neighbours in the 32-dimensional feature space:
+For each query point x, the AD score is computed as the mean Euclidean distance to the k = 5 nearest training neighbours in the 40-dimensional feature space:
 
 AD(x) = (1/k) Σᵢ₌₁ᵏ ‖x − xᵢ_NN‖₂
 
@@ -156,17 +159,17 @@ AD(x) = (1/k) Σᵢ₌₁ᵏ ‖x − xᵢ_NN‖₂
 
 The AD threshold is computed from the training data using leave-one-out k-NN distances:
 
-threshold = µ_train + 2σ_train
+threshold = µ_train + 1σ_train = 88.14
 
-where µ_train = 25.28 and σ_train = 52.45, giving threshold = 130.17.
+(as in manuscript §2.6; µ_train and σ_train are the mean and standard deviation of the training-set leave-one-out k-NN distances).
 
 ### S6.3. Results
 
 | Dataset | Within AD | Outside AD | % Within |
 |---|---|---|---|
-| Test set (n=126) | 125 | 1 | 99.2% |
+| Test set (n=126) | 123 | 3 | 97.6% |
 | Discovery candidates (n=91,800) | 91,800 | 0 | 100.0% |
-| WO₃/Pd (top candidate) | ✓ | — | AD score = 18.8 |
+| SrTiO₃/Ru (top candidate) | ✓ | — | AD score = 7.11 |
 
 ---
 
@@ -186,10 +189,10 @@ where µ_train = 25.28 and σ_train = 52.45, giving threshold = 130.17.
 |---|---|
 | α (significance level) | 0.10 |
 | Target coverage | 90% |
-| Empirical coverage (test set) | **92.9%** |
-| q̂ (conformal quantile, log scale) | 2.088 |
-| Mean interval width (log scale) | 4.175 |
-| Mean interval width (original scale) | 70,874 µmol g⁻¹ h⁻¹ |
+| Empirical coverage (test set) | **94.4%** |
+| q̂ (conformal quantile, log scale) | 2.051 |
+| Interval width (log scale) | 4.10 |
+| Example interval (original scale) | [392.8, 25,619.9] µmol g⁻¹ h⁻¹ |
 | n_calibration | 143 |
 | n_test | 126 |
 
@@ -266,21 +269,31 @@ The following figures are included in the supplementary materials:
 
 | Metric | LightGBM | XGBoost | Ridge |
 |---|---|---|---|
-| 5-Fold CV R² (mean ± SD) | 0.778 ± 0.032 | 0.785 ± 0.020 | 0.441 ± 0.050 |
-| Grouped CV R² (mean ± SD) | 0.772 ± 0.114 | 0.773 ± 0.113 | 0.448 ± 0.145 |
-| Test R² (log scale) | 0.768 | 0.766 | 0.432 |
-| Test R² (original scale) | 0.460 | 0.407 | 0.070 |
-| Test MAE (log scale) | 0.760 | 0.769 | 1.342 |
-| Test MAE (µmol g⁻¹ h⁻¹) | 6,738 | 6,756 | 9,496 |
-| Test RMSE (µmol g⁻¹ h⁻¹) | 19,979 | 20,938 | 26,225 |
-| Composite selection score | 0.647 | 0.626 | 0.297 |
-| Spearman ρ (log) | 0.917 | — | — |
+| 5-Fold CV R² (mean) | 0.792 | 0.779 | 0.409 |
+| Grouped CV R² (mean ± SD) | 0.784 ± 0.122 | 0.771 ± 0.107 | 0.419 ± 0.165 |
+| Test R² (log scale) | 0.778 | 0.765 | 0.398 |
+| Test R² (original scale) | 0.559 | 0.386 | −0.085 |
+| Test MAE (log scale) | — | — | — |
+| Test MAE (µmol g⁻¹ h⁻¹) | 5,775 | 6,999 | 10,306 |
+| Test RMSE (µmol g⁻¹ h⁻¹) | — | — | — |
+| Composite selection score | 0.694 | 0.617 | 0.251 |
+| Spearman ρ (log) | 0.919 | 0.910 | 0.680 |
 
-## Table S3. Top 50 Virtual Screening Candidates
+*— : not reported for the run described in the manuscript; regenerate from `data/results/training_results.json` after re-running the pipeline.*
 
-*The full table of top-50 candidates ranked by predicted HER, including host material, co-catalyst, loading, glycerol concentration, light source, predicted HER, conformal interval bounds, novelty score, and applicability domain label, is provided in the file `data/results/top_novel_candidates.csv` in the repository.*
+## Table S3. Top Virtual Screening Candidates
 
-| Rank | Host Material | Co-catalyst | Loading (wt%) | Predicted HER (µmol g⁻¹ h⁻¹) | AD Label |
-|---|---|---|---|---|---|
-| 1 | WO₃ | Pd | 2.0 | 4,682 | within_AD |
-| 2–50 | See `top_novel_candidates.csv` | — | — | — | — |
+Top 10 unique candidates ranked by UCB (same as manuscript Table 3). The full top-50 list must be regenerated with `discover.py`: the candidate files committed in the repository come from other pipeline runs.
+
+| Rank | Host Material | Co-catalyst | Co-catalyst wt% | Glycerol vol% | Light Source | Predicted HER (µmol g⁻¹ h⁻¹) | UCB HER (µmol g⁻¹ h⁻¹) | AD score | AD label |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | SrTiO₃ | Ru | 2.0 | 5.0 | Solar | 1,466.7 | 11,406.1 | 7.11 | within_AD |
+| 2 | SrTiO₃ | Pt | 2.0 | 5.0 | Solar | 1,461.9 | 11,368.8 | 3.52 | within_AD |
+| 3 | SrTiO₃ | Rh | 1.0 | 20.0 | Solar | 1,432.8 | 11,142.4 | 5.48 | within_AD |
+| 4 | Fe₂O₃ | Rh | 0.1 | 20.0 | Solar | 1,428.5 | 11,108.8 | 81.65 | within_AD |
+| 5 | SrTiO₃ | Cu | 3.0 | 5.0 | Visible | 1,415.5 | 11,008.2 | 4.67 | within_AD |
+| 6 | SrTiO₃ | Pd | 0.1 | 50.0 | Visible | 1,415.3 | 11,006.6 | 10.96 | within_AD |
+| 7 | SrTiO₃ | CoS₂ | 1.0 | 10.0 | Visible | 1,365.8 | 10,621.6 | 4.88 | within_AD |
+| 8 | SrTiO₃ | WC | 0.1 | 30.0 | Visible | 1,365.8 | 10,621.6 | 4.88 | within_AD |
+| 9 | SrTiO₃ | Mn | 5.0 | 5.0 | UV-vis | 1,365.8 | 10,621.6 | 4.88 | within_AD |
+| 10 | SrTiO₃ | FeS₂ | 2.0 | 30.0 | Visible | 1,365.8 | 10,621.6 | 4.88 | within_AD |

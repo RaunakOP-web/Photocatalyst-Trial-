@@ -98,7 +98,8 @@ reviewer criticisms for ML-in-materials-science papers. Values below match
 - SHAP analysis (Fig 4) shows top predictors are: co-catalyst work function,
   semiconductor bandgap, co-catalyst loading, glycerol concentration and light source
   type, all mechanistically linked to HER in the photocatalysis literature.
-  (Check first: `config.yaml` lists work function and bandgap as `leakage_cols`.)
+  (These are the hand-coded descriptors of the manuscript run. The current code replaced them
+  with matminer descriptors (commit f411503), so a re-run will change the SHAP features.)
 - Scientific descriptor module (`descriptor_builder.py`) adds physics-informed features:
   band gap, Pauling electronegativity, ionic radius, d-electron count,
   heterojunction classification, and defect engineering flags.
@@ -112,7 +113,7 @@ reviewer criticisms for ML-in-materials-science papers. Values below match
 
 **Evidence to cite:**
 - Discovery pipeline explicitly **excludes TiO₂** from the candidate library.
-- Candidate library: 91,800 systems over 14 non-TiO₂, non-ZnO host materials and
+- Candidate library: 91,800 systems over 15 non-TiO₂, non-ZnO host materials and
   17 co-catalysts (manuscript §2). The grid now in `src/discovery/candidate_generation.py`
   has 12 hosts and 15 co-catalysts (43,200 systems); reconcile before submission.
 - Novelty score = mean kNN distance (k=5) from all training points in feature space
