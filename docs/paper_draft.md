@@ -1,5 +1,7 @@
 # Machine Learning-Guided Discovery of High-Performance Photocatalysts for Glycerol-to-Hydrogen Evolution
 
+> **Superseded.** This is an earlier draft; the submission version is `docs/manuscript_IJHE.md`. Numbers here come from an older pipeline run and do not match the manuscript.
+
 **Authors:** [Author 1], [Author 2], ...
 
 **Target Journal:** *Nature Catalysis* / *ACS Catalysis* / *Journal of Materials Chemistry A*
@@ -10,7 +12,7 @@
 
 ## Abstract
 
-Photocatalytic hydrogen production from glycerol represents a promising route to simultaneously valorise bio-waste and generate renewable hydrogen. However, the vast compositional and operational parameter space of photocatalytic systems makes systematic experimental screening prohibitively expensive. Here we present a machine learning framework trained on a curated database of **838 photocatalytic glycerol reforming experiments** spanning **21 host material families** to predict the hydrogen evolution rate (HER, µmol g⁻¹ h⁻¹) from photocatalytic parameters. Our gradient-boosted ensemble model achieves a Leave-One-Material-Out cross-validation R² of **0.772**, demonstrating transferable generalization across unseen material families. SHAP-based explainability analysis identifies the host material identity, co-catalyst type, glycerol concentration, and illumination conditions as the dominant drivers of photocatalytic activity. A combinatorial discovery pipeline screening **91,800 novel candidate systems** across 14 non-TiO₂ host materials identifies promising heterojunction systems including WO₃/Pd and g-C₃N₄/Ni₂P as high-confidence experimental targets, with predicted HER values of **4,682–11,965 µmol g⁻¹ h⁻¹**. Bootstrap and conformal uncertainty estimates provide prediction intervals with empirical coverages of 64.3% and 76.2% respectively, enabling uncertainty-aware experimental prioritization.
+Photocatalytic hydrogen production from glycerol represents a promising route to simultaneously valorise bio-waste and generate renewable hydrogen. However, the vast compositional and operational parameter space of photocatalytic systems makes systematic experimental screening prohibitively expensive. Here we present a machine learning framework trained on a curated database of **838 photocatalytic glycerol reforming experiments** spanning **21 host material families** to predict the hydrogen evolution rate (HER, µmol g⁻¹ h⁻¹) from photocatalytic parameters. Our gradient-boosted ensemble model achieves a host-grouped 5-fold cross-validation R² of **0.772**. SHAP-based explainability analysis identifies the host material identity, co-catalyst type, glycerol concentration, and illumination conditions as the dominant drivers of photocatalytic activity. A combinatorial discovery pipeline screening **91,800 novel candidate systems** across 14 non-TiO₂ host materials identifies promising heterojunction systems including WO₃/Pd and g-C₃N₄/Ni₂P as high-confidence experimental targets, with predicted HER values of **4,682–11,965 µmol g⁻¹ h⁻¹**. Bootstrap and conformal uncertainty estimates provide prediction intervals with empirical coverages of 64.3% and 76.2% respectively, enabling uncertainty-aware experimental prioritization.
 
 ---
 
@@ -25,7 +27,7 @@ Previous ML studies of photocatalytic hydrogen production have been limited by s
 **Key contributions of this work:**
 
 1. A curated, quality-controlled database of **886** glycerol photoreforming experiments reduced to **838** high-confidence records after deduplication and quality filtering.
-2. A LightGBM ensemble model achieving LOMO-CV R² = **0.772** — a demonstration of material-class-generalizable HER prediction for glycerol systems.
+2. A LightGBM ensemble model achieving a host-grouped 5-fold CV R² = **0.772**.
 3. Physics-informed scientific descriptors (bandgap, electronegativity, heterojunction classification) that augment data-driven features with domain knowledge.
 4. Calibrated uncertainty quantification via bootstrap ensemble (200 members) and conformal prediction.
 5. A novelty-aware discovery pipeline identifying **91,800** high-confidence, underexplored catalyst candidates beyond the TiO₂-dominated training distribution.
@@ -61,16 +63,16 @@ Categorical features were encoded using scikit-learn's `TargetEncoder` with 5-fo
 
 Three models were compared: XGBoost, LightGBM, and Ridge regression (linear baseline). Hyperparameters were optimized using Optuna Bayesian optimization (60 trials, 600 s timeout) with 5-fold cross-validation as the inner objective. Model selection used a composite score:
 
-**Score = 0.6 × LOMO-CV R² + 0.4 × Test R² (original scale)**
+**Score = 0.6 × grouped CV R² + 0.4 × Test R² (original scale)**
 
-This weighting prioritizes generalization (LOMO-CV) over in-distribution accuracy. LightGBM was selected as the best model (composite score = **0.6472**).
+This weighting prioritizes performance on held-out host materials (grouped CV) over in-distribution accuracy. LightGBM was selected as the best model (composite score = **0.6472**).
 
 Sample weights proportional to `metadata_completeness_score` and confidence flags were applied during training to upweight high-quality measurements.
 
 ### 2.4 Validation Strategy
 
 - **5-Fold Cross-Validation**: Standard KFold (shuffled, seed=42) for hyperparameter objective.
-- **Leave-One-Material-Out CV (LOMO-CV)**: GroupKFold with `host_material` as the grouping variable. Each fold withholds all experiments from one material family, providing an estimate of cross-material generalization.
+- **Host-grouped CV**: 5-fold GroupKFold with `host_material` as the grouping variable. Each fold withholds all experiments from several material families, so it is less strict than leaving out one family at a time.
 - **Hold-Out Test Set**: 15% stratified random split (stratified on deciles of log-HER) held out throughout all development and used only for final evaluation.
 
 ### 2.5 Uncertainty Quantification
@@ -103,7 +105,7 @@ SHAP (SHapley Additive exPlanations) TreeExplainer values were computed for all 
 
 ### 3.1 Dataset Statistics
 
-The curated dataset contains **838** experiments from **81 papers** (2000–2024). HER values span from near-zero to **269,120 µmol g⁻¹ h⁻¹** (median: **1,719 µmol g⁻¹ h⁻¹**), reflecting the extreme diversity of photocatalytic systems. Host material distribution is dominated by TiO₂ (**72%** of records), motivating the LOMO-CV validation strategy and the non-TiO₂-focused discovery pipeline.
+The curated dataset contains **838** experiments from **81 papers** (2000–2024). HER values span from near-zero to **269,120 µmol g⁻¹ h⁻¹** (median: **1,719 µmol g⁻¹ h⁻¹**), reflecting the extreme diversity of photocatalytic systems. Host material distribution is dominated by TiO₂ (**72%** of records), motivating the grouped CV validation strategy and the non-TiO₂-focused discovery pipeline.
 
 *(Figure 1: Dataset overview — material distribution and HER distribution)*
 
@@ -111,7 +113,7 @@ The curated dataset contains **838** experiments from **81 papers** (2000–2024
 
 Table 1 summarizes performance metrics for all three models. LightGBM achieves the best balance of generalization and accuracy:
 
-| Model     | 5-Fold CV R² | LOMO-CV R² | Test R² (log) | Test R² (orig) | Test MAE (µmol/g/h) |
+| Model     | 5-Fold CV R² | Grouped CV R² | Test R² (log) | Test R² (orig) | Test MAE (µmol/g/h) |
 |-----------|-------------|------------|---------------|-----------------|---------------------|
 | LightGBM  | 0.778       | **0.772**  | **0.768**     | **0.460**       | **6,738**           |
 | XGBoost   | **0.785**   | 0.773      | 0.766         | 0.407           | 6,756               |
@@ -127,12 +129,12 @@ The model achieved a Spearman rank correlation of ρ = 0.917 (p < 10⁻⁵⁰), 
 
 | Study | Dataset size | Target | R² (primary metric) |
 |---|---|---|---|
-| This work | 838 | log(HER+1) | 0.772 (LOMO-CV) |
+| This work | 838 | log(HER+1) | 0.772 (grouped CV) |
 | Goldsmith et al. 2018 (ACS Cent Sci) | ~600 | log(TOF) | 0.71 |
 | Li et al. 2021 (Nat Commun) | ~500 | log(activity) | 0.74 |
 | Zhong et al. 2020 (Nat Commun) | ~3000 | log(HER) | 0.89 |
 
-Our LOMO-CV R²=0.772 is competitive with the smaller-dataset literature. Zhong et al. used a much larger dataset (3,000 vs 838), which inherently supports higher R².
+Our grouped CV R²=0.772 is competitive with the smaller-dataset literature. Zhong et al. used a much larger dataset (3,000 vs 838), which inherently supports higher R².
 
 *(Figure 2: Model comparison bar chart)*
 *(Figure 3: Actual vs predicted scatterplot and residuals)*
@@ -174,7 +176,7 @@ The top-ranked candidate, WO₃/Pd, falls within the applicability domain of the
 
 ### 3.6 Ablation Study
 
-Feature group ablation (Figure 8) quantifies the contribution of each feature group to LOMO-CV R²:
+Feature group ablation (Figure 8) quantifies the contribution of each feature group to grouped CV R²:
 
 - **Model A (all features)**: Baseline R² = **0.737**
 - **Model B (no synthesis features)**: ΔR² = **−0.0202**
@@ -189,7 +191,7 @@ The synthesis and optical feature groups show the largest individual contributio
 
 ## 4. Conclusions
 
-We present the first ML framework for cross-material-class HER prediction in glycerol photoreforming, achieving LOMO-CV R² = **0.772** on held-out material families. Key findings:
+We present an ML framework for HER prediction in glycerol photoreforming, achieving a host-grouped 5-fold CV R² = **0.772** on held-out material families. Key findings:
 
 1. Non-linear gradient-boosted models substantially outperform linear baselines (ΔR² ≈ 0.32), capturing synergistic effects between catalyst composition, reaction conditions, and illumination.
 2. SHAP analysis provides mechanistically interpretable feature attributions consistent with photocatalysis theory, with material-family-specific driver differences identified for TiO₂, ZnO, CdS, and g-C₃N₄.

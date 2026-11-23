@@ -63,8 +63,10 @@ none of them can be fixed from the files in the repository alone, because the ra
    | Top candidate | SrTiO₃/Ru, 1,466.7 µmol g⁻¹ h⁻¹ | Au(5.0 wt%)/ZnS, 4,134 (`optimized_candidates.csv`) |
    | Top SHAP drivers | work function, bandgap, glycerol | light source type, semiconductor_2, preparation |
 
-   `docs/cover_letter.md` still gives grouped CV R² 0.772 ± 0.114 and ρ 0.917, unlike the
-   manuscript. `docs/paper_draft.md` gives yet other values (grouped CV R² 0.772, coverage 92.9 % and 76.2 %,
+   The cover letter and reviewer documents now quote the manuscript's numbers.
+   `docs/supplementary_information.md` still holds a complete older run (grouped CV 0.772,
+   coverage 92.9 %, Table S2, ablation, S7); regenerate it after the re-run rather than mixing
+   runs. `docs/paper_draft.md` is marked superseded and gives yet other values (grouped CV R² 0.772, coverage 92.9 % and 76.2 %,
    top candidate WO₃/Pd).
 7. **Grouped CV vs LOGO.** `cv_gap_analysis.json` reports leave-one-group-out R² of −0.18 for the
    ensemble, against 0.77 from 5-fold grouped CV. With TiO₂ at 72 % of rows, the 5-fold number
@@ -77,6 +79,15 @@ none of them can be fixed from the files in the repository alone, because the ra
    The block is removed, and the script now uses `LeaveOneGroupOut` (one fold per host material)
    instead of 5-fold `GroupKFold`, so its "LOGO-CV" label is accurate. Re-run the benchmark; it now
    trains one fold per host (about 20 instead of 5), so it takes roughly four times longer.
+
+9. **Manuscript statements to check before submission.**
+   - "Data and code availability" says the dataset is in `data/raw/` and that `requirements.txt`
+     pins exact versions. `data/raw/` and `models/*.joblib` are gitignored, and
+     `requirements.txt` lists only streamlit, pandas, numpy and plotly, unpinned. The cover
+     letter repeats "all data, code, and trained models are publicly available".
+   - §3.1 lists SrTiO₃ and BiVO₄ among the training hosts, but `df_clean.csv` has no rows for
+     either. SrTiO₃/Ru is the manuscript's top candidate.
+   - Sections 2.9, 2.10, 3.7 and 3.8 appear twice, and sit before Section 3.
 
 ## Recommended order
 

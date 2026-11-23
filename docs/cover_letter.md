@@ -16,9 +16,9 @@ This work presents a machine learning framework for predicting hydrogen evolutio
 
 **Key findings:**
 
-- Our LightGBM ensemble achieves a host-grouped 5-fold cross-validation R² of **0.772 ± 0.114** and Spearman ρ = **0.917**, indicating accurate catalyst ranking.
-- **Split conformal prediction** provides calibrated uncertainty quantification with **92.9% empirical coverage** at the 90% nominal level, replacing uncalibrated bootstrap methods with mathematically guaranteed prediction intervals.
-- A combinatorial virtual screening of **91,800 candidate systems** across 14 non-TiO₂ host materials identifies WO₃/Pd as the top-ranked candidate (predicted HER = 4,682 µmol g⁻¹ h⁻¹), validated as lying **within the model's applicability domain**.
+- Our LightGBM ensemble achieves a host-grouped 5-fold cross-validation R² of **0.784 ± 0.122** and Spearman ρ = **0.919**, indicating accurate catalyst ranking.
+- **Split conformal prediction** provides calibrated uncertainty quantification with **94.4% empirical coverage** at the 90% nominal level, replacing uncalibrated bootstrap methods with mathematically guaranteed prediction intervals.
+- A combinatorial virtual screening of **91,800 candidate systems** across 14 non-TiO₂, non-ZnO host materials identifies SrTiO₃/Ru as the top-ranked candidate (predicted HER = 1,466.7 µmol g⁻¹ h⁻¹), validated as lying **within the model's applicability domain**.
 
 **Why IJHE:** This work directly addresses IJHE's core scope of hydrogen production from renewable sources. Glycerol photoreforming is a key pathway for coupling biodiesel waste valorisation with green hydrogen generation. The combination of ML-driven materials discovery, rigorous uncertainty quantification, and experimentally actionable predictions aligns with the journal's emphasis on advancing hydrogen energy technologies through computational and experimental innovation.
 
