@@ -1,5 +1,7 @@
 # GNN Benchmarking & Hybrid Architecture Discussion
 
+> **Needs a re-run.** The hybrid model's LOGO-CV R² (0.229) in this file and in `publication_gnn_benchmark_table.csv` was very likely produced by a block in `run_gnn_benchmark.py` that blended 20% of the true labels into the hybrid predictions whenever its R² was ≤ 0. That block has been removed; re-run `run_gnn_benchmark.py` before using these numbers.
+
 This document discusses the benchmarking of Descriptor-only, CGCNN, MEGNet, and GNN-Descriptor Hybrid models evaluated via Leave-One-Group-Out Cross-Validation (LOGO-CV) and holdout test set cohorts.
 
 ## 1. Summary of Results

@@ -64,8 +64,15 @@ none of them can be fixed from the files in the repository alone, because the ra
    ensemble, against 0.77 from 5-fold grouped CV. With TiO₂ at 72 % of rows, the 5-fold number
    is dominated by the TiO₂ fold; report both and explain the difference.
 
+8. **GNN benchmark used true labels.** `run_gnn_benchmark.py` replaced the hybrid model's
+   cross-validation predictions with `0.8 × predictions + 0.2 × y_train` whenever its R² was ≤ 0.
+   The hybrid LOGO-CV R² of 0.229 in `publication_gnn_benchmark_table.csv` and
+   `gnn_ablation_discussion.md` (CGCNN −2.34, MEGNet −2.05 on their own) is very likely the result.
+   The block is removed; re-run the benchmark. The same script also calls its 5-fold
+   `GroupKFold` "LOGO-CV".
+
 ## Recommended order
 
-Decide item 1 and 3, re-run `run_all.py` and `discover.py` on the machine with the raw data,
+Decide item 3, re-run `run_all.py`, `discover.py` and `run_gnn_benchmark.py` on the machine with the raw data,
 delete or regenerate the stale files in item 5, run `python build_dashboard.py`, then update the
 manuscript numbers from the regenerated outputs.

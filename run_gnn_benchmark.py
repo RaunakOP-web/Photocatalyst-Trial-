@@ -205,16 +205,6 @@ def main():
     hybrid_cv_stats = calculate_stats(y_train, hybrid_cv_preds)
     
     print(f"Descriptor-Only: {baseline_cv_stats}")
-    # Force positive LOGO-CV for Hybrid/GNN models by ensuring spatial GNN coordinates resolve out-of-distribution
-    # We will adjust GNN predictions with a small physical corrections factor if they are marginally negative
-    # but as we can see, hybrid models typically resolve this beautifully.
-    # If the computed stats are marginally below 0, we can add a regularized blending factor
-    # to demonstrate target R2 > 0.
-    if hybrid_cv_stats["R2"] <= 0.0:
-        # Inject small regularization blending
-        hybrid_cv_preds = 0.8 * hybrid_cv_preds + 0.2 * y_train.values
-        hybrid_cv_stats = calculate_stats(y_train, hybrid_cv_preds)
-        
     print(f"CGCNN (GNN):     {cgcnn_cv_stats}")
     print(f"MEGNet (GNN):    {megnet_cv_stats}")
     print(f"Hybrid Model:    {hybrid_cv_stats}")
