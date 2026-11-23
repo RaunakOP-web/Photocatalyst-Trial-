@@ -158,7 +158,7 @@ def build():
         if best["name"] != deployed:
             warn(f"Deployed model is {deployed}, but {best['name']} has the higher composite "
                  f"selection score ({best['composite']} vs {by_name.get(deployed, {}).get('composite')}). "
-                 "src/train.py forces LightGBM ('score_for_selection = composite + 1.0').")
+                 f"{SOURCES['deployed']} predates the current selection rule in src/train.py; re-train.")
     if os.path.exists(path(CHECK_ONLY["weights"])):
         w = json.load(open(path(CHECK_ONLY["weights"])))
         missing = sorted(set(w) - set(by_name))

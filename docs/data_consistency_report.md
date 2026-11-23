@@ -23,11 +23,11 @@ none of them can be fixed from the files in the repository alone, because the ra
 
 ## Needs the authors
 
-1. **Model selection is forced.** `src/train.py` line 312 adds 1.0 to LightGBM's composite score
-   ("Force LightGBM selection as best model as per prompt requirements"). By the score the code
-   defines (0.6 × host-grouped CV R² + 0.4 × test R² on the original scale), XGBoost wins
-   (0.6751 vs 0.6381). Either remove the bonus and re-train, or state the selection rule in the
-   paper.
+1. **Model selection was forced.** `src/train.py` used to add 1.0 to LightGBM's composite score.
+   The override is now removed, so the code selects the highest composite score
+   (0.6 × host-grouped CV R² + 0.4 × test R² on the original scale). With the committed results
+   that is XGBoost (0.6751 vs 0.6381), but `models/best_model_name.txt` and every downstream
+   output still come from the forced LightGBM run. Re-train and re-run discovery and SHAP.
 2. **Most top candidates are extrapolations.** Of the 8 hosts in `optimized_candidates.csv`,
    Cu₂O, Ga₂O₃, V₂O₅, Fe₂O₃ and In₂O₃ have no rows in `df_clean.csv`; 7 of the top 10 use them.
    Cu₂O, Ga₂O₃ and V₂O₅ receive identical predictions for the same settings (11 cases), so the

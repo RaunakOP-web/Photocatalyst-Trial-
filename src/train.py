@@ -308,10 +308,9 @@ def main():
         # Save model
         joblib.dump(model, os.path.join(paths["models_dir"], f"{name.lower()}_model.joblib"))
         
-        # Force LightGBM selection as best model as per prompt requirements
-        score_for_selection = composite + 1.0 if name == "LightGBM" else composite
-        if score_for_selection > best_composite_score:
-            best_composite_score = score_for_selection
+        # Select the model with the highest composite score
+        if composite > best_composite_score:
+            best_composite_score = composite
             best_model_name      = name
             best_model_obj       = model
             
@@ -324,7 +323,7 @@ def main():
     with open(os.path.join(paths["results_dir"], "training_results.json"), "w") as f:
         json.dump(metrics_report, f, indent=2)
         
-    print(f"\nStep 3f: Finalized models and saved results. Best model by LOMO-CV: {best_model_name}")
+    print(f"\nStep 3f: Finalized models and saved results. Best model by composite score: {best_model_name}")
 
 if __name__ == "__main__":
     main()
