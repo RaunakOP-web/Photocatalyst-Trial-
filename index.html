@@ -106,52 +106,21 @@
     <p>Photocatalytic HER discovery platform</p>
   </header>
 
-  <div class="kpi-grid">
-    <div class="kpi">
-      <div class="kpi-label">Best model CV R&sup2;</div>
-      <div class="kpi-value">0.797</div>
-      <div class="kpi-sub">LightGBM, 5-fold CV</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Top predicted HER (&micro;mol g&#8315;&sup1; h&#8315;&sup1;)</div>
-      <div class="kpi-value">4,134</div>
-      <div class="kpi-sub">Au(5.0wt%)/ZnS</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Spearman &rho;</div>
-      <div class="kpi-value">0.922</div>
-      <div class="kpi-sub">LightGBM, log scale</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Test MAE (&micro;mol g&#8315;&sup1; h&#8315;&sup1;)</div>
-      <div class="kpi-value">6,562</div>
-      <div class="kpi-sub">LightGBM</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Conformal coverage (%)</div>
-      <div class="kpi-value">91.3</div>
-      <div class="kpi-sub">Target 90%, n = 126</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Screened candidates</div>
-      <div class="kpi-value">43,200</div>
-      <div class="kpi-sub">Virtual library, top 50 shortlisted</div>
-    </div>
-  </div>
+  <div class="kpi-grid" id="kpis"></div>
 
   <h2>Model performance</h2>
   <div class="charts-grid">
     <div class="card col-5">
       <div class="card-title">CV R&sup2; by model</div>
-      <div class="chart-wrap" style="height:260px"><canvas id="chartModelBar" role="img" aria-label="Bar chart of 5-fold CV R squared by model: LightGBM 0.797, XGBoost 0.793, Ridge 0.409."></canvas></div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartModelBar" role="img"></canvas></div>
     </div>
     <div class="card col-4">
-      <div class="card-title">LightGBM test R&sup2; (log scale)</div>
-      <div class="chart-wrap" style="height:260px"><canvas id="chartGauge" role="img" aria-label="Gauge showing LightGBM test R squared on the log scale of 0.783 out of 1."></canvas></div>
+      <div class="card-title" id="gaugeTitle">Test R&sup2; (log scale)</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartGauge" role="img"></canvas></div>
     </div>
     <div class="card col-3">
-      <div class="card-title">LOMO CV R&sup2;</div>
-      <div class="chart-wrap" style="height:260px"><canvas id="chartLomo" role="img" aria-label="Horizontal bar chart of leave-one-material-out CV R squared: XGBoost 0.774, LightGBM 0.774, Ridge 0.419."></canvas></div>
+      <div class="card-title">Host-grouped CV R&sup2;</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartLomo" role="img"></canvas></div>
     </div>
   </div>
 
@@ -163,7 +132,7 @@
     </div>
     <div class="card col-6">
       <div class="card-title">Best predicted HER by host material</div>
-      <div class="chart-wrap" style="height:280px"><canvas id="chartHerHost" role="img" aria-label="Bar chart of the best predicted HER per host material among the 50 shortlisted candidates, in micromoles per gram per hour: ZnS 4,134, Cu2O 4,080, V2O5 4,080, Ga2O3 4,080, MoO3 3,158, Fe2O3 2,994, In2O3 2,984, WO3 2,983."></canvas></div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartHerHost" role="img"></canvas></div>
     </div>
   </div>
 
@@ -175,19 +144,19 @@
     </div>
     <div class="card col-5">
       <div class="card-title">SHAP by feature category</div>
-      <div class="chart-wrap" style="height:280px"><canvas id="chartShapPie" role="img" aria-label="Doughnut chart of summed mean absolute SHAP value by feature category over all 40 features: material 1.04, light source 0.85, reaction conditions 0.73, co-catalyst 0.51, process 0.47."></canvas></div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartShapPie" role="img"></canvas></div>
     </div>
   </div>
 
   <h2>Multi-objective screening</h2>
   <div class="charts-grid">
     <div class="card col-6">
-      <div class="card-title">Predicted HER vs novelty, top 50</div>
-      <div class="chart-wrap" style="height:280px"><canvas id="chartScatter" role="img" aria-label="Scatter plot of predicted HER against novelty score for the 50 shortlisted candidates, coloured by light type. Most candidates sit between 3,200 and 4,150 micromoles per gram per hour with novelty 0.30 to 0.37; four Au/oxide candidates have novelty 0.45 to 0.61 at about 3,000."></canvas></div>
+      <div class="card-title" id="scatterTitle">Predicted HER vs novelty</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartScatter" role="img"></canvas></div>
     </div>
     <div class="card col-6">
-      <div class="card-title">Co-catalysts in the top 50</div>
-      <div class="chart-wrap" style="height:280px"><canvas id="chartCocat" role="img" aria-label="Bar chart of how many of the 50 shortlisted candidates use each co-catalyst: Au 8, Pd 5, Pt 5, and WC, Ir, Rh, Ru, CoS2, Ni2P, FeS2 and MoS2 4 each."></canvas></div>
+      <div class="card-title" id="cocatTitle">Co-catalysts in the shortlist</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartCocat" role="img"></canvas></div>
     </div>
   </div>
 
@@ -197,52 +166,32 @@
       <table>
         <thead>
           <tr>
-            <th>Rank</th><th>Model</th><th>CV R&sup2; (mean)</th><th>CV R&sup2; (std)</th>
-            <th>LOMO R&sup2;</th><th>Test R&sup2; (log)</th><th>Spearman &rho;</th>
+            <th>Model</th><th>CV R&sup2; (mean)</th><th>CV R&sup2; (std)</th>
+            <th>Host-grouped CV R&sup2;</th><th>Test R&sup2; (log)</th><th>Spearman &rho;</th>
             <th>Test MAE</th><th>Test RMSE</th><th>Composite score</th>
           </tr>
         </thead>
-        <tbody>
-          <tr class="best">
-            <td>1</td><td>LightGBM</td>
-            <td>0.7969</td><td>&plusmn;0.0254</td><td>0.7738</td><td>0.7830</td>
-            <td>0.9220</td><td>6,562</td><td>20,448</td><td>0.6381</td>
-          </tr>
-          <tr>
-            <td>2</td><td>XGBoost</td>
-            <td>0.7930</td><td>&plusmn;0.0245</td><td>0.7739</td><td>0.7831</td>
-            <td>0.9162</td><td>6,327</td><td>18,704</td><td>0.6751</td>
-          </tr>
-          <tr>
-            <td>3</td><td>Ridge</td>
-            <td>0.4090</td><td>&plusmn;0.0394</td><td>0.4192</td><td>0.3973</td>
-            <td>0.6558</td><td>10,315</td><td>28,341</td><td>0.2515</td>
-          </tr>
-        </tbody>
+        <tbody id="benchBody"></tbody>
       </table>
     </div>
-    <p class="table-note">Test MAE and test RMSE in &micro;mol g&#8315;&sup1; h&#8315;&sup1;.</p>
+    <p class="table-note" id="benchNote"></p>
   </div>
 
   <h2>Screening grid</h2>
   <div class="card">
-    <div class="filter-grid">
-      <div class="filter-item"><h3>Host materials</h3><p>12</p></div>
-      <div class="filter-item"><h3>Co-catalysts</h3><p>15</p></div>
-      <div class="filter-item"><h3>Co-catalyst loading</h3><p>0.1&ndash;5.0 wt% (6 levels)</p></div>
-      <div class="filter-item"><h3>Glycerol</h3><p>5&ndash;50 vol% (5 levels)</p></div>
-      <div class="filter-item"><h3>Light</h3><p>Visible, UV</p></div>
-      <div class="filter-item"><h3>Catalyst loading</h3><p>0.5&ndash;2.0 g L&#8315;&sup1; (4 levels)</p></div>
-      <div class="filter-item"><h3>Ranking</h3><p>Upper 90% bound (UCB)</p></div>
-      <div class="filter-item"><h3>Shortlist</h3><p>Top 50 pairs, in domain</p></div>
-    </div>
+    <div class="filter-grid" id="gridItems"></div>
   </div>
 
-  <footer>XGBoost, LightGBM and Ridge blending ensemble. Dataset: 838 entries after cleaning.</footer>
+  <footer id="footer"></footer>
 
 </div>
 
+<!-- Written by build_dashboard.py from the pipeline outputs. Do not edit by hand. -->
+<script id="dashboard-data" type="application/json">{"sources":{"training":"data/results/training_results.json","conformal":"data/results/conformal_summary.json","shap":"data/results/shap_summary_data.json","candidates":"optimized_candidates.csv","dataset":"data/processed/df_clean.csv","grid":"src/discovery/candidate_generation.py","deployed":"models/best_model_name.txt","config":"config.yaml"},"deployed_model":"LightGBM","models":[{"name":"XGBoost","cv_r2":0.7930285485852533,"cv_std":0.024489299231138666,"lomo":0.7738520771636284,"lomo_std":0.10564859579237103,"test_r2_log":0.7831249849760018,"spearman":0.9162,"mae":6326.929078113163,"rmse":18704.07584734146,"composite":0.6751},{"name":"LightGBM","cv_r2":0.7969417619365339,"cv_std":0.025406045780147157,"lomo":0.7737961292545068,"lomo_std":0.12865697469184198,"test_r2_log":0.7829707281243243,"spearman":0.922,"mae":6561.602494821475,"rmse":20447.650312279042,"composite":0.6381},{"name":"Ridge","cv_r2":0.4090120088479128,"cv_std":0.03935274822046461,"lomo":0.4191775100326985,"lomo_std":0.16575014540676503,"test_r2_log":0.39734797329985705,"spearman":0.6558,"mae":10314.573957982595,"rmse":28340.971907572493,"composite":0.2515}],"conformal":{"coverage":0.9127,"target":0.9,"n_test":126},"dataset_rows":838,"grid":{"host_material":["g-c3n4","bivo4","bi2wo6","fe2o3","wo3","srtio3","cu2o","ga2o3","in2o3","zns","moo3","v2o5"],"co_catalyst":["pt","ni","cu","co","mos2","ni2p","rgo","pd","au","ru","rh","ir","wc","cos2","fes2"],"co_catalyst_wt_pct":[0.1,0.5,1.0,2.0,3.0,5.0],"glycerol_concentration_v_pct":[5.0,10.0,20.0,30.0,50.0],"light_type":["visible","uv"],"catalyst_loading_g_L":[0.5,1.0,1.5,2.0]},"n_grid":43200,"shortlist":[{"host":"zns","cocat":"au","wt":5.0,"light":"visible","her":4133.9,"lo":820.7,"hi":20807.2,"novelty":0.359,"in_training":4},{"host":"cu2o","cocat":"pd","wt":5.0,"light":"visible","her":4080.3,"lo":810.0,"hi":20537.3,"novelty":0.365,"in_training":0},{"host":"ga2o3","cocat":"pd","wt":5.0,"light":"visible","her":4080.3,"lo":810.0,"hi":20537.3,"novelty":0.365,"in_training":0},{"host":"v2o5","cocat":"pd","wt":5.0,"light":"visible","her":4080.3,"lo":810.0,"hi":20537.3,"novelty":0.365,"in_training":0},{"host":"v2o5","cocat":"au","wt":2.0,"light":"uv","her":3921.8,"lo":778.5,"hi":19740.0,"novelty":0.3551,"in_training":0},{"host":"cu2o","cocat":"au","wt":2.0,"light":"uv","her":3921.8,"lo":778.5,"hi":19740.0,"novelty":0.3551,"in_training":0},{"host":"ga2o3","cocat":"au","wt":2.0,"light":"uv","her":3921.8,"lo":778.5,"hi":19740.0,"novelty":0.3551,"in_training":0},{"host":"zns","cocat":"wc","wt":5.0,"light":"uv","her":3905.7,"lo":775.3,"hi":19659.0,"novelty":0.3291,"in_training":4},{"host":"zns","cocat":"pd","wt":5.0,"light":"visible","her":3852.7,"lo":764.8,"hi":19392.2,"novelty":0.2977,"in_training":4},{"host":"v2o5","cocat":"wc","wt":5.0,"light":"visible","her":3786.8,"lo":751.7,"hi":19060.6,"novelty":0.3531,"in_training":0},{"host":"cu2o","cocat":"wc","wt":5.0,"light":"visible","her":3786.8,"lo":751.7,"hi":19060.6,"novelty":0.3531,"in_training":0},{"host":"ga2o3","cocat":"wc","wt":5.0,"light":"visible","her":3786.8,"lo":751.7,"hi":19060.6,"novelty":0.3531,"in_training":0},{"host":"zns","cocat":"ir","wt":5.0,"light":"visible","her":3669.8,"lo":728.4,"hi":18471.9,"novelty":0.2992,"in_training":4},{"host":"zns","cocat":"pt","wt":5.0,"light":"visible","her":3624.3,"lo":719.4,"hi":18242.7,"novelty":0.3028,"in_training":4},{"host":"zns","cocat":"rh","wt":2.0,"light":"visible","her":3569.7,"lo":708.6,"hi":17968.1,"novelty":0.3519,"in_training":4},{"host":"cu2o","cocat":"rh","wt":5.0,"light":"visible","her":3566.2,"lo":707.9,"hi":17950.5,"novelty":0.3643,"in_training":0},{"host":"ga2o3","cocat":"rh","wt":5.0,"light":"visible","her":3566.2,"lo":707.9,"hi":17950.5,"novelty":0.3643,"in_training":0},{"host":"v2o5","cocat":"rh","wt":5.0,"light":"visible","her":3566.2,"lo":707.9,"hi":17950.5,"novelty":0.3643,"in_training":0},{"host":"ga2o3","cocat":"ir","wt":2.0,"light":"uv","her":3487.8,"lo":692.3,"hi":17555.8,"novelty":0.308,"in_training":0},{"host":"v2o5","cocat":"ir","wt":2.0,"light":"uv","her":3487.8,"lo":692.3,"hi":17555.8,"novelty":0.308,"in_training":0},{"host":"cu2o","cocat":"ir","wt":2.0,"light":"uv","her":3487.8,"lo":692.3,"hi":17555.8,"novelty":0.308,"in_training":0},{"host":"v2o5","cocat":"pt","wt":2.0,"light":"uv","her":3403.4,"lo":675.5,"hi":17131.2,"novelty":0.3081,"in_training":0},{"host":"cu2o","cocat":"pt","wt":2.0,"light":"uv","her":3403.4,"lo":675.5,"hi":17131.2,"novelty":0.3081,"in_training":0},{"host":"ga2o3","cocat":"pt","wt":2.0,"light":"uv","her":3403.4,"lo":675.5,"hi":17131.2,"novelty":0.3081,"in_training":0},{"host":"ga2o3","cocat":"ru","wt":5.0,"light":"visible","her":3348.6,"lo":664.6,"hi":16855.4,"novelty":0.3529,"in_training":0},{"host":"v2o5","cocat":"ru","wt":5.0,"light":"visible","her":3348.6,"lo":664.6,"hi":16855.4,"novelty":0.3529,"in_training":0},{"host":"cu2o","cocat":"ru","wt":5.0,"light":"visible","her":3348.6,"lo":664.6,"hi":16855.4,"novelty":0.3529,"in_training":0},{"host":"zns","cocat":"cos2","wt":5.0,"light":"uv","her":3337.0,"lo":662.3,"hi":16797.2,"novelty":0.3256,"in_training":4},{"host":"v2o5","cocat":"ni2p","wt":5.0,"light":"visible","her":3329.8,"lo":660.9,"hi":16760.5,"novelty":0.3494,"in_training":0},{"host":"cu2o","cocat":"ni2p","wt":5.0,"light":"visible","her":3329.8,"lo":660.9,"hi":16760.5,"novelty":0.3494,"in_training":0},{"host":"ga2o3","cocat":"ni2p","wt":5.0,"light":"visible","her":3329.8,"lo":660.9,"hi":16760.5,"novelty":0.3494,"in_training":0},{"host":"zns","cocat":"fes2","wt":5.0,"light":"uv","her":3329.0,"lo":660.7,"hi":16756.8,"novelty":0.3306,"in_training":4},{"host":"zns","cocat":"ni2p","wt":5.0,"light":"uv","her":3328.8,"lo":660.7,"hi":16755.6,"novelty":0.326,"in_training":4},{"host":"v2o5","cocat":"mos2","wt":5.0,"light":"visible","her":3326.3,"lo":660.2,"hi":16743.3,"novelty":0.3509,"in_training":0},{"host":"cu2o","cocat":"mos2","wt":5.0,"light":"visible","her":3326.3,"lo":660.2,"hi":16743.3,"novelty":0.3509,"in_training":0},{"host":"ga2o3","cocat":"mos2","wt":5.0,"light":"visible","her":3326.3,"lo":660.2,"hi":16743.3,"novelty":0.3509,"in_training":0},{"host":"zns","cocat":"ru","wt":2.0,"light":"visible","her":3276.9,"lo":650.4,"hi":16494.4,"novelty":0.3475,"in_training":4},{"host":"zns","cocat":"mos2","wt":5.0,"light":"uv","her":3250.2,"lo":645.1,"hi":16360.2,"novelty":0.3275,"in_training":4},{"host":"v2o5","cocat":"cos2","wt":5.0,"light":"visible","her":3244.2,"lo":643.9,"hi":16330.3,"novelty":0.3491,"in_training":0},{"host":"cu2o","cocat":"cos2","wt":5.0,"light":"visible","her":3244.2,"lo":643.9,"hi":16330.3,"novelty":0.3491,"in_training":0},{"host":"ga2o3","cocat":"cos2","wt":5.0,"light":"visible","her":3244.2,"lo":643.9,"hi":16330.3,"novelty":0.3491,"in_training":0},{"host":"cu2o","cocat":"fes2","wt":5.0,"light":"visible","her":3237.2,"lo":642.5,"hi":16294.9,"novelty":0.3532,"in_training":0},{"host":"ga2o3","cocat":"fes2","wt":5.0,"light":"visible","her":3237.2,"lo":642.5,"hi":16294.9,"novelty":0.3532,"in_training":0},{"host":"v2o5","cocat":"fes2","wt":5.0,"light":"visible","her":3237.2,"lo":642.5,"hi":16294.9,"novelty":0.3532,"in_training":0},{"host":"moo3","cocat":"au","wt":3.0,"light":"uv","her":3158.2,"lo":626.8,"hi":15897.1,"novelty":0.6073,"in_training":8},{"host":"fe2o3","cocat":"au","wt":3.0,"light":"visible","her":2994.5,"lo":594.2,"hi":15073.3,"novelty":0.5708,"in_training":0},{"host":"in2o3","cocat":"au","wt":3.0,"light":"visible","her":2983.8,"lo":592.1,"hi":15019.8,"novelty":0.5061,"in_training":0},{"host":"wo3","cocat":"au","wt":3.0,"light":"visible","her":2983.3,"lo":592.0,"hi":15016.8,"novelty":0.4526,"in_training":8},{"host":"moo3","cocat":"pt","wt":2.0,"light":"visible","her":2976.0,"lo":590.6,"hi":14980.1,"novelty":0.3367,"in_training":8},{"host":"wo3","cocat":"pd","wt":2.0,"light":"visible","her":2975.3,"lo":590.4,"hi":14976.6,"novelty":0.365,"in_training":8}],"shap":[["light_source_type",0.5068,"Light source"],["semiconductor_2",0.2993,"Material"],["preparation_photocatalyst",0.2256,"Process"],["reaction_volume_mL",0.2074,"Reaction conditions"],["cocat_d_band_center",0.1774,"Co-catalyst"],["co_catalyst_wt_pct",0.1699,"Co-catalyst"],["catalyst_loading_g_L",0.1631,"Reaction conditions"],["semiconductor_1_pct",0.1315,"Material"],["form",0.1315,"Material"],["bandgap_eV",0.1272,"Material"],["light_power_W",0.1178,"Light source"],["structure",0.1162,"Material"],["wavelength_cutoff_nm",0.1139,"Light source"],["catalyst_loading_mg",0.0928,"Reaction conditions"],["glycerol_concentration_v_pct",0.0839,"Reaction conditions"],["cocat_work_function",0.0831,"Co-catalyst"],["calcination_time_photocatalyst_h",0.0784,"Process"],["calcination_temp_photocatalyst_C",0.0657,"Process"],["semi_dielectric",0.0636,"Material"],["pH",0.0622,"Reaction conditions"],["temperature_C",0.0608,"Reaction conditions"],["preparation_semiconductor",0.0575,"Process"],["glycerol_concentration_std",0.0564,"Reaction conditions"],["semi_density",0.0519,"Material"],["cocat_atomic_radius",0.0423,"Co-catalyst"],["light_type",0.0398,"Light source"],["is_hg_lamp",0.036,"Light source"],["calcination_time_semiconductor_h",0.0303,"Process"],["semi_bandgap_eV",0.0281,"Material"],["semi_crystal",0.0277,"Material"],["semiconductor_2_pct",0.0271,"Material"],["cocat_electronegativity",0.0227,"Co-catalyst"],["is_xe_lamp",0.0217,"Light source"],["semiconductor_3",0.0168,"Material"],["semi_electron_affinity_eV",0.0146,"Material"],["cocat_price",0.0125,"Co-catalyst"],["calcination_temp_semiconductor_C",0.0098,"Process"],["is_uv",0.0065,"Light source"],["is_visible_light",0.0038,"Light source"],["is_led",0.0008,"Light source"]]}</script>
+
 <script>
+var D = JSON.parse(document.getElementById('dashboard-data').textContent);
+
 /* === globals === */
 Chart.defaults.color = '#64748b';
 Chart.defaults.borderColor = '#e2e8f0';
@@ -251,12 +200,35 @@ Chart.defaults.font.size = 11;
 Chart.defaults.animation = false;
 
 /* Okabe-Ito palette. One colour per model, reused in every chart. */
-var MODEL = { 'XGBoost': '#0072B2', 'LightGBM': '#D55E00', 'Ridge': '#009E73' };
+var MODEL_COLOURS = ['#0072B2', '#D55E00', '#009E73', '#CC79A7', '#56B4E9', '#E69F00'];
+var MODEL = {};
+D.models.forEach(function(m, i){ MODEL[m.name] = MODEL_COLOURS[i % MODEL_COLOURS.length]; });
 var NEUTRAL = '#94a3b8';
-var CAT = { 'Light source': '#E69F00', 'Material': '#0072B2', 'Process': '#CC79A7', 'Reaction conditions': '#56B4E9', 'Co-catalyst': '#009E73' };
-var LIGHT = { 'Visible': '#E69F00', 'UV': '#CC79A7' };
+var CAT = { 'Light source': '#E69F00', 'Material': '#0072B2', 'Process': '#CC79A7', 'Reaction conditions': '#56B4E9', 'Co-catalyst': '#009E73', 'Other': NEUTRAL };
+var TRAIN = { 'In training data': '#0072B2', 'Not in training data': '#E69F00' };
 var HER_UNIT = 'µmol g⁻¹ h⁻¹';
 var TITLE = { display: true, color: '#334155', font: { size: 11, weight: '500' } };
+
+/* === formatting === */
+var SUB = { '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉' };
+var NAMES = { 'g-c3n4':'g-C3N4', 'bivo4':'BiVO4', 'bi2wo6':'Bi2WO6', 'srtio3':'SrTiO3', 'moo3':'MoO3', 'v2o5':'V2O5',
+  'ga2o3':'Ga2O3', 'in2o3':'In2O3', 'fe2o3':'Fe2O3', 'cu2o':'Cu2O', 'wo3':'WO3', 'zns':'ZnS', 'cos2':'CoS2',
+  'fes2':'FeS2', 'mos2':'MoS2', 'ni2p':'Ni2P', 'rgo':'rGO', 'wc':'WC' };
+function chem(s){
+  var n = NAMES[s] || (s.charAt(0).toUpperCase() + s.slice(1));
+  return n.replace(/(\D)(\d+)/g, function(_, a, d){ return a + d.split('').map(function(c){ return SUB[c]; }).join(''); });
+}
+function int(v){ return Math.round(v).toLocaleString('en-US'); }
+function cname(c){ return chem(c.cocat) + '(' + c.wt.toFixed(1) + 'wt%)/' + chem(c.host); }
+function trainLabel(c){ return c.in_training ? 'In training data' : 'Not in training data'; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function aria(id, text){ var el = document.getElementById(id); if (el) el.setAttribute('aria-label', text); }
+
+var byName = {}; D.models.forEach(function(m){ byName[m.name] = m; });
+var deployed = byName[D.deployed_model] || D.models[0];
+var bestCv = D.models.slice().sort(function(a, b){ return b.cv_r2 - a.cv_r2; })[0];
+var list = D.shortlist;
+var topCand = list.slice().sort(function(a, b){ return b.her - a.her; })[0];
 
 /* Prints each bar's value at its end. Options: plugins.valueLabels.format */
 Chart.register({
@@ -269,6 +241,7 @@ Chart.register({
     c.font = '500 11px Inter, system-ui, sans-serif';
     chart.data.datasets.forEach(function(ds, di) {
       chart.getDatasetMeta(di).data.forEach(function(bar, i) {
+        if (ds.data[i] == null) return;
         var t = opts.format(ds.data[i]);
         if (!horiz) c.font = (c.measureText(t).width > bar.width + 6 ? '500 9px' : '500 11px') + ' Inter, system-ui, sans-serif';
         if (horiz) { c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText(t, bar.x + 4, bar.y); }
@@ -287,17 +260,27 @@ function safeChart(id, cfg) {
   } catch(e) { console.error('Chart[' + id + ']', e); }
 }
 
+/* KPIs */
+(function(){
+  var k = [
+    ['Best model CV R²', bestCv.cv_r2.toFixed(3), bestCv.name + ', 5-fold CV'],
+    ['Top predicted HER (' + HER_UNIT + ')', int(topCand.her), cname(topCand)],
+    ['Spearman ρ', deployed.spearman != null ? deployed.spearman.toFixed(3) : '—', deployed.name + ', log scale'],
+    ['Test MAE (' + HER_UNIT + ')', int(deployed.mae), deployed.name],
+    ['Conformal coverage (%)', (D.conformal.coverage * 100).toFixed(1), 'Target ' + Math.round(D.conformal.target * 100) + '%, n = ' + D.conformal.n_test],
+    ['Screened candidates', int(D.n_grid), 'Virtual library, top ' + list.length + ' shortlisted']
+  ];
+  document.getElementById('kpis').innerHTML = k.map(function(x){
+    return '<div class="kpi"><div class="kpi-label">' + esc(x[0]) + '</div><div class="kpi-value">' + esc(x[1]) + '</div><div class="kpi-sub">' + esc(x[2]) + '</div></div>';
+  }).join('');
+})();
+
 /* 1 - Model CV R² bar */
 safeChart('chartModelBar', {
   type: 'bar',
   data: {
-    labels: ['XGBoost', 'LightGBM', 'Ridge'],
-    datasets: [{
-      label: 'CV R²',
-      data: [0.7930, 0.7969, 0.4090],
-      backgroundColor: [MODEL.XGBoost, MODEL.LightGBM, MODEL.Ridge],
-      borderWidth: 0
-    }]
+    labels: D.models.map(function(m){ return m.name; }),
+    datasets: [{ label: 'CV R²', data: D.models.map(function(m){ return m.cv_r2; }), backgroundColor: D.models.map(function(m){ return MODEL[m.name]; }), borderWidth: 0 }]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
@@ -312,63 +295,46 @@ safeChart('chartModelBar', {
     }
   }
 });
+aria('chartModelBar', 'Bar chart of 5-fold CV R squared by model: ' + D.models.map(function(m){ return m.name + ' ' + m.cv_r2.toFixed(3); }).join(', ') + '.');
 
-/* 2 - Gauge doughnut with inline center-text plugin */
+/* 2 - Gauge: test R² of the deployed model */
 (function(){
   try {
     var el = document.getElementById('chartGauge');
     if (!el) return;
+    var v = deployed.test_r2_log;
+    document.getElementById('gaugeTitle').textContent = deployed.name + ' test R² (log scale)';
     var centerPlugin = {
       id: 'ctr',
       afterDraw: function(chart) {
         var ca = chart.chartArea;
         if (!ca) return;
-        var c = chart.ctx;
-        var cx = (ca.left + ca.right) / 2;
-        var cy = (ca.top + ca.bottom) / 2;
+        var c = chart.ctx, cx = (ca.left + ca.right) / 2, cy = (ca.top + ca.bottom) / 2;
         c.save();
-        c.textAlign = 'center';
-        c.textBaseline = 'middle';
-        c.fillStyle = '#0f172a';
-        c.font = '600 28px Inter, system-ui, sans-serif';
-        c.fillText('0.783', cx, cy - 8);
-        c.fillStyle = '#64748b';
-        c.font = '11px Inter, system-ui, sans-serif';
+        c.textAlign = 'center'; c.textBaseline = 'middle';
+        c.fillStyle = '#0f172a'; c.font = '600 28px Inter, system-ui, sans-serif';
+        c.fillText(v.toFixed(3), cx, cy - 8);
+        c.fillStyle = '#64748b'; c.font = '11px Inter, system-ui, sans-serif';
         c.fillText('Test R² (log)', cx, cy + 16);
         c.restore();
       }
     };
     new Chart(el.getContext('2d'), {
       type: 'doughnut',
-      data: {
-        datasets: [{
-          data: [0.783, 0.217],
-          backgroundColor: [NEUTRAL, '#f1f5f9'],
-          borderWidth: 0,
-          circumference: 240,
-          rotation: -120
-        }]
-      },
+      data: { datasets: [{ data: [Math.max(v, 0), 1 - Math.max(v, 0)], backgroundColor: [NEUTRAL, '#f1f5f9'], borderWidth: 0, circumference: 240, rotation: -120 }] },
       plugins: [centerPlugin],
-      options: {
-        responsive: true, maintainAspectRatio: false, cutout: '76%',
-        plugins: { legend: { display: false }, tooltip: { enabled: false } }
-      }
+      options: { responsive: true, maintainAspectRatio: false, cutout: '76%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
     });
+    aria('chartGauge', 'Gauge showing ' + deployed.name + ' test R squared on the log scale of ' + v.toFixed(3) + ' out of 1.');
   } catch(e) { console.error('Gauge', e); }
 })();
 
-/* 3 - LOMO CV horizontal bar */
+/* 3 - Host-grouped CV (GroupKFold, 5 folds by host material) */
 safeChart('chartLomo', {
   type: 'bar',
   data: {
-    labels: ['XGBoost', 'LightGBM', 'Ridge'],
-    datasets: [{
-      label: 'LOMO R²',
-      data: [0.7739, 0.7738, 0.4192],
-      backgroundColor: [MODEL.XGBoost, MODEL.LightGBM, MODEL.Ridge],
-      borderWidth: 0
-    }]
+    labels: D.models.map(function(m){ return m.name; }),
+    datasets: [{ label: 'Host-grouped CV R²', data: D.models.map(function(m){ return m.lomo; }), backgroundColor: D.models.map(function(m){ return MODEL[m.name]; }), borderWidth: 0 }]
   },
   options: {
     responsive: true, maintainAspectRatio: false, indexAxis: 'y',
@@ -376,122 +342,92 @@ safeChart('chartLomo', {
     plugins: {
       legend: { display: false },
       valueLabels: { format: function(v){ return v.toFixed(3); } },
-      tooltip: { callbacks: { label: function(c){ return ' LOMO R² = ' + c.parsed.x.toFixed(4); } } }
+      tooltip: { callbacks: { label: function(c){ return ' R² = ' + c.parsed.x.toFixed(4); } } }
     },
     scales: {
-      x: { beginAtZero: true, min: 0, max: 1, grid: { display: false }, ticks: { stepSize: 0.5 }, title: Object.assign({ text: 'LOMO CV R²' }, TITLE) },
+      x: { beginAtZero: true, min: 0, max: 1, grid: { display: false }, ticks: { stepSize: 0.5 }, title: Object.assign({ text: 'R² (5 folds by host)' }, TITLE) },
       y: { grid: { display: false }, title: Object.assign({ text: 'Model' }, TITLE) }
     }
   }
 });
+aria('chartLomo', 'Horizontal bar chart of host-grouped 5-fold CV R squared: ' + D.models.map(function(m){ return m.name + ' ' + m.lomo.toFixed(3); }).join(', ') + '.');
 
-/* 4 - Leaderboard */
+/* 4 - Leaderboard: first 10 rows of the shortlist (ranked by UCB) */
 (function(){
   try {
-    /* optimized_candidates.csv, first 10 rows (ranked by UCB) */
-    var data = [
-      {rank:1, name:'Au(5.0wt%)/ZnS', her:4134, lo:821, hi:20807},
-      {rank:2, name:'Pd(5.0wt%)/Cu₂O', her:4080, lo:810, hi:20537},
-      {rank:3, name:'Pd(5.0wt%)/Ga₂O₃', her:4080, lo:810, hi:20537},
-      {rank:4, name:'Pd(5.0wt%)/V₂O₅', her:4080, lo:810, hi:20537},
-      {rank:5, name:'Au(2.0wt%)/V₂O₅', her:3922, lo:779, hi:19740},
-      {rank:6, name:'Au(2.0wt%)/Cu₂O', her:3922, lo:779, hi:19740},
-      {rank:7, name:'Au(2.0wt%)/Ga₂O₃', her:3922, lo:779, hi:19740},
-      {rank:8, name:'WC(5.0wt%)/ZnS', her:3906, lo:775, hi:19659},
-      {rank:9, name:'Pd(5.0wt%)/ZnS', her:3853, lo:765, hi:19392},
-      {rank:10, name:'WC(5.0wt%)/V₂O₅', her:3787, lo:752, hi:19061}
-    ];
-    var maxH = data[0].her;
+    var data = list.slice(0, 10);
+    var maxH = Math.max.apply(null, data.map(function(c){ return c.her; }));
     var el = document.getElementById('leaderboard');
-    if (!el) return;
-    data.forEach(function(c){
-      var pct = (c.her / maxH * 100).toFixed(1);
+    data.forEach(function(c, i){
       var d = document.createElement('div');
       d.className = 'lb-item';
-      d.innerHTML = '<span class="lb-rank">' + c.rank + '</span>'
-        + '<div class="lb-info"><div class="lb-name">' + c.name + '</div>'
-        + '<div class="lb-meta">90% PI ' + c.lo.toLocaleString('en-US') + '\u2013' + c.hi.toLocaleString('en-US') + '</div></div>'
-        + '<div class="lb-bar-wrap"><div class="lb-bar-bg"><div class="lb-bar" style="width:' + pct + '%"></div></div></div>'
-        + '<span class="lb-her">' + c.her.toLocaleString('en-US') + '</span>';
+      d.innerHTML = '<span class="lb-rank">' + (i + 1) + '</span>'
+        + '<div class="lb-info"><div class="lb-name">' + esc(cname(c)) + '</div>'
+        + '<div class="lb-meta">90% PI ' + int(c.lo) + '–' + int(c.hi) + (c.in_training ? '' : ', unseen host') + '</div></div>'
+        + '<div class="lb-bar-wrap"><div class="lb-bar-bg"><div class="lb-bar" style="width:' + (c.her / maxH * 100).toFixed(1) + '%"></div></div></div>'
+        + '<span class="lb-her">' + int(c.her) + '</span>';
       el.appendChild(d);
     });
   } catch(e){ console.error('LB', e); }
 })();
 
-/* 5 - HER by host */
-safeChart('chartHerHost', {
-  type: 'bar',
-  data: {
-    /* optimized_candidates.csv, max pred_her_umol_g_h per host */
-    labels: ['ZnS','Cu\u2082O','V\u2082O\u2085','Ga\u2082O\u2083','MoO\u2083','Fe\u2082O\u2083','In\u2082O\u2083','WO\u2083'],
-    datasets: [{
-      label: 'HER',
-      data: [4134, 4080, 4080, 4080, 3158, 2994, 2984, 2983],
-      backgroundColor: NEUTRAL,
-      borderWidth: 0
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      valueLabels: { format: function(v){ return v.toLocaleString('en-US'); } },
-      tooltip: { callbacks: { label: function(c){ return ' ' + c.parsed.y.toLocaleString('en-US') + ' ' + HER_UNIT; } } }
+/* 5 - Best predicted HER per host, coloured by whether the host is in the training data */
+(function(){
+  var best = {};
+  list.forEach(function(c){ if (!best[c.host] || c.her > best[c.host].her) best[c.host] = c; });
+  var hosts = Object.keys(best).sort(function(a, b){ return best[b].her - best[a].her; });
+  safeChart('chartHerHost', {
+    type: 'bar',
+    data: {
+      labels: hosts.map(chem),
+      datasets: Object.keys(TRAIN).map(function(t){
+        return { label: t, grouped: false, backgroundColor: TRAIN[t], borderWidth: 0,
+          data: hosts.map(function(h){ return trainLabel(best[h]) === t ? Math.round(best[h].her) : null; }) };
+      })
     },
-    scales: {
-      y: { beginAtZero: true, grace: '12%', grid: { display: false }, ticks: { callback: function(v){ return v.toLocaleString('en-US'); } }, title: Object.assign({ text: 'Predicted HER (' + HER_UNIT + ')' }, TITLE) },
-      x: { grid: { display: false }, title: Object.assign({ text: 'Host material' }, TITLE) }
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', align: 'end', labels: { boxWidth: 10, boxHeight: 10, padding: 12, color: '#0f172a' } },
+        valueLabels: { format: function(v){ return v.toLocaleString('en-US'); } },
+        tooltip: { callbacks: { label: function(c){ return ' ' + c.parsed.y.toLocaleString('en-US') + ' ' + HER_UNIT; } } }
+      },
+      scales: {
+        y: { beginAtZero: true, grace: '12%', grid: { display: false }, ticks: { callback: function(v){ return v.toLocaleString('en-US'); } }, title: Object.assign({ text: 'Predicted HER (' + HER_UNIT + ')' }, TITLE) },
+        x: { grid: { display: false }, title: Object.assign({ text: 'Host material' }, TITLE) }
+      }
     }
-  }
-});
+  });
+  aria('chartHerHost', 'Bar chart of the best predicted HER per host material among the ' + list.length + ' shortlisted candidates, in micromoles per gram per hour: '
+    + hosts.map(function(h){ return chem(h) + ' ' + int(best[h].her) + (best[h].in_training ? '' : ' (not in training data)'); }).join(', ') + '.');
+})();
 
-/* 6 - SHAP. Mean |SHAP| for all 40 features from data/results/shap_summary_data.json.
-   Category per feature is assigned here; the doughnut sums each category. */
-var SHAP = [['light_source_type',0.5068], ['semiconductor_2',0.2993], ['preparation_photocatalyst',0.2256], ['reaction_volume_mL',0.2074], ['cocat_d_band_center',0.1774], ['co_catalyst_wt_pct',0.1699], ['catalyst_loading_g_L',0.1631], ['semiconductor_1_pct',0.1315], ['form',0.1315], ['bandgap_eV',0.1272], ['light_power_W',0.1178], ['structure',0.1162], ['wavelength_cutoff_nm',0.1139], ['catalyst_loading_mg',0.0928], ['glycerol_concentration_v_pct',0.0839], ['cocat_work_function',0.0831], ['calcination_time_photocatalyst_h',0.0784], ['calcination_temp_photocatalyst_C',0.0657], ['semi_dielectric',0.0636], ['pH',0.0622], ['temperature_C',0.0608], ['preparation_semiconductor',0.0575], ['glycerol_concentration_std',0.0564], ['semi_density',0.0519], ['cocat_atomic_radius',0.0423], ['light_type',0.0398], ['is_hg_lamp',0.0360], ['calcination_time_semiconductor_h',0.0303], ['semi_bandgap_eV',0.0281], ['semi_crystal',0.0277], ['semiconductor_2_pct',0.0271], ['cocat_electronegativity',0.0227], ['is_xe_lamp',0.0217], ['semiconductor_3',0.0168], ['semi_electron_affinity_eV',0.0146], ['cocat_price',0.0125], ['calcination_temp_semiconductor_C',0.0098], ['is_uv',0.0065], ['is_visible_light',0.0038], ['is_led',0.0008]];
-var SHAP_CAT = {
-  'Light source': 'light_source_type light_power_W wavelength_cutoff_nm light_type is_hg_lamp is_xe_lamp is_uv is_visible_light is_led',
-  'Material': 'semiconductor_2 semiconductor_1_pct form bandgap_eV structure semi_dielectric semi_density semiconductor_2_pct semi_bandgap_eV semi_crystal semiconductor_3 semi_electron_affinity_eV',
-  'Process': 'preparation_photocatalyst calcination_time_photocatalyst_h calcination_temp_photocatalyst_C preparation_semiconductor calcination_time_semiconductor_h calcination_temp_semiconductor_C',
-  'Reaction conditions': 'reaction_volume_mL catalyst_loading_g_L catalyst_loading_mg glycerol_concentration_v_pct pH temperature_C glycerol_concentration_std',
-  'Co-catalyst': 'cocat_d_band_center co_catalyst_wt_pct cocat_work_function cocat_atomic_radius cocat_electronegativity cocat_price'
-};
-var catOf = {};
-Object.keys(SHAP_CAT).forEach(function(k){ SHAP_CAT[k].split(' ').forEach(function(f){ catOf[f] = k; }); });
-
+/* 6 - SHAP list: top 10 features, bar colour = category */
 (function(){
   try {
-    var feats = SHAP.slice(0, 10);
+    var feats = D.shap.slice(0, 10);
     var mx = feats[0][1];
     var el = document.getElementById('shapList');
-    if (!el) return;
     feats.forEach(function(f){
-      var pct = (f[1] / mx * 100).toFixed(1);
       var d = document.createElement('div');
       d.className = 'shap-item';
-      d.innerHTML = '<span class="shap-label" title="' + f[0] + '">' + f[0] + '</span>'
-        + '<div class="shap-bar-bg"><div class="shap-bar" style="width:' + pct + '%;background:' + CAT[catOf[f[0]]] + '"></div></div>'
+      d.innerHTML = '<span class="shap-label" title="' + esc(f[0]) + '">' + esc(f[0]) + '</span>'
+        + '<div class="shap-bar-bg"><div class="shap-bar" style="width:' + (f[1] / mx * 100).toFixed(1) + '%;background:' + CAT[f[2]] + '"></div></div>'
         + '<span class="shap-val">' + f[1].toFixed(3) + '</span>';
       el.appendChild(d);
     });
   } catch(e){ console.error('SHAP', e); }
 })();
 
-/* 7 - SHAP category doughnut (sum of mean |SHAP| per category) */
+/* 7 - SHAP category doughnut (sum of mean |SHAP| over all features per category) */
 (function(){
   var sums = {};
-  SHAP.forEach(function(f){ sums[catOf[f[0]]] = (sums[catOf[f[0]]] || 0) + f[1]; });
+  D.shap.forEach(function(f){ sums[f[2]] = (sums[f[2]] || 0) + f[1]; });
   var labels = Object.keys(sums).sort(function(a, b){ return sums[b] - sums[a]; });
   var vals = labels.map(function(l){ return sums[l]; });
   safeChart('chartShapPie', {
     type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: vals,
-        backgroundColor: labels.map(function(l){ return CAT[l]; }),
-        borderColor: '#ffffff', borderWidth: 2, hoverOffset: 0
-      }]
-    },
+    data: { labels: labels, datasets: [{ data: vals, backgroundColor: labels.map(function(l){ return CAT[l]; }), borderColor: '#ffffff', borderWidth: 2, hoverOffset: 0 }] },
     options: {
       responsive: true, maintainAspectRatio: false, cutout: '58%',
       plugins: {
@@ -511,116 +447,97 @@ Object.keys(SHAP_CAT).forEach(function(k){ SHAP_CAT[k].split(' ').forEach(functi
       }
     }
   });
+  aria('chartShapPie', 'Doughnut chart of summed mean absolute SHAP value by feature category over all ' + D.shap.length + ' features: '
+    + labels.map(function(l, i){ return l.toLowerCase() + ' ' + vals[i].toFixed(2); }).join(', ') + '.');
 })();
 
-/* 8 - Predicted HER vs novelty, coloured by light type (optimized_candidates.csv, all 50 rows) */
+/* 8 - Predicted HER vs novelty for the shortlist, coloured by training-data coverage */
 (function(){
-  try {
-    var pts = [
-      {x:4134,y:0.359,lt:'Visible',lb:'Au(5.0wt%)/ZnS'},
-      {x:4080,y:0.365,lt:'Visible',lb:'Pd(5.0wt%)/Cu₂O'},
-      {x:4080,y:0.365,lt:'Visible',lb:'Pd(5.0wt%)/Ga₂O₃'},
-      {x:4080,y:0.365,lt:'Visible',lb:'Pd(5.0wt%)/V₂O₅'},
-      {x:3922,y:0.355,lt:'UV',lb:'Au(2.0wt%)/V₂O₅'},
-      {x:3922,y:0.355,lt:'UV',lb:'Au(2.0wt%)/Cu₂O'},
-      {x:3922,y:0.355,lt:'UV',lb:'Au(2.0wt%)/Ga₂O₃'},
-      {x:3906,y:0.329,lt:'UV',lb:'WC(5.0wt%)/ZnS'},
-      {x:3853,y:0.298,lt:'Visible',lb:'Pd(5.0wt%)/ZnS'},
-      {x:3787,y:0.353,lt:'Visible',lb:'WC(5.0wt%)/V₂O₅'},
-      {x:3787,y:0.353,lt:'Visible',lb:'WC(5.0wt%)/Cu₂O'},
-      {x:3787,y:0.353,lt:'Visible',lb:'WC(5.0wt%)/Ga₂O₃'},
-      {x:3670,y:0.299,lt:'Visible',lb:'Ir(5.0wt%)/ZnS'},
-      {x:3624,y:0.303,lt:'Visible',lb:'Pt(5.0wt%)/ZnS'},
-      {x:3570,y:0.352,lt:'Visible',lb:'Rh(2.0wt%)/ZnS'},
-      {x:3566,y:0.364,lt:'Visible',lb:'Rh(5.0wt%)/Cu₂O'},
-      {x:3566,y:0.364,lt:'Visible',lb:'Rh(5.0wt%)/Ga₂O₃'},
-      {x:3566,y:0.364,lt:'Visible',lb:'Rh(5.0wt%)/V₂O₅'},
-      {x:3488,y:0.308,lt:'UV',lb:'Ir(2.0wt%)/Ga₂O₃'},
-      {x:3488,y:0.308,lt:'UV',lb:'Ir(2.0wt%)/V₂O₅'},
-      {x:3488,y:0.308,lt:'UV',lb:'Ir(2.0wt%)/Cu₂O'},
-      {x:3403,y:0.308,lt:'UV',lb:'Pt(2.0wt%)/V₂O₅'},
-      {x:3403,y:0.308,lt:'UV',lb:'Pt(2.0wt%)/Cu₂O'},
-      {x:3403,y:0.308,lt:'UV',lb:'Pt(2.0wt%)/Ga₂O₃'},
-      {x:3349,y:0.353,lt:'Visible',lb:'Ru(5.0wt%)/Ga₂O₃'},
-      {x:3349,y:0.353,lt:'Visible',lb:'Ru(5.0wt%)/V₂O₅'},
-      {x:3349,y:0.353,lt:'Visible',lb:'Ru(5.0wt%)/Cu₂O'},
-      {x:3337,y:0.326,lt:'UV',lb:'CoS₂(5.0wt%)/ZnS'},
-      {x:3330,y:0.349,lt:'Visible',lb:'Ni₂P(5.0wt%)/V₂O₅'},
-      {x:3330,y:0.349,lt:'Visible',lb:'Ni₂P(5.0wt%)/Cu₂O'},
-      {x:3330,y:0.349,lt:'Visible',lb:'Ni₂P(5.0wt%)/Ga₂O₃'},
-      {x:3329,y:0.331,lt:'UV',lb:'FeS₂(5.0wt%)/ZnS'},
-      {x:3329,y:0.326,lt:'UV',lb:'Ni₂P(5.0wt%)/ZnS'},
-      {x:3326,y:0.351,lt:'Visible',lb:'MoS₂(5.0wt%)/V₂O₅'},
-      {x:3326,y:0.351,lt:'Visible',lb:'MoS₂(5.0wt%)/Cu₂O'},
-      {x:3326,y:0.351,lt:'Visible',lb:'MoS₂(5.0wt%)/Ga₂O₃'},
-      {x:3277,y:0.347,lt:'Visible',lb:'Ru(2.0wt%)/ZnS'},
-      {x:3250,y:0.327,lt:'UV',lb:'MoS₂(5.0wt%)/ZnS'},
-      {x:3244,y:0.349,lt:'Visible',lb:'CoS₂(5.0wt%)/V₂O₅'},
-      {x:3244,y:0.349,lt:'Visible',lb:'CoS₂(5.0wt%)/Cu₂O'},
-      {x:3244,y:0.349,lt:'Visible',lb:'CoS₂(5.0wt%)/Ga₂O₃'},
-      {x:3237,y:0.353,lt:'Visible',lb:'FeS₂(5.0wt%)/Cu₂O'},
-      {x:3237,y:0.353,lt:'Visible',lb:'FeS₂(5.0wt%)/Ga₂O₃'},
-      {x:3237,y:0.353,lt:'Visible',lb:'FeS₂(5.0wt%)/V₂O₅'},
-      {x:3158,y:0.607,lt:'UV',lb:'Au(3.0wt%)/MoO₃'},
-      {x:2994,y:0.571,lt:'Visible',lb:'Au(3.0wt%)/Fe₂O₃'},
-      {x:2984,y:0.506,lt:'Visible',lb:'Au(3.0wt%)/In₂O₃'},
-      {x:2983,y:0.453,lt:'Visible',lb:'Au(3.0wt%)/WO₃'},
-      {x:2976,y:0.337,lt:'Visible',lb:'Pt(2.0wt%)/MoO₃'},
-      {x:2975,y:0.365,lt:'Visible',lb:'Pd(2.0wt%)/WO₃'}
-    ];
-    safeChart('chartScatter', {
-      type: 'scatter',
-      data: {
-        datasets: ['Visible','UV'].map(function(lt){
-          return {
-            label: lt,
-            data: pts.filter(function(p){ return p.lt === lt; }).map(function(p){ return {x:p.x, y:p.y, lb:p.lb}; }),
-            backgroundColor: LIGHT[lt],
-            borderColor: LIGHT[lt],
-            pointRadius: 4, pointHoverRadius: 5
-          };
-        })
+  document.getElementById('scatterTitle').textContent = 'Predicted HER vs novelty, top ' + list.length;
+  safeChart('chartScatter', {
+    type: 'scatter',
+    data: {
+      datasets: Object.keys(TRAIN).map(function(t){
+        return {
+          label: t, backgroundColor: TRAIN[t], borderColor: TRAIN[t], pointRadius: 4, pointHoverRadius: 5,
+          data: list.filter(function(c){ return trainLabel(c) === t; }).map(function(c){ return { x: c.her, y: c.novelty, c: c }; })
+        };
+      })
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', align: 'end', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 6, boxHeight: 6, padding: 12, color: '#0f172a' } },
+        tooltip: { callbacks: { label: function(c){ return cname(c.raw.c) + ' (' + c.raw.c.light + '): HER=' + int(c.raw.x) + ', novelty=' + c.raw.y.toFixed(3); } } }
       },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'top', align: 'end', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 6, boxHeight: 6, padding: 12, color: '#0f172a' } },
-          tooltip: { callbacks: { label: function(c){ return c.raw.lb + ': HER=' + c.raw.x.toLocaleString('en-US') + ', novelty=' + c.raw.y.toFixed(3); } } }
-        },
-        scales: {
-          x: { title: Object.assign({ text: 'Predicted HER (' + HER_UNIT + ')' }, TITLE), grid: { color: '#f1f5f9' }, ticks: { callback: function(v){ return v.toLocaleString('en-US'); } } },
-          y: { title: Object.assign({ text: 'Novelty score' }, TITLE), grid: { color: '#f1f5f9' } }
-        }
+      scales: {
+        x: { title: Object.assign({ text: 'Predicted HER (' + HER_UNIT + ')' }, TITLE), grid: { color: '#f1f5f9' }, ticks: { callback: function(v){ return v.toLocaleString('en-US'); } } },
+        y: { title: Object.assign({ text: 'Novelty score' }, TITLE), grid: { color: '#f1f5f9' } }
       }
-    });
-  } catch(e){ console.error('Scatter', e); }
+    }
+  });
+  var unseen = list.filter(function(c){ return !c.in_training; }).length;
+  aria('chartScatter', 'Scatter plot of predicted HER against novelty score for the ' + list.length + ' shortlisted candidates; '
+    + unseen + ' of them use a host material that is not in the training data.');
 })();
 
-/* 9 - Co-catalyst counts in the top 50 (optimized_candidates.csv) */
-safeChart('chartCocat', {
-  type: 'bar',
-  data: {
-    labels: ['Au','Pd','Pt','WC','Ir','Rh','Ru','CoS₂','Ni₂P','FeS₂','MoS₂'],
-    datasets: [{
-      label: 'Candidates',
-      data: [8, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4],
-      backgroundColor: NEUTRAL,
-      borderWidth: 0
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      valueLabels: { format: function(v){ return String(v); } },
-      tooltip: { callbacks: { label: function(c){ return ' ' + c.parsed.y + ' candidates'; } } }
-    },
-    scales: {
-      y: { beginAtZero: true, grace: '12%', grid: { display: false }, ticks: { precision: 0 }, title: Object.assign({ text: 'Candidates (count)' }, TITLE) },
-      x: { grid: { display: false }, title: Object.assign({ text: 'Co-catalyst' }, TITLE) }
+/* 9 - Co-catalyst counts in the shortlist */
+(function(){
+  document.getElementById('cocatTitle').textContent = 'Co-catalysts in the top ' + list.length;
+  var n = {};
+  list.forEach(function(c){ n[c.cocat] = (n[c.cocat] || 0) + 1; });
+  var keys = Object.keys(n).sort(function(a, b){ return n[b] - n[a]; });
+  safeChart('chartCocat', {
+    type: 'bar',
+    data: { labels: keys.map(chem), datasets: [{ label: 'Candidates', data: keys.map(function(k){ return n[k]; }), backgroundColor: NEUTRAL, borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        valueLabels: { format: function(v){ return String(v); } },
+        tooltip: { callbacks: { label: function(c){ return ' ' + c.parsed.y + ' candidates'; } } }
+      },
+      scales: {
+        y: { beginAtZero: true, grace: '12%', grid: { display: false }, ticks: { precision: 0 }, title: Object.assign({ text: 'Candidates (count)' }, TITLE) },
+        x: { grid: { display: false }, title: Object.assign({ text: 'Co-catalyst' }, TITLE) }
+      }
     }
-  }
-});
+  });
+  aria('chartCocat', 'Bar chart of how many of the ' + list.length + ' shortlisted candidates use each co-catalyst: '
+    + keys.map(function(k){ return chem(k) + ' ' + n[k]; }).join(', ') + '.');
+})();
+
+/* Benchmark table, sorted by CV R²; the deployed model is bold */
+(function(){
+  var f4 = function(v){ return v == null ? '—' : v.toFixed(4); };
+  document.getElementById('benchBody').innerHTML = D.models.slice().sort(function(a, b){ return b.cv_r2 - a.cv_r2; }).map(function(m){
+    return '<tr' + (m.name === deployed.name ? ' class="best"' : '') + '><td>' + esc(m.name) + '</td><td>' + f4(m.cv_r2) + '</td><td>&plusmn;' + f4(m.cv_std)
+      + '</td><td>' + f4(m.lomo) + '</td><td>' + f4(m.test_r2_log) + '</td><td>' + f4(m.spearman)
+      + '</td><td>' + int(m.mae) + '</td><td>' + int(m.rmse) + '</td><td>' + f4(m.composite) + '</td></tr>';
+  }).join('');
+  document.getElementById('benchNote').textContent = 'Bold: deployed model (' + deployed.name + '). Rows sorted by CV R². Test MAE and test RMSE in ' + HER_UNIT + '.';
+})();
+
+/* Screening grid */
+(function(){
+  var g = D.grid;
+  var range = function(a, unit){ return a[0] + '–' + a[a.length - 1] + ' ' + unit + ' (' + a.length + ' levels)'; };
+  var items = [
+    ['Host materials', String(g.host_material.length)],
+    ['Co-catalysts', String(g.co_catalyst.length)],
+    ['Co-catalyst loading', range(g.co_catalyst_wt_pct.map(function(v){ return v.toFixed(1); }), 'wt%')],
+    ['Glycerol', range(g.glycerol_concentration_v_pct.map(function(v){ return String(Math.round(v)); }), 'vol%')],
+    ['Light', g.light_type.map(function(l){ return l === 'uv' ? 'UV' : l.charAt(0).toUpperCase() + l.slice(1); }).join(', ')],
+    ['Catalyst loading', range(g.catalyst_loading_g_L.map(function(v){ return v.toFixed(1); }), 'g L⁻¹')],
+    ['Ranking', 'Upper 90% bound (UCB)'],
+    ['Shortlist', 'Top ' + list.length + ' pairs, in domain']
+  ];
+  document.getElementById('gridItems').innerHTML = items.map(function(x){
+    return '<div class="filter-item"><h3>' + esc(x[0]) + '</h3><p>' + esc(x[1]) + '</p></div>';
+  }).join('');
+})();
+
+document.getElementById('footer').textContent = 'Deployed model: ' + deployed.name + '. Dataset: ' + int(D.dataset_rows) + ' entries after cleaning.';
 
 /* Redraw charts at page width when printing */
 window.addEventListener('beforeprint', function(){

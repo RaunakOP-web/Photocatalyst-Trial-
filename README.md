@@ -92,7 +92,8 @@ Predicts HER for each row in the input CSV and computes bootstrap confidence int
 ## Dataset
 
 The master dataset contains **886 entries** of glycerol photoreforming
-experiments mined from published literature. Each entry includes catalyst
+experiments mined from published literature; **838** remain after
+deduplication and quality filtering (`data/processed/df_clean.csv`). Each entry includes catalyst
 composition, synthesis conditions, light source parameters, and the reported
 hydrogen evolution rate (HER).
 
@@ -130,4 +131,14 @@ Results will be populated after training. Run `python run_all.py`.
   year    = {2025},
   doi     = {pending}
 }
+```
+
+## Dashboard
+
+`index.html` (deployed on Vercel) reads all of its numbers from a data block
+written by `build_dashboard.py`. After re-running the pipeline, refresh it with:
+
+```bash
+python build_dashboard.py          # rewrite the data block in index.html
+python build_dashboard.py --check  # only report inconsistencies between outputs
 ```
