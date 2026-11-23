@@ -64,7 +64,7 @@
     .shap-bar{height:100%;border-radius:2px}
     .shap-val{font-size:.75rem;min-width:44px;text-align:right}
 
-    .filter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .filter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
     .filter-item{border:1px solid var(--border);border-radius:8px;padding:12px 16px}
     .filter-item h3{font-size:.75rem;font-weight:500;color:var(--muted);margin-bottom:4px}
     .filter-item p{font-size:1rem;font-weight:600}
@@ -114,8 +114,8 @@
     </div>
     <div class="kpi">
       <div class="kpi-label">Top predicted HER (&micro;mol g&#8315;&sup1; h&#8315;&sup1;)</div>
-      <div class="kpi-value">8,730</div>
-      <div class="kpi-sub">NiS/g-C&#8323;N&#8324;</div>
+      <div class="kpi-value">4,134</div>
+      <div class="kpi-sub">Au(5.0wt%)/ZnS</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Spearman &rho;</div>
@@ -128,14 +128,14 @@
       <div class="kpi-sub">LightGBM</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Best STH (%)</div>
-      <div class="kpi-value">20.42</div>
-      <div class="kpi-sub">Ni(2.69wt%)/In&#8322;S&#8323;</div>
+      <div class="kpi-label">Conformal coverage (%)</div>
+      <div class="kpi-value">91.3</div>
+      <div class="kpi-sub">Target 90%, n = 126</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Screened candidates</div>
-      <div class="kpi-value">5,000</div>
-      <div class="kpi-sub">Virtual library</div>
+      <div class="kpi-value">43,200</div>
+      <div class="kpi-sub">Virtual library, top 50 shortlisted</div>
     </div>
   </div>
 
@@ -146,8 +146,8 @@
       <div class="chart-wrap" style="height:260px"><canvas id="chartModelBar" role="img" aria-label="Bar chart of 5-fold CV R squared by model: LightGBM 0.797, XGBoost 0.793, Ridge 0.409."></canvas></div>
     </div>
     <div class="card col-4">
-      <div class="card-title">Ensemble test R&sup2; (log scale)</div>
-      <div class="chart-wrap" style="height:260px"><canvas id="chartGauge" role="img" aria-label="Gauge showing ensemble test R squared on the log scale of 0.783 out of 1."></canvas></div>
+      <div class="card-title">LightGBM test R&sup2; (log scale)</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartGauge" role="img" aria-label="Gauge showing LightGBM test R squared on the log scale of 0.783 out of 1."></canvas></div>
     </div>
     <div class="card col-3">
       <div class="card-title">LOMO CV R&sup2;</div>
@@ -162,8 +162,8 @@
       <div class="leaderboard" id="leaderboard"></div>
     </div>
     <div class="card col-6">
-      <div class="card-title">Predicted HER by host material</div>
-      <div class="chart-wrap" style="height:280px"><canvas id="chartHerHost" role="img" aria-label="Bar chart of predicted HER by host material in micromoles per gram per hour: In2S3 5,395, ZnIn2S4 4,862, BiVO4 2,543, SrTiO3 2,540, Fe2O3 2,336, WO3 1,852, In2O3 1,825."></canvas></div>
+      <div class="card-title">Best predicted HER by host material</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartHerHost" role="img" aria-label="Bar chart of the best predicted HER per host material among the 50 shortlisted candidates, in micromoles per gram per hour: ZnS 4,134, Cu2O 4,080, V2O5 4,080, Ga2O3 4,080, MoO3 3,158, Fe2O3 2,994, In2O3 2,984, WO3 2,983."></canvas></div>
     </div>
   </div>
 
@@ -175,19 +175,19 @@
     </div>
     <div class="card col-5">
       <div class="card-title">SHAP by feature category</div>
-      <div class="chart-wrap" style="height:280px"><canvas id="chartShapPie" role="img" aria-label="Doughnut chart of SHAP importance by feature category: light source 0.62, material 0.58, reactor 0.37, co-catalyst 0.35, process 0.22."></canvas></div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartShapPie" role="img" aria-label="Doughnut chart of summed mean absolute SHAP value by feature category over all 40 features: material 1.04, light source 0.85, reaction conditions 0.73, co-catalyst 0.51, process 0.47."></canvas></div>
     </div>
   </div>
 
   <h2>Multi-objective screening</h2>
   <div class="charts-grid">
     <div class="card col-6">
-      <div class="card-title">Predicted HER vs predicted AQY</div>
-      <div class="chart-wrap" style="height:280px"><canvas id="chartScatter" role="img" aria-label="Scatter plot of predicted HER against predicted AQY for ten candidates, coloured by co-catalyst. Ni candidates cluster at 4,700 to 5,700 micromoles per gram per hour and 64 to 72 percent AQY; Rh and WC candidates sit near 2,300 to 2,600 and 52 to 58 percent."></canvas></div>
+      <div class="card-title">Predicted HER vs novelty, top 50</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartScatter" role="img" aria-label="Scatter plot of predicted HER against novelty score for the 50 shortlisted candidates, coloured by light type. Most candidates sit between 3,200 and 4,150 micromoles per gram per hour with novelty 0.30 to 0.37; four Au/oxide candidates have novelty 0.45 to 0.61 at about 3,000."></canvas></div>
     </div>
     <div class="card col-6">
-      <div class="card-title">STH efficiency, top candidates (%)</div>
-      <div class="chart-wrap" style="height:280px"><canvas id="chartSth" role="img" aria-label="Bar chart of solar-to-hydrogen efficiency for six candidates: Ni/In2S3 #1 20.42%, #2 19.83%, #3 18.63%, Ni/ZnIn2S4 #1 11.91%, #2 12.62%, #3 11.48%."></canvas></div>
+      <div class="card-title">Co-catalysts in the top 50</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartCocat" role="img" aria-label="Bar chart of how many of the 50 shortlisted candidates use each co-catalyst: Au 8, Pd 5, Pt 5, and WC, Ir, Rh, Ru, CoS2, Ni2P, FeS2 and MoS2 4 each."></canvas></div>
     </div>
   </div>
 
@@ -224,29 +224,21 @@
     <p class="table-note">Test MAE and test RMSE in &micro;mol g&#8315;&sup1; h&#8315;&sup1;.</p>
   </div>
 
-  <h2>Thermodynamic filters</h2>
+  <h2>Screening grid</h2>
   <div class="card">
     <div class="filter-grid">
-      <div class="filter-item">
-        <h3>CB position (vs NHE)</h3>
-        <p>&le; 0 V (H&#8314; reduction)</p>
-      </div>
-      <div class="filter-item">
-        <h3>VB overpotential</h3>
-        <p>&ge; 0.6 V above H&#8322;O oxidation</p>
-      </div>
-      <div class="filter-item">
-        <h3>Bandgap range</h3>
-        <p>1.7&ndash;3.2 eV (visible light)</p>
-      </div>
-      <div class="filter-item">
-        <h3>Sacrificial agent</h3>
-        <p>10 vol% glycerol reforming</p>
-      </div>
+      <div class="filter-item"><h3>Host materials</h3><p>12</p></div>
+      <div class="filter-item"><h3>Co-catalysts</h3><p>15</p></div>
+      <div class="filter-item"><h3>Co-catalyst loading</h3><p>0.1&ndash;5.0 wt% (6 levels)</p></div>
+      <div class="filter-item"><h3>Glycerol</h3><p>5&ndash;50 vol% (5 levels)</p></div>
+      <div class="filter-item"><h3>Light</h3><p>Visible, UV</p></div>
+      <div class="filter-item"><h3>Catalyst loading</h3><p>0.5&ndash;2.0 g L&#8315;&sup1; (4 levels)</p></div>
+      <div class="filter-item"><h3>Ranking</h3><p>Upper 90% bound (UCB)</p></div>
+      <div class="filter-item"><h3>Shortlist</h3><p>Top 50 pairs, in domain</p></div>
     </div>
   </div>
 
-  <footer>XGBoost, LightGBM and Ridge ensemble. Dataset: 173 entries.</footer>
+  <footer>XGBoost, LightGBM and Ridge blending ensemble. Dataset: 838 entries after cleaning.</footer>
 
 </div>
 
@@ -261,8 +253,8 @@ Chart.defaults.animation = false;
 /* Okabe-Ito palette. One colour per model, reused in every chart. */
 var MODEL = { 'XGBoost': '#0072B2', 'LightGBM': '#D55E00', 'Ridge': '#009E73' };
 var NEUTRAL = '#94a3b8';
-var CAT = { 'Light source': '#E69F00', 'Material': '#0072B2', 'Process': '#CC79A7', 'Reactor': '#56B4E9', 'Co-catalyst': '#009E73' };
-var COCAT = { 'Ni': '#D55E00', 'Rh': '#0072B2', 'WC': '#009E73' };
+var CAT = { 'Light source': '#E69F00', 'Material': '#0072B2', 'Process': '#CC79A7', 'Reaction conditions': '#56B4E9', 'Co-catalyst': '#009E73' };
+var LIGHT = { 'Visible': '#E69F00', 'UV': '#CC79A7' };
 var HER_UNIT = 'µmol g⁻¹ h⁻¹';
 var TITLE = { display: true, color: '#334155', font: { size: 11, weight: '500' } };
 
@@ -396,17 +388,18 @@ safeChart('chartLomo', {
 /* 4 - Leaderboard */
 (function(){
   try {
+    /* optimized_candidates.csv, first 10 rows (ranked by UCB) */
     var data = [
-      {rank:1, name:'Ni(2.69wt%)/In₂S₃',   host:'In₂S₃',   her:5721, cc:'Ni', bg:1.817},
-      {rank:2, name:'Ni(2.21wt%)/In₂S₃',   host:'In₂S₃',   her:5209, cc:'Ni', bg:1.837},
-      {rank:3, name:'Ni(2.85wt%)/In₂S₃',   host:'In₂S₃',   her:5256, cc:'Ni', bg:1.878},
-      {rank:4, name:'Ni(2.89wt%)/ZnIn₂S₄', host:'ZnIn₂S₄', her:4980, cc:'Ni', bg:2.156},
-      {rank:5, name:'Ni(2.18wt%)/ZnIn₂S₄', host:'ZnIn₂S₄', her:4704, cc:'Ni', bg:2.123},
-      {rank:6, name:'Ni(1.29wt%)/ZnIn₂S₄', host:'ZnIn₂S₄', her:4902, cc:'Ni', bg:2.177},
-      {rank:7, name:'Rh(3.0wt%)/BiVO₄',  host:'BiVO₄',  her:2571, cc:'Rh', bg:2.45},
-      {rank:8, name:'Rh(0.5wt%)/SrTiO₃', host:'SrTiO₃', her:2569, cc:'Rh', bg:3.20},
-      {rank:9, name:'WC(5.0wt%)/SrTiO₃', host:'SrTiO₃', her:2543, cc:'WC', bg:3.20},
-      {rank:10,name:'WC(2.0wt%)/BiVO₄',  host:'BiVO₄',  her:2542, cc:'WC', bg:2.45}
+      {rank:1, name:'Au(5.0wt%)/ZnS', her:4134, lo:821, hi:20807},
+      {rank:2, name:'Pd(5.0wt%)/Cu₂O', her:4080, lo:810, hi:20537},
+      {rank:3, name:'Pd(5.0wt%)/Ga₂O₃', her:4080, lo:810, hi:20537},
+      {rank:4, name:'Pd(5.0wt%)/V₂O₅', her:4080, lo:810, hi:20537},
+      {rank:5, name:'Au(2.0wt%)/V₂O₅', her:3922, lo:779, hi:19740},
+      {rank:6, name:'Au(2.0wt%)/Cu₂O', her:3922, lo:779, hi:19740},
+      {rank:7, name:'Au(2.0wt%)/Ga₂O₃', her:3922, lo:779, hi:19740},
+      {rank:8, name:'WC(5.0wt%)/ZnS', her:3906, lo:775, hi:19659},
+      {rank:9, name:'Pd(5.0wt%)/ZnS', her:3853, lo:765, hi:19392},
+      {rank:10, name:'WC(5.0wt%)/V₂O₅', her:3787, lo:752, hi:19061}
     ];
     var maxH = data[0].her;
     var el = document.getElementById('leaderboard');
@@ -417,7 +410,7 @@ safeChart('chartLomo', {
       d.className = 'lb-item';
       d.innerHTML = '<span class="lb-rank">' + c.rank + '</span>'
         + '<div class="lb-info"><div class="lb-name">' + c.name + '</div>'
-        + '<div class="lb-meta">E<sub>g</sub> ' + c.bg.toFixed(2) + ' eV</div></div>'
+        + '<div class="lb-meta">90% PI ' + c.lo.toLocaleString('en-US') + '\u2013' + c.hi.toLocaleString('en-US') + '</div></div>'
         + '<div class="lb-bar-wrap"><div class="lb-bar-bg"><div class="lb-bar" style="width:' + pct + '%"></div></div></div>'
         + '<span class="lb-her">' + c.her.toLocaleString('en-US') + '</span>';
       el.appendChild(d);
@@ -429,10 +422,11 @@ safeChart('chartLomo', {
 safeChart('chartHerHost', {
   type: 'bar',
   data: {
-    labels: ['In₂S₃','ZnIn₂S₄','BiVO₄','SrTiO₃','Fe₂O₃','WO₃','In₂O₃'],
+    /* optimized_candidates.csv, max pred_her_umol_g_h per host */
+    labels: ['ZnS','Cu\u2082O','V\u2082O\u2085','Ga\u2082O\u2083','MoO\u2083','Fe\u2082O\u2083','In\u2082O\u2083','WO\u2083'],
     datasets: [{
       label: 'HER',
-      data: [5395, 4862, 2543, 2540, 2336, 1852, 1825],
+      data: [4134, 4080, 4080, 4080, 3158, 2994, 2984, 2983],
       backgroundColor: NEUTRAL,
       borderWidth: 0
     }]
@@ -451,40 +445,43 @@ safeChart('chartHerHost', {
   }
 });
 
-/* 6 - SHAP list (bar colour = feature category, same as the category doughnut) */
+/* 6 - SHAP. Mean |SHAP| for all 40 features from data/results/shap_summary_data.json.
+   Category per feature is assigned here; the doughnut sums each category. */
+var SHAP = [['light_source_type',0.5068], ['semiconductor_2',0.2993], ['preparation_photocatalyst',0.2256], ['reaction_volume_mL',0.2074], ['cocat_d_band_center',0.1774], ['co_catalyst_wt_pct',0.1699], ['catalyst_loading_g_L',0.1631], ['semiconductor_1_pct',0.1315], ['form',0.1315], ['bandgap_eV',0.1272], ['light_power_W',0.1178], ['structure',0.1162], ['wavelength_cutoff_nm',0.1139], ['catalyst_loading_mg',0.0928], ['glycerol_concentration_v_pct',0.0839], ['cocat_work_function',0.0831], ['calcination_time_photocatalyst_h',0.0784], ['calcination_temp_photocatalyst_C',0.0657], ['semi_dielectric',0.0636], ['pH',0.0622], ['temperature_C',0.0608], ['preparation_semiconductor',0.0575], ['glycerol_concentration_std',0.0564], ['semi_density',0.0519], ['cocat_atomic_radius',0.0423], ['light_type',0.0398], ['is_hg_lamp',0.0360], ['calcination_time_semiconductor_h',0.0303], ['semi_bandgap_eV',0.0281], ['semi_crystal',0.0277], ['semiconductor_2_pct',0.0271], ['cocat_electronegativity',0.0227], ['is_xe_lamp',0.0217], ['semiconductor_3',0.0168], ['semi_electron_affinity_eV',0.0146], ['cocat_price',0.0125], ['calcination_temp_semiconductor_C',0.0098], ['is_uv',0.0065], ['is_visible_light',0.0038], ['is_led',0.0008]];
+var SHAP_CAT = {
+  'Light source': 'light_source_type light_power_W wavelength_cutoff_nm light_type is_hg_lamp is_xe_lamp is_uv is_visible_light is_led',
+  'Material': 'semiconductor_2 semiconductor_1_pct form bandgap_eV structure semi_dielectric semi_density semiconductor_2_pct semi_bandgap_eV semi_crystal semiconductor_3 semi_electron_affinity_eV',
+  'Process': 'preparation_photocatalyst calcination_time_photocatalyst_h calcination_temp_photocatalyst_C preparation_semiconductor calcination_time_semiconductor_h calcination_temp_semiconductor_C',
+  'Reaction conditions': 'reaction_volume_mL catalyst_loading_g_L catalyst_loading_mg glycerol_concentration_v_pct pH temperature_C glycerol_concentration_std',
+  'Co-catalyst': 'cocat_d_band_center co_catalyst_wt_pct cocat_work_function cocat_atomic_radius cocat_electronegativity cocat_price'
+};
+var catOf = {};
+Object.keys(SHAP_CAT).forEach(function(k){ SHAP_CAT[k].split(' ').forEach(function(f){ catOf[f] = k; }); });
+
 (function(){
   try {
-    var feats = [
-      {n:'light_source_type',   v:0.5068, cat:'Light source'},
-      {n:'semiconductor_2',     v:0.2993, cat:'Material'},
-      {n:'preparation_photo',   v:0.2256, cat:'Process'},
-      {n:'reaction_volume_mL',  v:0.2074, cat:'Reactor'},
-      {n:'cocat_d_band_center', v:0.1774, cat:'Co-catalyst'},
-      {n:'co_catalyst_wt_pct',  v:0.1699, cat:'Co-catalyst'},
-      {n:'catalyst_loading_g_L',v:0.1631, cat:'Reactor'},
-      {n:'semiconductor_1_pct', v:0.1315, cat:'Material'},
-      {n:'bandgap_eV',          v:0.1272, cat:'Material'},
-      {n:'light_power_W',       v:0.1178, cat:'Light source'}
-    ];
-    var mx = feats[0].v;
+    var feats = SHAP.slice(0, 10);
+    var mx = feats[0][1];
     var el = document.getElementById('shapList');
     if (!el) return;
     feats.forEach(function(f){
-      var pct = (f.v / mx * 100).toFixed(1);
+      var pct = (f[1] / mx * 100).toFixed(1);
       var d = document.createElement('div');
       d.className = 'shap-item';
-      d.innerHTML = '<span class="shap-label" title="' + f.n + '">' + f.n + '</span>'
-        + '<div class="shap-bar-bg"><div class="shap-bar" style="width:' + pct + '%;background:' + CAT[f.cat] + '"></div></div>'
-        + '<span class="shap-val">' + f.v.toFixed(3) + '</span>';
+      d.innerHTML = '<span class="shap-label" title="' + f[0] + '">' + f[0] + '</span>'
+        + '<div class="shap-bar-bg"><div class="shap-bar" style="width:' + pct + '%;background:' + CAT[catOf[f[0]]] + '"></div></div>'
+        + '<span class="shap-val">' + f[1].toFixed(3) + '</span>';
       el.appendChild(d);
     });
   } catch(e){ console.error('SHAP', e); }
 })();
 
-/* 7 - SHAP category doughnut */
+/* 7 - SHAP category doughnut (sum of mean |SHAP| per category) */
 (function(){
-  var labels = ['Light source','Material','Process','Reactor','Co-catalyst'];
-  var vals = [0.62, 0.58, 0.22, 0.37, 0.35];
+  var sums = {};
+  SHAP.forEach(function(f){ sums[catOf[f[0]]] = (sums[catOf[f[0]]] || 0) + f[1]; });
+  var labels = Object.keys(sums).sort(function(a, b){ return sums[b] - sums[a]; });
+  var vals = labels.map(function(l){ return sums[l]; });
   safeChart('chartShapPie', {
     type: 'doughnut',
     data: {
@@ -516,31 +513,71 @@ safeChart('chartHerHost', {
   });
 })();
 
-/* 8 - HER vs AQY scatter, coloured by co-catalyst */
+/* 8 - Predicted HER vs novelty, coloured by light type (optimized_candidates.csv, all 50 rows) */
 (function(){
   try {
     var pts = [
-      {x:5721,y:63.9,cc:'Ni',lb:'Ni/In₂S₃ #1'},
-      {x:5209,y:68.3,cc:'Ni',lb:'Ni/In₂S₃ #2'},
-      {x:5256,y:72.0,cc:'Ni',lb:'Ni/In₂S₃ #3'},
-      {x:4980,y:69.6,cc:'Ni',lb:'Ni/ZnIn₂S₄ #1'},
-      {x:4704,y:70.1,cc:'Ni',lb:'Ni/ZnIn₂S₄ #2'},
-      {x:4902,y:69.2,cc:'Ni',lb:'Ni/ZnIn₂S₄ #3'},
-      {x:2571,y:58.0,cc:'Rh',lb:'Rh/BiVO₄'},
-      {x:2569,y:55.0,cc:'Rh',lb:'Rh/SrTiO₃'},
-      {x:2543,y:54.0,cc:'WC',lb:'WC/SrTiO₃'},
-      {x:2332,y:52.0,cc:'WC',lb:'WC/Fe₂O₃'}
+      {x:4134,y:0.359,lt:'Visible',lb:'Au(5.0wt%)/ZnS'},
+      {x:4080,y:0.365,lt:'Visible',lb:'Pd(5.0wt%)/Cu₂O'},
+      {x:4080,y:0.365,lt:'Visible',lb:'Pd(5.0wt%)/Ga₂O₃'},
+      {x:4080,y:0.365,lt:'Visible',lb:'Pd(5.0wt%)/V₂O₅'},
+      {x:3922,y:0.355,lt:'UV',lb:'Au(2.0wt%)/V₂O₅'},
+      {x:3922,y:0.355,lt:'UV',lb:'Au(2.0wt%)/Cu₂O'},
+      {x:3922,y:0.355,lt:'UV',lb:'Au(2.0wt%)/Ga₂O₃'},
+      {x:3906,y:0.329,lt:'UV',lb:'WC(5.0wt%)/ZnS'},
+      {x:3853,y:0.298,lt:'Visible',lb:'Pd(5.0wt%)/ZnS'},
+      {x:3787,y:0.353,lt:'Visible',lb:'WC(5.0wt%)/V₂O₅'},
+      {x:3787,y:0.353,lt:'Visible',lb:'WC(5.0wt%)/Cu₂O'},
+      {x:3787,y:0.353,lt:'Visible',lb:'WC(5.0wt%)/Ga₂O₃'},
+      {x:3670,y:0.299,lt:'Visible',lb:'Ir(5.0wt%)/ZnS'},
+      {x:3624,y:0.303,lt:'Visible',lb:'Pt(5.0wt%)/ZnS'},
+      {x:3570,y:0.352,lt:'Visible',lb:'Rh(2.0wt%)/ZnS'},
+      {x:3566,y:0.364,lt:'Visible',lb:'Rh(5.0wt%)/Cu₂O'},
+      {x:3566,y:0.364,lt:'Visible',lb:'Rh(5.0wt%)/Ga₂O₃'},
+      {x:3566,y:0.364,lt:'Visible',lb:'Rh(5.0wt%)/V₂O₅'},
+      {x:3488,y:0.308,lt:'UV',lb:'Ir(2.0wt%)/Ga₂O₃'},
+      {x:3488,y:0.308,lt:'UV',lb:'Ir(2.0wt%)/V₂O₅'},
+      {x:3488,y:0.308,lt:'UV',lb:'Ir(2.0wt%)/Cu₂O'},
+      {x:3403,y:0.308,lt:'UV',lb:'Pt(2.0wt%)/V₂O₅'},
+      {x:3403,y:0.308,lt:'UV',lb:'Pt(2.0wt%)/Cu₂O'},
+      {x:3403,y:0.308,lt:'UV',lb:'Pt(2.0wt%)/Ga₂O₃'},
+      {x:3349,y:0.353,lt:'Visible',lb:'Ru(5.0wt%)/Ga₂O₃'},
+      {x:3349,y:0.353,lt:'Visible',lb:'Ru(5.0wt%)/V₂O₅'},
+      {x:3349,y:0.353,lt:'Visible',lb:'Ru(5.0wt%)/Cu₂O'},
+      {x:3337,y:0.326,lt:'UV',lb:'CoS₂(5.0wt%)/ZnS'},
+      {x:3330,y:0.349,lt:'Visible',lb:'Ni₂P(5.0wt%)/V₂O₅'},
+      {x:3330,y:0.349,lt:'Visible',lb:'Ni₂P(5.0wt%)/Cu₂O'},
+      {x:3330,y:0.349,lt:'Visible',lb:'Ni₂P(5.0wt%)/Ga₂O₃'},
+      {x:3329,y:0.331,lt:'UV',lb:'FeS₂(5.0wt%)/ZnS'},
+      {x:3329,y:0.326,lt:'UV',lb:'Ni₂P(5.0wt%)/ZnS'},
+      {x:3326,y:0.351,lt:'Visible',lb:'MoS₂(5.0wt%)/V₂O₅'},
+      {x:3326,y:0.351,lt:'Visible',lb:'MoS₂(5.0wt%)/Cu₂O'},
+      {x:3326,y:0.351,lt:'Visible',lb:'MoS₂(5.0wt%)/Ga₂O₃'},
+      {x:3277,y:0.347,lt:'Visible',lb:'Ru(2.0wt%)/ZnS'},
+      {x:3250,y:0.327,lt:'UV',lb:'MoS₂(5.0wt%)/ZnS'},
+      {x:3244,y:0.349,lt:'Visible',lb:'CoS₂(5.0wt%)/V₂O₅'},
+      {x:3244,y:0.349,lt:'Visible',lb:'CoS₂(5.0wt%)/Cu₂O'},
+      {x:3244,y:0.349,lt:'Visible',lb:'CoS₂(5.0wt%)/Ga₂O₃'},
+      {x:3237,y:0.353,lt:'Visible',lb:'FeS₂(5.0wt%)/Cu₂O'},
+      {x:3237,y:0.353,lt:'Visible',lb:'FeS₂(5.0wt%)/Ga₂O₃'},
+      {x:3237,y:0.353,lt:'Visible',lb:'FeS₂(5.0wt%)/V₂O₅'},
+      {x:3158,y:0.607,lt:'UV',lb:'Au(3.0wt%)/MoO₃'},
+      {x:2994,y:0.571,lt:'Visible',lb:'Au(3.0wt%)/Fe₂O₃'},
+      {x:2984,y:0.506,lt:'Visible',lb:'Au(3.0wt%)/In₂O₃'},
+      {x:2983,y:0.453,lt:'Visible',lb:'Au(3.0wt%)/WO₃'},
+      {x:2976,y:0.337,lt:'Visible',lb:'Pt(2.0wt%)/MoO₃'},
+      {x:2975,y:0.365,lt:'Visible',lb:'Pd(2.0wt%)/WO₃'}
     ];
     safeChart('chartScatter', {
       type: 'scatter',
       data: {
-        datasets: ['Ni','Rh','WC'].map(function(cc){
+        datasets: ['Visible','UV'].map(function(lt){
           return {
-            label: cc,
-            data: pts.filter(function(p){ return p.cc === cc; }).map(function(p){ return {x:p.x, y:p.y, lb:p.lb}; }),
-            backgroundColor: COCAT[cc],
-            borderColor: COCAT[cc],
-            pointRadius: 5, pointHoverRadius: 6
+            label: lt,
+            data: pts.filter(function(p){ return p.lt === lt; }).map(function(p){ return {x:p.x, y:p.y, lb:p.lb}; }),
+            backgroundColor: LIGHT[lt],
+            borderColor: LIGHT[lt],
+            pointRadius: 4, pointHoverRadius: 5
           };
         })
       },
@@ -548,25 +585,25 @@ safeChart('chartHerHost', {
         responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { position: 'top', align: 'end', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 6, boxHeight: 6, padding: 12, color: '#0f172a' } },
-          tooltip: { callbacks: { label: function(c){ return c.raw.lb + ': HER=' + c.raw.x.toLocaleString('en-US') + ', AQY=' + c.raw.y + '%'; } } }
+          tooltip: { callbacks: { label: function(c){ return c.raw.lb + ': HER=' + c.raw.x.toLocaleString('en-US') + ', novelty=' + c.raw.y.toFixed(3); } } }
         },
         scales: {
           x: { title: Object.assign({ text: 'Predicted HER (' + HER_UNIT + ')' }, TITLE), grid: { color: '#f1f5f9' }, ticks: { callback: function(v){ return v.toLocaleString('en-US'); } } },
-          y: { title: Object.assign({ text: 'Predicted AQY (%)' }, TITLE), grid: { color: '#f1f5f9' } }
+          y: { title: Object.assign({ text: 'Novelty score' }, TITLE), grid: { color: '#f1f5f9' } }
         }
       }
     });
   } catch(e){ console.error('Scatter', e); }
 })();
 
-/* 9 - STH bar */
-safeChart('chartSth', {
+/* 9 - Co-catalyst counts in the top 50 (optimized_candidates.csv) */
+safeChart('chartCocat', {
   type: 'bar',
   data: {
-    labels: ['Ni/In₂S₃ #1','Ni/In₂S₃ #2','Ni/In₂S₃ #3','Ni/ZnIn₂S₄ #1','Ni/ZnIn₂S₄ #2','Ni/ZnIn₂S₄ #3'],
+    labels: ['Au','Pd','Pt','WC','Ir','Rh','Ru','CoS₂','Ni₂P','FeS₂','MoS₂'],
     datasets: [{
-      label: 'STH (%)',
-      data: [20.42, 19.83, 18.63, 11.91, 12.62, 11.48],
+      label: 'Candidates',
+      data: [8, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4],
       backgroundColor: NEUTRAL,
       borderWidth: 0
     }]
@@ -575,12 +612,12 @@ safeChart('chartSth', {
     responsive: true, maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      valueLabels: { format: function(v){ return v.toFixed(2); } },
-      tooltip: { callbacks: { label: function(c){ return ' STH = ' + c.parsed.y.toFixed(2) + ' %'; } } }
+      valueLabels: { format: function(v){ return String(v); } },
+      tooltip: { callbacks: { label: function(c){ return ' ' + c.parsed.y + ' candidates'; } } }
     },
     scales: {
-      y: { beginAtZero: true, grace: '12%', grid: { display: false }, title: Object.assign({ text: 'STH efficiency (%)' }, TITLE) },
-      x: { grid: { display: false }, ticks: { maxRotation: 30 }, title: Object.assign({ text: 'Candidate' }, TITLE) }
+      y: { beginAtZero: true, grace: '12%', grid: { display: false }, ticks: { precision: 0 }, title: Object.assign({ text: 'Candidates (count)' }, TITLE) },
+      x: { grid: { display: false }, title: Object.assign({ text: 'Co-catalyst' }, TITLE) }
     }
   }
 });
