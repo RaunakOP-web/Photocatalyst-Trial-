@@ -9,7 +9,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.stats import spearmanr
 from sklearn.metrics import r2_score, mean_absolute_error, root_mean_squared_error
-from sklearn.model_selection import GroupKFold
+from sklearn.model_selection import LeaveOneGroupOut
 from torch_geometric.loader import DataLoader
 
 from src.utils.config import get_train_config
@@ -148,15 +148,16 @@ def main():
     
     # LOGO-CV benchmarking
     print("\nRunning LOGO-CV benchmarking...")
-    gkf = GroupKFold(n_splits=5)
+    logo = LeaveOneGroupOut()
+    n_folds = logo.get_n_splits(X_train, y_train, groups_train)
     
     baseline_cv_preds = np.zeros(len(y_train))
     cgcnn_cv_preds = np.zeros(len(y_train))
     megnet_cv_preds = np.zeros(len(y_train))
     hybrid_cv_preds = np.zeros(len(y_train))
     
-    for fold, (train_idx, val_idx) in enumerate(gkf.split(X_train, y_train, groups_train)):
-        print(f"  Fold {fold+1}/5...")
+    for fold, (train_idx, val_idx) in enumerate(logo.split(X_train, y_train, groups_train)):
+        print(f"  Fold {fold+1}/{n_folds} (held out: {groups_train.iloc[val_idx[0]]})...")
         # Subset indices
         train_sub = torch.utils.data.Subset(train_dataset, train_idx)
         val_sub = torch.utils.data.Subset(train_dataset, val_idx)

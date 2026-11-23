@@ -20,6 +20,11 @@ none of them can be fixed from the files in the repository alone, because the ra
   ensemble"; `src/train.py` saves a single model, not a blend.
 - Candidates whose host material has no rows in the training data are marked on the dashboard.
 - README states both dataset sizes (886 raw, 838 cleaned).
+- The manuscript, cover letter and supplementary information no longer call the main model's
+  validation "Leave-One-Material-Out" or claim it proves generalisation to unseen material
+  families. `src/train.py` runs 5-fold `GroupKFold` by host, which holds out several hosts per
+  fold; the documents now call it host-grouped 5-fold CV. The manuscript's "21 times (once for
+  each host material class)" is corrected to 5 folds.
 
 ## Needs the authors
 
@@ -58,7 +63,8 @@ none of them can be fixed from the files in the repository alone, because the ra
    | Top candidate | SrTiO₃/Ru, 1,466.7 µmol g⁻¹ h⁻¹ | Au(5.0 wt%)/ZnS, 4,134 (`optimized_candidates.csv`) |
    | Top SHAP drivers | work function, bandgap, glycerol | light source type, semiconductor_2, preparation |
 
-   `docs/paper_draft.md` gives yet other values (grouped CV R² 0.772, coverage 92.9 % and 76.2 %,
+   `docs/cover_letter.md` still gives grouped CV R² 0.772 ± 0.114 and ρ 0.917, unlike the
+   manuscript. `docs/paper_draft.md` gives yet other values (grouped CV R² 0.772, coverage 92.9 % and 76.2 %,
    top candidate WO₃/Pd).
 7. **Grouped CV vs LOGO.** `cv_gap_analysis.json` reports leave-one-group-out R² of −0.18 for the
    ensemble, against 0.77 from 5-fold grouped CV. With TiO₂ at 72 % of rows, the 5-fold number
@@ -68,8 +74,9 @@ none of them can be fixed from the files in the repository alone, because the ra
    cross-validation predictions with `0.8 × predictions + 0.2 × y_train` whenever its R² was ≤ 0.
    The hybrid LOGO-CV R² of 0.229 in `publication_gnn_benchmark_table.csv` and
    `gnn_ablation_discussion.md` (CGCNN −2.34, MEGNet −2.05 on their own) is very likely the result.
-   The block is removed; re-run the benchmark. The same script also calls its 5-fold
-   `GroupKFold` "LOGO-CV".
+   The block is removed, and the script now uses `LeaveOneGroupOut` (one fold per host material)
+   instead of 5-fold `GroupKFold`, so its "LOGO-CV" label is accurate. Re-run the benchmark; it now
+   trains one fold per host (about 20 instead of 5), so it takes roughly four times longer.
 
 ## Recommended order
 

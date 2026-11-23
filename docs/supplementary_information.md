@@ -84,11 +84,11 @@ The following sequential cleaning steps were applied:
 
 *Note: Per-fold scores are computed during training. Mean ± SD are from `training_results.json`.*
 
-### S3.2. Leave-One-Material-Out CV (LOMO-CV)
+### S3.2. Host-grouped CV
 
-LOMO-CV uses GroupKFold (5 splits) with `host_material` as the grouping variable. Each fold withholds all experiments from one or more material families, testing the model's ability to generalise to entirely unseen material classes.
+Host-grouped CV uses GroupKFold (5 splits) with `host_material` as the grouping variable. Each fold withholds all experiments from one or more material families. Because several families are held out together, it is less strict than leaving out one family at a time.
 
-| Model | LOMO-CV R² Mean | LOMO-CV R² SD |
+| Model | Grouped CV R² Mean | Grouped CV R² SD |
 |---|---|---|
 | LightGBM | **0.772** | 0.114 |
 | XGBoost | 0.773 | 0.113 |
@@ -96,9 +96,9 @@ LOMO-CV uses GroupKFold (5 splits) with `host_material` as the grouping variable
 
 ### S3.3. Model selection criterion
 
-Composite score = 0.6 × LOMO-CV R² + 0.4 × Test R² (original scale).
+Composite score = 0.6 × grouped CV R² + 0.4 × Test R² (original scale).
 
-| Model | LOMO-CV R² | Test R² (orig) | Composite |
+| Model | Grouped CV R² | Test R² (orig) | Composite |
 |---|---|---|---|
 | LightGBM | 0.772 | 0.460 | **0.647** |
 | XGBoost | 0.773 | 0.407 | 0.626 |
@@ -108,11 +108,11 @@ Composite score = 0.6 × LOMO-CV R² + 0.4 × Test R² (original scale).
 
 ## Section S4. Ablation Study Results
 
-Feature group ablation quantifies the contribution of each feature category to LOMO-CV R²:
+Feature group ablation quantifies the contribution of each feature category to grouped CV R²:
 
 **Table S4. Ablation results (from `ablation_results.csv`).**
 
-| Ablation | LOMO-CV R² | ΔR² vs Baseline |
+| Ablation | Grouped CV R² | ΔR² vs Baseline |
 |---|---|---|
 | Baseline (all features) | 0.737 | — |
 | No synthesis features | 0.717 | −0.020 |
@@ -267,7 +267,7 @@ The following figures are included in the supplementary materials:
 | Metric | LightGBM | XGBoost | Ridge |
 |---|---|---|---|
 | 5-Fold CV R² (mean ± SD) | 0.778 ± 0.032 | 0.785 ± 0.020 | 0.441 ± 0.050 |
-| LOMO-CV R² (mean ± SD) | 0.772 ± 0.114 | 0.773 ± 0.113 | 0.448 ± 0.145 |
+| Grouped CV R² (mean ± SD) | 0.772 ± 0.114 | 0.773 ± 0.113 | 0.448 ± 0.145 |
 | Test R² (log scale) | 0.768 | 0.766 | 0.432 |
 | Test R² (original scale) | 0.460 | 0.407 | 0.070 |
 | Test MAE (log scale) | 0.760 | 0.769 | 1.342 |
